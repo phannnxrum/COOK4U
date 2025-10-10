@@ -1,6 +1,5 @@
 // rafce
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { NavLink, Outlet } from 'react-router'
 
@@ -10,7 +9,7 @@ const HeaderUsers = () => {
             <div className="flex items-center justify-between bg-amber-50 p-5">
                 <div className="flex items-center space-x-2">
                     <span className="text-orange-600"></span>
-                    <img src='/logo.png' alt="" width={40} className='mt-1'/>
+                    <img src='/image/LogoCook4u.png' alt="" width={40} className='mt-1'/>
                     <span className=" text-black font-bold text-3xl">COOK4U</span>
                 </div>
                 <div className="flex space-x-4">

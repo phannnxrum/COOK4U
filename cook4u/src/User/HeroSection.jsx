@@ -4,7 +4,7 @@ const HeroSection = () => {
   return (
     <div
       className="min-h-screen mb-4 bg-cover bg-center bg-no-repeat flex w-full overflow-hidden"
-      style={{ backgroundImage: "url('/main-page-bg.jpg')" }}
+      style={{ backgroundImage: "url('image/main-page-bg.jpg')" }}
       id="HeroSection"
     >
       <div className="container text-left mx-auto py-20 px-10 text-white">
