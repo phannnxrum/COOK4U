@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router'
 import HeaderUsers from './User/HeaderUsers'
 import SignIn from './SignInUp/SignIn'
+import AdminSignIn from './SignInUp/AdminSignIn'
 import SignUp from './SignInUp/SignUp'
 import Users from './User/Users'
 import HeaderClient from './Client/HeaderClient'
@@ -21,7 +22,7 @@ createRoot(document.getElementById('root')).render(
           </Route>
 
           <Route path='admin'>
-
+            <Route path='sign-in' element={<AdminSignIn></AdminSignIn>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>
