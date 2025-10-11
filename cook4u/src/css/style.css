@@ -3,3 +3,25 @@
 html{
     scroll-behavior: smooth;
 }
+
+body {
+  font-family: 'Arimo', sans-serif;
+  font-weight: 400; /* Regular */
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-display: swap;
+}
+
+h1, h2, .bold-text {
+  font-weight: 700; /* Bold */
+}
+
+.italic-text {
+  font-style: italic; /* Regular Italic */
+}
+
+.important-note {
+  font-weight: 700;  /* Bold */
+  font-style: italic; /* Italic */
+}
