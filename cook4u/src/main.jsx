@@ -8,6 +8,7 @@ import SignUp from './SignInUp/SignUp'
 import Users from './User/Users'
 import HeaderClient from './Client/HeaderClient'
 import CarouselClient from './Client/CarouselClient'
+import HomePage from './ServicePage/HomePage/HomePage'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -23,6 +24,10 @@ createRoot(document.getElementById('root')).render(
 
           <Route path='admin'>
             <Route path='sign-in' element={<AdminSignIn></AdminSignIn>}></Route>
+          </Route>
+
+          <Route>
+            <Route path='home' element={<HomePage></HomePage>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>
