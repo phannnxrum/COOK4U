@@ -83,9 +83,14 @@ const SignIn = () => {
             {/* Link Đăng ký */}
             <p className="text-center text-sm text-gray-500 mt-6">
               Chưa có tài khoản?{' '}
-              <Link to="/sign-up" className="text-orange-600 font-bold hover:underline">
-                Đăng ký
-              </Link>
+              
+              <Link
+              to="/sign-up"
+              state={{ from: 'signin' }}         //edit: báo cho trang SignUp biết là đi từ SignIn
+              className="text-orange-600 font-bold hover:underline"
+              >
+              Đăng ký
+            </Link>
             </p>
           </form>
         </div>
