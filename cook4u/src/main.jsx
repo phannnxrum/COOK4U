@@ -25,6 +25,10 @@ createRoot(document.getElementById('root')).render(
           <Route path='admin'>
             <Route path='sign-in' element={<AdminSignIn></AdminSignIn>}></Route>
           </Route>
+
+          <Route>
+            <Route path='home' element={<HomePage></HomePage>}></Route>
+          </Route>
         </Routes>
       </BrowserRouter>
     </>
