@@ -5,7 +5,7 @@ import { Outlet } from 'react-router'
 const HeaderClient = () => {
     const [menuOpen, setMenuOpen] = useState(false)
     return (
-        <div>
+    <div className='w-full h-auto flex flex-col items-center justify-center'>
       <header className="w-full bg-white shadow-sm py-3 px-6 md:px-10 flex items-center justify-between relative">
         {/* Logo */}
         <div className="flex items-center space-x-2">
