@@ -1,5 +1,5 @@
 import React from "react";
-import "./FindChefPage.css";
+import "./FindChef.css";
 
 // Dự án thật lấy từ API
 const chefsData = [
