@@ -9,6 +9,7 @@ import Users from './User/Users'
 import HeaderClient from './Client/HeaderClient'
 import CarouselClient from './Client/CarouselClient'
 import HomePage from './ServicePage/HomePage/HomePage'
+import DishDetail from './DetailDishes/DishDetail'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -28,6 +29,7 @@ createRoot(document.getElementById('root')).render(
 
           <Route>
             <Route path='home' element={<HomePage></HomePage>}></Route>
+            <Route path='dish/:dishId' element={<DishDetail></DishDetail>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>
