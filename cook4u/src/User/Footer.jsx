@@ -25,7 +25,7 @@ export const Footer = () => {
       </div>
       <div className="flex flex-row justify-center gap-1.5">
         <img src="/image/LogoCook4u.png" alt="" className="h-10 mt-1.5 "/>
-          <span className=" text-xl md:text-[32px] font-semibold text-gray-900 mt-1">
+          <span className=" text-[32px] font-semibold text-gray-900 mt-1">
             COOK4U
           </span>
       </div>

@@ -24,10 +24,10 @@ const HeroSection = () => {
         <h3 className="mt-8 text-xl sm:text-2xl md:text-3xl">
           Thức ăn chuẩn gu, đầu bếp chuyên nghiệp, dịch vụ tận nhà.
         </h3>
-        <div className="space-x-20 mt-16 text-2xl font-semibold flex">
+        <div className="space-x-20 mt-16 text-xl md:text-2xl font-semibold flex flex-wrap gap-5">
           <button
             onClick={handleScroll}
-            className="bg-orange-500 text-white border border-orange-500 rounded-2xl px-21 py-4 transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg"
+            className="bg-orange-500 text-white border border-orange-500 rounded-2xl px-21 py-4 transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg "
           >
             Bắt đầu ngay
           </button>
