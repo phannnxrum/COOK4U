@@ -1,5 +1,6 @@
 import React from "react";
 import "./FindChef.css";
+import HeaderClient from "../Client/HeaderClient";
 
 // Dự án thật lấy từ API
 const chefsData = [
@@ -173,7 +174,7 @@ const FiltersSidebar = () => (
 
 // Component cho mỗi thẻ thông tin đầu bếp
 const ChefCard = ({ chef }) => (
-  <div className="chef-card">
+  <div className="chef-card" onClick={() => window.location.href = '/pickchef/' + chef.id}>
     <div className="chef-card-header">
       <img src={chef.avatar} alt={chef.name} className="chef-avatar" />
       <div className="chef-info">
@@ -223,7 +224,10 @@ const ChefCard = ({ chef }) => (
 const FindChefPage = () => {
   return (
     <div className="find-chef-page">
-      <AppHeader />
+      {/* <AppHeader /> */}
+
+      <HeaderClient /> 
+      {/* Sử dụng header chung của Client */}
 
       <main className="container">
         <div className="search-header">

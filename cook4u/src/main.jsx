@@ -10,6 +10,9 @@ import HeaderClient from './Client/HeaderClient'
 import CarouselClient from './Client/CarouselClient'
 import HomePage from './ServicePage/HomePage/HomePage'
 import DishDetail from './DetailDishes/DishDetail'
+import FindChef from './FindChef/FindChef'
+import FindDish from './FindDish/FindDish'
+import PickChef from './PickChef/PickChef'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -29,6 +32,9 @@ createRoot(document.getElementById('root')).render(
 
           <Route>
             <Route path='home' element={<HomePage></HomePage>}></Route>
+            <Route path='findachef' element={<FindChef></FindChef>}></Route>
+            <Route path='pickchef/:chefId' element={<PickChef></PickChef>}></Route>
+            <Route path='findadish' element={<FindDish></FindDish>}></Route>
             <Route path='dish/:dishId' element={<DishDetail></DishDetail>}></Route>
           </Route>
         </Routes>

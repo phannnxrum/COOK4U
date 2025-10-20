@@ -7,7 +7,7 @@ const FeatureSection = () => {
     target.scrollIntoView({ behavior: "smooth" });
   };
   return (
-    <section className="bg-amber-50 py-10" id="feature-section">
+    <section className="bg-amber-50" id="feature-section">
       <div className="container mx-auto px-10">
         <ul className="flex flex-col sm:flex-row justify-between gap-3">
           <li className="w-80 h-70 border border-orange-200 rounded-2xl bg-white text-center shadow-sm hover:shadow-md transition py-10">
@@ -67,16 +67,16 @@ const FeatureSection = () => {
           </li>
         </ul>
       </div>
-      <h2 className="text-4xl font-bold py-7 text-center">
+      <h2 className="text-4xl font-bold py-1 text-center">
         Cách thức hoạt động
       </h2>
       <HowItWork></HowItWork>
-      <div className="flex justify-center ">
+      <div className="flex justify-center">
         <img
           src="/image/SmallArrow.png"
           alt="Scroll down"
           onClick={handleScroll}
-          className="w-10 animate-bounce cursor-pointer"
+          className="w-10 -mt-10 mb-10 animate-bounce cursor-pointer"
         />
       </div>
     </section>

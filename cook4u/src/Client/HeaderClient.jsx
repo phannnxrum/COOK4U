@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Menu, ShoppingBag, ShoppingBagIcon, X } from 'lucide-react'
+import { Home, Menu, ShoppingBag, ShoppingBagIcon, X } from 'lucide-react'
 import { Outlet } from 'react-router'
 
 const HeaderClient = () => {
@@ -8,15 +8,15 @@ const HeaderClient = () => {
     <div className='w-full h-auto flex flex-col items-center justify-center'>
       <header className="w-full bg-white shadow-sm py-3 px-6 md:px-10 flex items-center justify-between relative">
         {/* Logo */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2" onClick={() => window.location.href = '/home'}>
           <img src="/image/LogoCook4u.png" alt="Logo" className="h-8" />
-          <h1 className="text-2xl md:text-[32px] font-semibold text-gray-900">COOK4U</h1>
+          <h1 className="text-2xl md:text-[32px] font-semibold text-gray-900" onClick={() => window.location.href = '/home'}>COOK4U</h1>
         </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8 text-sm font-medium text-gray-700">
-          <a href="#" className="hover:text-orange-500 transition">Tìm đầu bếp</a>
-          <a href="#" className="hover:text-orange-500 transition">Tìm món ăn</a>
+          <a href="/findachef" className="hover:text-orange-500 transition">Tìm đầu bếp</a>
+          <a href="/findadish" className="hover:text-orange-500 transition">Tìm món ăn</a>
           <a href="#" className="hover:text-orange-500 transition">Cách đặt hàng</a>
           <a href="#" className="hover:text-orange-500 transition">Về chúng tôi</a>
         </nav>

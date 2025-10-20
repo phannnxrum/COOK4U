@@ -1,0 +1,483 @@
+[
+  {
+    "id": 1,
+    "name": "Đầu bếp Tony",
+    "avatar": "https://i.pravatar.cc/150?img=1",
+    "rating": 4.9,
+    "reviews": 42,
+    "cuisine": ["Món Ý", "Món Âu"],
+    "district": "Q1, HCM",
+    "cookTime": "2-3 tiếng",
+    "yearNum": "8",
+    "price": "100,000",
+    "valid": "Đã chứng nhận",
+    "tags": [
+      "Mỳ ý",
+      "Pasta",
+      "Pizza",
+      "Risotto",
+      "Pasta",
+      "Pizza",
+      "Risotto",
+      "Pasta",
+      "Pizza",
+      "Risotto"
+    ],
+    "experience": "8 năm kinh nghiệm trong ẩm thực Ý, từng làm việc tại nhà hàng đạt sao Michelin. Được đào tạo tại Tuscany và có niềm đam mê lớn với ẩm thực Ý truyền thống.",
+    "bio": "Tony là một đầu bếp chuyên về ẩm thực Ý, nổi tiếng với phong cách sáng tạo và hương vị tinh tế. Anh chú trọng đến từng chi tiết từ nguyên liệu đến cách trình bày món ăn, mang đến trải nghiệm cao cấp và ấm cúng cho thực khách.",
+    "certifications": [
+      "Culinary Institute of America",
+      "Italian Culinary Certification"
+    ],
+    "languages": ["English", "Italian", "Spanish"],
+    "serviceDetails": {
+      "minDuration": "1 tiếng",
+      "includes": [
+        "Tư vấn lập kế hoạch thực đơn",
+        "Mua sắm nguyên liệu tươi",
+        "Dịch vụ nấu ăn chuyên nghiệp",
+        "Dọn dẹp nhà bếp",
+        "Dụng cụ nấu ăn cơ bản"
+      ]
+    },
+    "dishes": [
+      {
+        "name": "Spaghetti Carbonara",
+        "image": "https://foodish-api.com/images/pasta/pasta14.jpg",
+        "description": "Món mì Ý truyền thống với sốt kem, trứng, phô mai và pancetta.",
+        "cookTime": "30 phút",
+        "numberOfPeople": "2-3 người",
+        "dishPrice": "150,000"
+      },
+      {
+        "name": "Margherita Pizza",
+        "image": "https://foodish-api.com/images/pizza/pizza1.jpg",
+        "description": "Pizza nướng củi với sốt cà chua tươi, mozzarella và lá húng quế.",
+        "cookTime": "45 phút",
+        "numberOfPeople": "2-4 người",
+        "dishPrice": "200,000"
+      },
+      {
+        "name": "Mushroom Risotto",
+        "image": "https://foodish-api.com/images/rice/rice6.jpg",
+        "description": "Cơm Ý nấu cùng nấm porcini và phô mai parmesan, dẻo thơm và béo ngậy.",
+        "cookTime": "40 phút",
+        "numberOfPeople": "2 người",
+        "dishPrice": "180,000"
+      },
+      {
+        "name": "Margherita Pizza",
+        "image": "https://foodish-api.com/images/pizza/pizza1.jpg",
+        "description": "Pizza nướng củi với sốt cà chua tươi, mozzarella và lá húng quế.",
+        "cookTime": "45 phút",
+        "numberOfPeople": "2-4 người",
+        "dishPrice": "200,000"
+      },
+      {
+        "name": "Margherita Pizza",
+        "image": "https://foodish-api.com/images/pizza/pizza1.jpg",
+        "description": "Pizza nướng củi với sốt cà chua tươi, mozzarella và lá húng quế.",
+        "cookTime": "45 phút",
+        "numberOfPeople": "2-4 người",
+        "dishPrice": "200,000"
+      },
+      {
+        "name": "Margherita Pizza",
+        "image": "https://foodish-api.com/images/pizza/pizza1.jpg",
+        "description": "Pizza nướng củi với sốt cà chua tươi, mozzarella và lá húng quế.",
+        "cookTime": "45 phút",
+        "numberOfPeople": "2-4 người",
+        "dishPrice": "200,000"
+      }
+    ],
+    "reviewsList": [
+      {
+        "name": "Sarah Minh",
+        "avatar": "https://i.pravatar.cc/150?img=8",
+        "rating": 5,
+        "date": "2 ngày trước",
+        "comment": "Tony thật tuyệt vời! Món carbonara đúng chất nhà hàng.",
+        "dish": "Mì Ý Carbonara truyền thống"
+      },
+      {
+        "name": "Hoàng Long",
+        "avatar": "https://i.pravatar.cc/150?img=9",
+        "rating": 4,
+        "date": "1 tuần trước",
+        "comment": "Pizza tuyệt vời! Tony mang theo lò nướng củi mini, hương vị tuyệt hảo.",
+        "dish": "Pizza Margherita"
+      },
+      {
+        "name": "Emily Davis",
+        "avatar": "https://i.pravatar.cc/150?img=10",
+        "rating": 2,
+        "date": "2 tuần trước",
+        "comment": "Món risotto hoàn hảo, đầu bếp thân thiện và chuyên nghiệp.",
+        "dish": "Mushroom Risotto"
+      },
+      {
+        "name": "Emily Davis",
+        "avatar": "https://i.pravatar.cc/150?img=10",
+        "rating": 2,
+        "date": "2 tuần trước",
+        "comment": "Món risotto hoàn hảo, đầu bếp thân thiện và chuyên nghiệp.",
+        "dish": "Mushroom Risotto"
+      },
+      {
+        "name": "Emily Davis",
+        "avatar": "https://i.pravatar.cc/150?img=10",
+        "rating": 2,
+        "date": "2 tuần trước",
+        "comment": "Món risotto hoàn hảo, đầu bếp thân thiện và chuyên nghiệp.",
+        "dish": "Mushroom Risotto"
+      },
+      {
+        "name": "Emily Davis",
+        "avatar": "https://i.pravatar.cc/150?img=10",
+        "rating": 2,
+        "date": "2 tuần trước",
+        "comment": "Món risotto hoàn hảo, đầu bếp thân thiện và chuyên nghiệp.",
+        "dish": "Mushroom Risotto"
+      },
+      {
+        "name": "Emily Davis",
+        "avatar": "https://i.pravatar.cc/150?img=10",
+        "rating": 2,
+        "date": "2 tuần trước",
+        "comment": "Món risotto hoàn hảo, đầu bếp thân thiện và chuyên nghiệp.",
+        "dish": "Mushroom Risotto"
+      },
+      {
+        "name": "Emily Davis",
+        "avatar": "https://i.pravatar.cc/150?img=10",
+        "rating": 2,
+        "date": "2 tuần trước",
+        "comment": "Món risotto hoàn hảo, đầu bếp thân thiện và chuyên nghiệp.",
+        "dish": "Mushroom Risotto"
+      },
+      {
+        "name": "Emily Davis",
+        "avatar": "https://i.pravatar.cc/150?img=10",
+        "rating": 2,
+        "date": "2 tuần trước",
+        "comment": "Món risotto hoàn hảo, đầu bếp thân thiện và chuyên nghiệp.",
+        "dish": "Mushroom Risotto"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Đầu bếp Linh Nguyễn",
+    "avatar": "https://i.pravatar.cc/150?img=5",
+    "rating": 4.8,
+    "reviews": 25,
+    "cuisine": ["Món Việt", "Món Á"],
+    "district": "Q10, HCM",
+    "cookTime": "1.5-2 tiếng",
+    "yearNum": "6",
+    "price": "45,000",
+    "valid": "Đã chứng nhận",
+    "tags": ["Phở", "Bánh mì", "Gỏi cuốn"],
+    "experience": "6 năm kinh nghiệm trong ẩm thực truyền thống Việt Nam, từng làm việc tại nhiều nhà hàng nổi tiếng ở TP.HCM.",
+    "bio": "Linh yêu thích việc tái hiện hương vị quê hương qua từng món ăn, mang đến trải nghiệm thân quen nhưng đầy sáng tạo.",
+    "certifications": ["Vietnam Culinary School"],
+    "languages": ["Vietnamese", "English"],
+    "serviceDetails": {
+      "minDuration": "1 tiếng",
+      "includes": [
+        "Nguyên liệu tươi",
+        "Phục vụ tại nhà",
+        "Trang trí món ăn",
+        "Dọn dẹp sau bữa ăn"
+      ]
+    },
+    "dishes": [
+      {
+        "name": "Phở Bò Truyền Thống",
+        "image": "https://foodish-api.com/images/soup/soup3.jpg",
+        "description": "Phở bò nước trong ngọt thanh, kết hợp gia vị cổ truyền và thịt bò tươi.",
+        "cookTime": "45 phút",
+        "numberOfPeople": "3-4 người",
+        "dishPrice": "120,000"
+      },
+      {
+        "name": "Bánh Mì Kẹp Thịt",
+        "image": "https://foodish-api.com/images/sandwich/sandwich10.jpg",
+        "description": "Bánh mì giòn rụm với thịt heo nướng, đồ chua và nước sốt đặc trưng.",
+        "cookTime": "20 phút",
+        "numberOfPeople": "2 người",
+        "dishPrice": "80,000"
+      },
+      {
+        "name": "Gỏi Cuốn Tôm Thịt",
+        "image": "https://foodish-api.com/images/appetizer/appetizer9.jpg",
+        "description": "Gỏi cuốn tươi ngon với tôm, thịt, rau sống và nước chấm đậm đà.",
+        "cookTime": "25 phút",
+        "numberOfPeople": "2-3 người",
+        "dishPrice": "90,000"
+      }
+    ],
+    "reviewsList": [
+      {
+        "name": "Ngọc Anh",
+        "avatar": "https://i.pravatar.cc/150?img=11",
+        "rating": 5,
+        "date": "3 ngày trước",
+        "comment": "Phở ngon như ngoài tiệm, nước lèo thơm và đậm vị.",
+        "dish": "Phở Bò"
+      },
+      {
+        "name": "Hoài Nam",
+        "avatar": "https://i.pravatar.cc/150?img=12",
+        "rating": 4,
+        "date": "1 tuần trước",
+        "comment": "Bánh mì rất ngon, đầu bếp thân thiện.",
+        "dish": "Bánh Mì Kẹp Thịt"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Đầu bếp Fuji Kamato",
+    "avatar": "https://i.pravatar.cc/150?img=3",
+    "rating": 4.7,
+    "reviews": 20,
+    "cuisine": ["Healthy", "Đồ chay"],
+    "district": "Q2, HCM",
+    "cookTime": "1-2 tiếng",
+    "yearNum": "7",
+    "price": "40,000",
+    "valid": "Đã chứng nhận",
+    "tags": ["Salads", "Sinh tố trái cây", "Ngũ cốc"],
+    "experience": "7 năm nghiên cứu ẩm thực thuần chay, chú trọng đến sức khỏe và sự cân bằng trong dinh dưỡng.",
+    "bio": "Fuji kết hợp giữa triết lý ẩm thực Nhật Bản và nguyên liệu Việt để tạo ra các món ăn thanh đạm nhưng tinh tế.",
+    "certifications": ["Tokyo Vegan Culinary School"],
+    "languages": ["Japanese", "English"],
+    "serviceDetails": {
+      "minDuration": "1 tiếng",
+      "includes": [
+        "Tư vấn chế độ ăn healthy",
+        "Nguyên liệu hữu cơ",
+        "Trình bày nghệ thuật"
+      ]
+    },
+    "dishes": [
+      {
+        "name": "Salad Ngũ Cốc",
+        "image": "https://foodish-api.com/images/salad/salad39.jpg",
+        "description": "Kết hợp quinoa, rau củ tươi và sốt mè rang Nhật Bản.",
+        "cookTime": "20 phút",
+        "numberOfPeople": "2 người",
+        "dishPrice": "90,000"
+      },
+      {
+        "name": "Sinh Tố Trái Cây Nhiệt Đới",
+        "image": "https://foodish-api.com/images/dessert/dessert10.jpg",
+        "description": "Sinh tố hỗn hợp xoài, dứa, và chuối bổ dưỡng.",
+        "cookTime": "10 phút",
+        "numberOfPeople": "1-2 người",
+        "dishPrice": "70,000"
+      },
+      {
+        "name": "Cơm Chay Nhiều Màu",
+        "image": "https://foodish-api.com/images/rice/rice10.jpg",
+        "description": "Cơm ngũ cốc kết hợp rau củ luộc và sốt đặc trưng Nhật.",
+        "cookTime": "35 phút",
+        "numberOfPeople": "2-3 người",
+        "dishPrice": "100,000"
+      }
+    ],
+    "reviewsList": [
+      {
+        "name": "Lan Anh",
+        "avatar": "https://i.pravatar.cc/150?img=13",
+        "rating": 5,
+        "date": "1 tuần trước",
+        "comment": "Món ăn thanh nhẹ, rất phù hợp cho người ăn chay.",
+        "dish": "Salad Ngũ Cốc"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Đầu bếp Miami",
+    "avatar": "https://i.pravatar.cc/150?img=4",
+    "rating": 4.9,
+    "reviews": 5,
+    "cuisine": ["Món Hàn", "Món Á"],
+    "district": "Q4, HCM",
+    "cookTime": "2-3 tiếng",
+    "yearNum": "5",
+    "price": "55,000",
+    "valid": "Đã chứng nhận",
+    "tags": ["BBQ", "Kimchi", "Bibimbap"],
+    "experience": "5 năm kinh nghiệm nấu món Hàn, nổi bật với BBQ và kimchi truyền thống.",
+    "bio": "Miami mang ẩm thực Hàn Quốc hiện đại đến với thực khách Việt qua các món ăn đậm vị và trình bày tinh tế.",
+    "certifications": ["Seoul Culinary Center"],
+    "languages": ["Korean", "Vietnamese", "English"],
+    "serviceDetails": {
+      "minDuration": "1 tiếng",
+      "includes": [
+        "Nguyên liệu nhập khẩu",
+        "Nấu BBQ tại chỗ",
+        "Kimchi handmade"
+      ]
+    },
+    "dishes": [
+      {
+        "name": "Bibimbap",
+        "image": "https://foodish-api.com/images/rice/rice8.jpg",
+        "description": "Cơm trộn Hàn Quốc với rau củ và trứng ốp la, chan sốt gochujang cay nhẹ.",
+        "cookTime": "35 phút",
+        "numberOfPeople": "2 người",
+        "dishPrice": "110,000"
+      },
+      {
+        "name": "BBQ Thịt Bò Hàn",
+        "image": "https://foodish-api.com/images/beef/beef3.jpg",
+        "description": "Thịt bò ướp sốt đặc trưng Hàn Quốc nướng tại chỗ.",
+        "cookTime": "40 phút",
+        "numberOfPeople": "3 người",
+        "dishPrice": "200,000"
+      },
+      {
+        "name": "Kimchi Truyền Thống",
+        "image": "https://foodish-api.com/images/vegetable/vegetable1.jpg",
+        "description": "Kimchi cải thảo muối chua cay đậm đà.",
+        "cookTime": "3 tiếng (lên men)",
+        "numberOfPeople": "4-5 người",
+        "dishPrice": "80,000"
+      }
+    ],
+    "reviewsList": [
+      {
+        "name": "Yuna Park",
+        "avatar": "https://i.pravatar.cc/150?img=14",
+        "rating": 5,
+        "date": "5 ngày trước",
+        "comment": "Bibimbap tuyệt vời, giống như ở Seoul!",
+        "dish": "Bibimbap"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Đầu bếp Louis",
+    "avatar": "https://i.pravatar.cc/150?img=6",
+    "rating": 4.8,
+    "reviews": 7,
+    "cuisine": ["Món Pháp", "Món Âu"],
+    "district": "Q7, HCM",
+    "cookTime": "2-3 tiếng",
+    "yearNum": "10",
+    "price": "150,000",
+    "valid": "Đã chứng nhận",
+    "tags": ["Coq au Vin", "Croissants", "Soufflé"],
+    "experience": "10 năm kinh nghiệm ẩm thực Pháp, từng làm việc tại Paris và Lyon.",
+    "bio": "Louis mang tinh thần ẩm thực Pháp đến Việt Nam qua từng món ăn được chế biến tinh xảo và trang trí tao nhã.",
+    "certifications": ["Le Cordon Bleu Paris"],
+    "languages": ["French", "English"],
+    "serviceDetails": {
+      "minDuration": "2 tiếng",
+      "includes": [
+        "Nguyên liệu nhập khẩu",
+        "Rượu vang đi kèm",
+        "Phục vụ món tráng miệng"
+      ]
+    },
+    "dishes": [
+      {
+        "name": "Coq au Vin",
+        "image": "https://foodish-api.com/images/chicken/chicken3.jpg",
+        "description": "Thịt gà hầm rượu vang đỏ truyền thống của Pháp, ăn kèm khoai tây nghiền.",
+        "cookTime": "90 phút",
+        "numberOfPeople": "3 người",
+        "dishPrice": "250,000"
+      },
+      {
+        "name": "Croissant Bơ Pháp",
+        "image": "https://foodish-api.com/images/bread/bread9.jpg",
+        "description": "Bánh sừng bò thơm giòn với bơ nguyên chất.",
+        "cookTime": "60 phút",
+        "numberOfPeople": "4 người",
+        "dishPrice": "120,000"
+      },
+      {
+        "name": "Soufflé Sô-cô-la",
+        "image": "https://foodish-api.com/images/dessert/dessert6.jpg",
+        "description": "Món tráng miệng Pháp cổ điển, mềm mịn và tan chảy.",
+        "cookTime": "25 phút",
+        "numberOfPeople": "2 người",
+        "dishPrice": "180,000"
+      }
+    ],
+    "reviewsList": [
+      {
+        "name": "Marie Nguyen",
+        "avatar": "https://i.pravatar.cc/150?img=15",
+        "rating": 5,
+        "date": "1 tuần trước",
+        "comment": "Món ăn của Louis đậm chất Pháp, tuyệt vời với rượu vang đỏ.",
+        "dish": "Coq au Vin"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Đầu bếp Phong",
+    "avatar": "https://i.pravatar.cc/150?img=7",
+    "rating": 4.6,
+    "reviews": 9,
+    "cuisine": ["Mexican", "Latin"],
+    "district": "Q9, HCM",
+    "cookTime": "2-3 tiếng",
+    "yearNum": "4",
+    "price": "120,000",
+    "valid": "Đã chứng nhận",
+    "tags": ["Tacos", "Mole", "Ceviche"],
+    "experience": "4 năm làm việc trong các nhà hàng Mexico tại TP.HCM, chuyên về món nướng và ẩm thực đường phố Latin.",
+    "bio": "Phong mang phong cách ẩm thực Mexico sôi động với hương vị cay nồng và đầy màu sắc.",
+    "certifications": ["Latin Culinary Academy"],
+    "languages": ["Vietnamese", "English", "Spanish"],
+    "serviceDetails": {
+      "minDuration": "1.5 tiếng",
+      "includes": ["Gia vị Mexico nhập khẩu", "Nấu tại chỗ", "Cocktail đi kèm"]
+    },
+    "dishes": [
+      {
+        "name": "Tacos Thịt Bò Cay",
+        "image": "https://foodish-api.com/images/beef/beef1.jpg",
+        "description": "Tacos vỏ ngô giòn nhân bò xào sốt cay đặc trưng.",
+        "cookTime": "25 phút",
+        "numberOfPeople": "2-3 người",
+        "dishPrice": "130,000"
+      },
+      {
+        "name": "Mole Gà Mexico",
+        "image": "https://foodish-api.com/images/chicken/chicken5.jpg",
+        "description": "Gà sốt socola cay đặc trưng Mexico, độc đáo và khó quên.",
+        "cookTime": "60 phút",
+        "numberOfPeople": "3 người",
+        "dishPrice": "220,000"
+      },
+      {
+        "name": "Ceviche Tôm",
+        "image": "https://foodish-api.com/images/shrimp/shrimp3.jpg",
+        "description": "Tôm ngâm chanh tươi, hành tím và ớt chuông – món khai vị mát lạnh.",
+        "cookTime": "20 phút",
+        "numberOfPeople": "2 người",
+        "dishPrice": "150,000"
+      }
+    ],
+    "reviewsList": [
+      {
+        "name": "Carlos Tran",
+        "avatar": "https://i.pravatar.cc/150?img=16",
+        "rating": 5,
+        "date": "2 tuần trước",
+        "comment": "Tacos cực ngon, đúng hương vị Mexico!",
+        "dish": "Tacos Thịt Bò Cay"
+      }
+    ]
+  }
+]
