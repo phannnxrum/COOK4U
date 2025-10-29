@@ -1,5 +1,6 @@
 import React from "react";
 import "./FindDish.css";
+import HeaderClient from "../Client/HeaderClient";
 
 // Lấy từ API
 const dishesData = [
@@ -183,7 +184,10 @@ const DishCard = ({ dish }) => (
 const FindDishPage = () => {
   return (
     <div className="find-dish-page">
-      <AppHeader />
+      {/* <AppHeader /> */}
+
+      <HeaderClient /> 
+      {/* Sử dụng header chung của Client */}
 
       <main className="container">
         <div className="search-header">
