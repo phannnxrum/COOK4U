@@ -3,14 +3,14 @@ import DishTypeCard from "./commons/DishTypeCard";
 
 const FavoriteDishSection = () => {
     return (
-        <section className="w-full h-[458px] mt-[96px] mx-auto gap-[48px] flex flex-col items-center justify-center">
+        <section className="w-full min-h-auto md:h-auto lg:h-[458px] mt-12 md:mt-16 lg:mt-[96px] mx-auto gap-6 md:gap-8 lg:gap-[48px] flex flex-col items-center justify-center px-4 md:px-6 lg:px-0">
             {/*Title*/}
             <MainTitle 
                 title="Món ăn được yêu thích"
                 subtitle="Khám phá hương vị tuyệt vời từ khắp nơi trên thế giới"
             />
             {/*Dish Type Cards, update later*/}
-            <div className="w-[1248px] h-[200px] grid grid-cols-4 gap-[24px]">
+            <div className="w-full max-w-[1248px] h-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-[24px]">
                 <DishTypeCard 
                     dishType="Món Việt chuẩn gu"
                     imageUrl="/image/DishType1.png"

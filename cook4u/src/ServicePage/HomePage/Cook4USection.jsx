@@ -4,29 +4,29 @@ import AchievementCard from "./commons/AchievementCard";
 
 const Cook4USection = () => {
     return (
-        <section className="w-[896px] h-[782px] mt-[182px] gap-[48px] flex flex-col items-center justify-center mx-auto">
+        <section className="w-full max-w-[896px] min-h-auto md:h-auto lg:h-[782px] mt-12 md:mt-16 lg:mt-[182px] gap-6 md:gap-8 lg:gap-[48px] flex flex-col items-center justify-center mx-auto px-4 md:px-6 lg:px-0">
             {/*Title*/}
             <MainTitle 
                 title="Về COOK4U"
                 subtitle="Kết nối những người yêu thích ẩm thực với các đầu bếp tài năng để có những trải nghiệm ẩm thực khó quên"
             />
             {/*Content & Image*/}
-            <div className="w-[896px] h-[518px] flex justify-between items-center">
-                <div className="w-[424px] h-[518px] flex flex-col justify-between">
+            <div className="w-full max-w-[896px] min-h-auto md:h-auto lg:h-[518px] flex flex-col lg:flex-row justify-between items-center gap-8 lg:gap-0">
+                <div className="w-full lg:w-[424px] min-h-auto lg:h-[518px] flex flex-col justify-between">
                     {/*Content*/}
-                    <div className="w-auto h-[518px] mx-auto flex items-center justify-center gap-[48px]">
-                        <div className="w-auto h-[518px] mx-auto flex flex-col items-center justify-center gap-[24px]">
-                            <span className="w-[424px] h-[32px] font-bevietnampro text-[24px] leading-[32px] text-[#0A0A0A]">
+                    <div className="w-full lg:w-auto min-h-auto lg:h-[518px] mx-auto flex items-center justify-center gap-6 lg:gap-[48px]">
+                        <div className="w-full lg:w-auto min-h-auto lg:h-[518px] mx-auto flex flex-col items-center lg:items-start justify-center gap-4 md:gap-6 lg:gap-[24px]">
+                            <span className="w-full lg:w-[424px] h-auto lg:h-[32px] font-bevietnampro text-xl md:text-2xl lg:text-[24px] leading-[32px] text-[#0A0A0A]">
                                 Sứ mệnh của chúng tôi
                             </span>
-                            <p className="w-[424px] h-[120px] font-arimo text-[16px] leading-[28px] text-[#717182]">
+                            <p className="w-full lg:w-[424px] h-auto lg:h-[120px] font-arimo text-sm md:text-base lg:text-[16px] leading-6 md:leading-7 lg:leading-[28px] text-[#717182]">
                                 COOK4U thu hẹp khoảng cách giữa các đầu bếp chuyên nghiệp tài năng và những người đam mê ẩm thực mong muốn trải nghiệm những bữa ăn chất lượng nhà hàng ngay tại nhà. Chúng tôi tin rằng ẩm thực tuyệt vời sẽ gắn kết mọi người lại với nhau và tạo nên những kỷ niệm khó quên.
                             </p>
-                            <span className="w-[424px] h-[32px] font-bevietnampro text-[24px] leading-[32px] text-[#0A0A0A]">
+                            <span className="w-full lg:w-[424px] h-auto lg:h-[32px] font-bevietnampro text-xl md:text-2xl lg:text-[24px] leading-[32px] text-[#0A0A0A]">
                                 Tại sao bạn nên chọn COOK4U?
                             </span>
                             {/*Items*/}
-                            <div className="w-[424px] h-[120px] flex flex-col">
+                            <div className="w-full lg:w-[424px] h-auto lg:h-[120px] flex flex-col gap-4">
                                 <Item
                                     mainContent={"Đầu bếp chuyên nghiệp đã được xác minh:"}
                                     description={"Tất cả các đầu bếp của chúng tôi đều được kiểm tra kỹ lưỡng và có nền tảng ẩm thực chuyên nghiệp"}
@@ -48,12 +48,12 @@ const Cook4USection = () => {
                     </div>
                 </div>
                 {/*Image*/}
-                <div className="flex items-center">
-                    <img src="/image/Cook4U-HomePage.png" alt="Cook4U" className="w-[424px] h-[300px] object-cover"/>
+                <div className="flex items-center w-full lg:w-auto justify-center">
+                    <img src="/image/Cook4U-HomePage.png" alt="Cook4U" className="w-full max-w-[424px] h-auto lg:h-[300px] object-cover rounded-lg"/>
                 </div>
             </div>
             {/*Achievements*/}
-            <div className="w-[896px] h-[120px] mt-[48px] flex items-center justify-center gap-[48px]">
+            <div className="w-full max-w-[896px] h-auto lg:h-[120px] mt-8 md:mt-10 lg:mt-[48px] flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 lg:gap-[48px]">
                 <AchievementCard
                     number={"36+"}
                     title={"Khách hàng yêu thích"}
