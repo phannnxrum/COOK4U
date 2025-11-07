@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ChevronDown, Menu, ShoppingBag, ShoppingCart, User, X } from 'lucide-react'
+import { ChevronDown, LogOut, Menu, ShoppingBag, ShoppingCart, User, X } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router'
 
 const HeaderClient = () => {
@@ -15,7 +15,7 @@ const HeaderClient = () => {
           onClick={() => (window.location.href = '/home')}
         >
           <img src="/image/LogoCook4u.png" alt="Logo" className="h-8" />
-          <h1 className="text-2xl md:text-[28px] font-semibold text-gray-900">
+          <h1 className="text-2xl md:text-[32px] font-semibold text-gray-900">
             COOK4U
           </h1>
         </div>
@@ -47,6 +47,7 @@ const HeaderClient = () => {
                 src="/image/avatar.jpg"
                 alt="User Avatar"
                 className="w-9 h-9 rounded-full object-cover border border-gray-300 hover:border-orange-500 transition cursor-pointer"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
               />
             {/* Mũi tên toggle */}
             <ChevronDown
@@ -61,15 +62,16 @@ const HeaderClient = () => {
           {/* Dropdown menu */}
           {dropdownOpen && (
             <div className="absolute right-10 top-12 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-44 z-50">
+              
               <NavLink to="/profile" className="block px-3 py-2 text-sm text-gray-700 hover:text-orange-500">
-                Trang của tôi
+                <User className=' inline text-gray-500 w-5 h-5' /> Trang của tôi
               </NavLink>
               <NavLink to="/orders" className="block px-3 py-2 text-sm text-gray-700 hover:text-orange-500">
-                Đơn hàng
+                <ShoppingBag className='inline text-gray-500 w-5 h-5' /> Đơn hàng
               </NavLink>
               <div className="border-t my-1"></div>
-              <NavLink to="/logout" className="block px-3 py-2 text-sm text-red-600 hover:bg-red-600 hover:text-black transition">
-                Đăng xuất
+              <NavLink to="/logout" className="block px-3 py-2 text-sm font-bold text-red-600 hover:bg-red-600 hover:text-black transition">
+                <LogOut className='inline w-5 h-5'></LogOut> Đăng xuất
               </NavLink>
             </div>
           )}

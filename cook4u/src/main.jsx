@@ -13,6 +13,7 @@ import DishDetail from './DetailDishes/DishDetail'
 import FindChef from './FindChef/FindChef'
 import FindDish from './FindDish/FindDish'
 import PickChef from './PickChef/PickChef'
+import ProfileUser from './Profile/ProfileUser'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -24,6 +25,7 @@ createRoot(document.getElementById('root')).render(
           <Route path='sign-up' element={<SignUp></SignUp>}></Route>
           <Route path='client' element={<HeaderClient></HeaderClient>}>
             <Route index element={<CarouselClient></CarouselClient>}></Route>
+            <Route path='profile' element={<ProfileUser></ProfileUser>}></Route>
           </Route>
 
           <Route path='admin'>
@@ -32,6 +34,7 @@ createRoot(document.getElementById('root')).render(
 
           <Route>
             <Route path='home' element={<HomePage></HomePage>}></Route>
+            <Route path='profile' element={<ProfileUser></ProfileUser>}></Route>
             <Route path='findachef' element={<FindChef></FindChef>}></Route>
             <Route path='pickchef/:chefId' element={<PickChef></PickChef>}></Route>
             <Route path='findadish' element={<FindDish></FindDish>}></Route>
