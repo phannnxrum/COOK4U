@@ -1,6 +1,5 @@
 import { MessageCircle, Search, Star, Users } from 'lucide-react'
 import React from 'react'
-import MonAnDcYeuThich from './MonAnDcYeuThich'
 
 const CarouselClient = () => {
     return (
@@ -24,18 +23,18 @@ const CarouselClient = () => {
               placeholder="Tìm kiếm món ăn hoặc loại ẩm thực..."
               className="flex-1 px-5 py-3 outline-none text-gray-700 text-sm sm:text-base"
             />
-            <button className="bg-orange-500 text-white p-3 sm:p-4 hover:bg-orange-600 transition cursor-pointer">
-              <Search className="w-5 h-5" />
+            <button className="bg-orange-500 text-white p-2 md:p-4 hover:bg-orange-600 transition cursor-pointer">
+              <Search className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
 
           {/* Rating */}
-          <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start sm:space-x-6 space-y-2 sm:space-y-0 text-gray-700 text-sm">
-            <div className="flex items-center space-x-1">
+          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-2 sm:gap-6 text-gray-700 text-xs sm:text-sm">
+            <div className="flex items-center gap-1">
               <Users className="w-4 h-4 text-gray-500" />
               <span>50+ Khách hàng yêu thích</span>
             </div>
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center gap-1">
               <Star className="w-4 h-4 text-yellow-400" />
               <span>4.9 Đánh giá trung bình</span>
             </div>
@@ -43,21 +42,19 @@ const CarouselClient = () => {
         </div>
 
         {/* Right Image */}
-        <div className="w-full md:w-1/2 flex justify-center">
+        <div className="w-full lg:w-1/2 flex justify-center">
           <img
             src="/image/CarouselClient.png"
             alt="Steak dish"
-            className="shadow-lg w-full max-w-[500px] h-auto md:h-[400px] object-cover object-[25%_75%] rounded-xl"
+            className="shadow-lg w-full max-w-[500px] h-[250px] sm:h-[300px] md:h-[400px] object-cover object-[25%_75%] rounded-xl"
           />
         </div>
 
         {/* Floating Chat Button */}
-        <button className="fixed cursor-pointer bottom-6 right-6 bg-orange-500 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-orange-600 transition">
-          <MessageCircle className="w-6 h-6" />
+        <button className="fixed cursor-pointer bottom-4 right-4 sm:bottom-6 sm:right-6 bg-orange-500 text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-orange-600 transition">
+          <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
       </section>
-
-      <MonAnDcYeuThich />
     </div>
     )
 }
