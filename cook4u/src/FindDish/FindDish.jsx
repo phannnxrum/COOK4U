@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router";
 import "./FindDish.css";
 import HeaderClient from "../Client/HeaderClient";
+import DishDetail from "../DetailDishes/DishDetail";
 
 // Lấy từ API
 const dishesData = [
@@ -135,8 +136,8 @@ const FiltersSidebar = () => (
 );
 
 // Component cho mỗi thẻ món ăn
-const DishCard = ({ dish }) => (
-  <div className="dish-card">
+const DishCard = ({ dish, navigate }) => (
+  <div className="dish-card" onClick={() => navigate (`/dish/${dish.id}`)}>
     <div className="dish-image-container">
       <img src={dish.image} alt={dish.name} className="dish-image" />
       <div className="dish-price-tag">VND {dish.price}</div>
@@ -250,7 +251,7 @@ const FindDishPage = () => {
             </div>
             <div className="dish-grid">
               {dishesData.map((dish) => (
-                <DishCard key={dish.id} dish={dish} />
+                <DishCard key={dish.id} dish={dish} navigate={navigate} />
               ))}
             </div>
           </section>
