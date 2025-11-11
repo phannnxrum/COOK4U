@@ -1,13 +1,13 @@
-// rafce
+// File: HeaderUsers.jsx
 
 import React from "react";
-import { NavLink, Outlet } from "react-router";
+// Outlet không được sử dụng trong file này, bạn có thể xóa đi
+import { NavLink } from "react-router"; 
 
 const HeaderUsers = () => {
   return (
-    //Header trang đầu
-    <div>
-      <div className="flex items-center justify-between bg-amber-50 p-5">
+    <div className="sticky top-0 z-50">
+      <div className="flex items-center justify-between bg-amber-50 p-5 shadow-md">
         <div className="flex items-center space-x-2">
           <span className="text-orange-600"></span>
           <img src="/image/LogoCook4u.png" alt="" width={40} className="h-8" />
