@@ -22,18 +22,18 @@ const HeaderClient = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8 text-sm font-medium text-gray-800">
-          <a href="/findachef" className="hover:text-orange-500 transition">
+          <NavLink to="/findachef" className="hover:text-orange-500 transition">
             Tìm đầu bếp
-          </a>
-          <a href="/findadish" className="hover:text-orange-500 transition">
+          </NavLink>
+          <NavLink to="/findadish" className="hover:text-orange-500 transition">
             Tìm món ăn
-          </a>
-          <a href="#" className="hover:text-orange-500 transition">
+          </NavLink>
+          <NavLink to="#" className="hover:text-orange-500 transition">
             Cách đặt hàng
-          </a>
-          <a href="#" className="hover:text-orange-500 transition">
+          </NavLink>
+          <NavLink to="#" className="hover:text-orange-500 transition">
             Về chúng tôi
-          </a>
+          </NavLink>
         </nav>
 
         {/* User Section (icon + avatar) */}
