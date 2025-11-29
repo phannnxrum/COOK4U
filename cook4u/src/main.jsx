@@ -14,6 +14,7 @@ import FindChef from './FindChef/FindChef'
 import FindDish from './FindDish/FindDish'
 import PickChef from './PickChef/PickChef'
 import ProfileUser from './Profile/ProfileUser'
+import MyCart from './MyCart/MyCart.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -26,6 +27,7 @@ createRoot(document.getElementById('root')).render(
           <Route path='client' element={<HeaderClient></HeaderClient>}>
             <Route index element={<CarouselClient></CarouselClient>}></Route>
             <Route path='profile' element={<ProfileUser></ProfileUser>}></Route>
+            <Route path='mycart' element={<MyCart></MyCart>}></Route>
           </Route>
 
           <Route path='admin'>
