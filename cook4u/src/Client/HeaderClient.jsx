@@ -7,7 +7,7 @@ const HeaderClient = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
   return (
-    <div className='w-full h-auto flex flex-col items-center justify-center'>
+    <div className='w-full h-auto flex flex-col items-center justify-center sticky top-0 z-50 shadow-md'>
       <header className="w-full bg-white border-b border-gray-200 py-3 px-6 md:px-10 flex items-center justify-between relative">
         {/* Logo */}
         <div
