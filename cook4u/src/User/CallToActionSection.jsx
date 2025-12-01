@@ -19,7 +19,6 @@ const CallToActionSection = () => {
           </a>
         </div>
       </div>
-      <Footer></Footer>
     </section>
   );
 };

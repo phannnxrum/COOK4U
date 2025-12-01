@@ -3,6 +3,7 @@ import HeaderUsers from "./HeaderUsers";
 import HeroSection from "./HeroSection";
 import FeatureSection from "./FeatureSection";
 import CallToActionSection from "./CallToActionSection";
+import Footer from "./Footer.jsx";
 
 const Users = () => {
   return (
@@ -11,6 +12,7 @@ const Users = () => {
       <HeroSection></HeroSection>
       <FeatureSection></FeatureSection>
       <CallToActionSection></CallToActionSection>
+      <Footer></Footer>
     </div>
   );
 };
