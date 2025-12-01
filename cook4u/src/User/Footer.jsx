@@ -2,7 +2,7 @@ import React from "react";
 
 export const Footer = () => {
   return (
-    <div className="w-full px-4 md:px-6">
+    <div className="w-full px-4 md:px-6 mt-20 py-4 bg-gray-300">
       <div className="flex flex-row items-center gap-6 md:gap-8 lg:gap-11 mt-6 md:mt-8 justify-center">
         <img
           src="/image/Facebook.png"

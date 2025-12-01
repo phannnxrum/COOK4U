@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-
-//  Import Lịch
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { DatePicker } from "antd";
 import "./Booking.css";
 
 //  Dữ liệu giả lập

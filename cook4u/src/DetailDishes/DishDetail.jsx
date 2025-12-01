@@ -9,7 +9,7 @@ const dishesData = [
     name: "Phở bò truyền thống Việt",
     price: 200000,
     rating: 4.8,
-    reviews: 48,
+    reviewsCount: 48,
     servings: 4,
     cookTime: 240,
     difficulty: "Bao gồm",
@@ -54,7 +54,7 @@ const dishesData = [
     name: "Tiệc BBQ Hàn Quốc",
     price: 1200000,
     rating: 4.9,
-    reviews: 3,
+    reviewsCount: 3,
     servings: 6,
     cookTime: 210,
     difficulty: "Bao gồm",
@@ -121,9 +121,6 @@ const DishDetail = () => {
 
   return (
     <>
-      <div className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'shadow-md' : ''}`}>
-        <HeaderClient />
-      </div>
       
       <div className='pt-20 bg-gray-50 min-h-screen'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
@@ -344,14 +341,6 @@ const DishDetail = () => {
           </div>
         </div>
       </div>
-
-      {/* Chat Button */}
-      <button
-        onClick={() => {/*Mở chat AI */ }}
-        className="fixed bottom-24 right-6 lg:bottom-8 lg:right-8 w-16 h-16 bg-orange-500 hover:bg-orange-600 rounded-full shadow-2xl flex items-center justify-center text-white transition-all hover:scale-110 z-50"
-      >
-        <MessageCircle className="w-7 h-7" />
-      </button>
     </>
   );
 };

@@ -9,13 +9,13 @@ import CarouselClient from '../../Client/CarouselClient'
 const HomePage = () => {
   return (
     <div className='w-full h-auto flex flex-col items-center justify-center gap-8 md:gap-12 lg:gap-[48px] px-4 md:px-6 lg:px-0'>
-      <HeaderClient />
+      {/* <HeaderClient /> */}
       <CarouselClient />
       <FavoriteDishSection />
       <InstructionSection />
       <CustomerSection />
       <Cook4USection />
-      <Footer />
+      {/* <Footer /> */}
     </div>
   )
 }

@@ -1,8 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router";
 import "./FindDish.css";
-import HeaderClient from "../Client/HeaderClient";
-import DishDetail from "../DetailDishes/DishDetail";
 
 // Lấy từ API
 const dishesData = [
@@ -51,38 +49,6 @@ const Icon = ({ path, className = "w-6 h-6" }) => (
   >
     <path strokeLinecap="round" strokeLinejoin="round" d={path} />
   </svg>
-);
-
-// Component Header
-const AppHeader = () => (
-  <header className="app-header">
-    <div className="logo">
-      <img src="/image/LogoCook4u.png" alt="Cook4U Logo" />
-      <span>COOK4U</span>
-    </div>
-    <nav>
-      <a href="#">Tìm đầu bếp</a>
-      <a href="#" className="active">
-        Tìm món ăn
-      </a>
-      <a href="#">Cách đặt hàng</a>
-      <a href="#">Về chúng tôi</a>
-    </nav>
-    <div className="user-actions">
-      <button className="orders-btn">
-        <Icon
-          path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-          className="w-5 h-5"
-        />
-        Đơn hàng của tôi
-      </button>
-      <img
-        src="https://images.unsplash.com/photo-1741121625227-8ab247bf9d22?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2070"
-        alt="User Avatar"
-        className="user-avatar"
-      />
-    </div>
-  </header>
 );
 
 // Component Sidebar Lọc
@@ -137,7 +103,7 @@ const FiltersSidebar = () => (
 
 // Component cho mỗi thẻ món ăn
 const DishCard = ({ dish, navigate }) => (
-  <div className="dish-card" onClick={() => navigate (`/dish/${dish.id}`)}>
+  <div className="dish-card" onClick={() => navigate (`/home/dish/${dish.id}`)}>
     <div className="dish-image-container">
       <img src={dish.image} alt={dish.name} className="dish-image" />
       <div className="dish-price-tag">VND {dish.price}</div>
@@ -188,10 +154,6 @@ const FindDishPage = () => {
 
   return (
     <div className="find-dish-page">
-      {/* <AppHeader /> */}
-
-      <HeaderClient /> 
-      {/* Sử dụng header chung của Client */}
 
       <main className="container">
         <div className="search-header">
@@ -199,7 +161,7 @@ const FindDishPage = () => {
           <div className="tabs">
             <button
               className="tab-item"
-              onClick={() => navigate("/findachef")}
+              onClick={() => navigate("/home/findachef")}
             >
               <Icon
                 path="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
@@ -209,7 +171,7 @@ const FindDishPage = () => {
             </button>
             <button
               className="tab-item active"
-              onClick={() => navigate("/findadish")}
+              onClick={() => navigate("/home/findadish")}
             >
               <Icon
                 path="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
@@ -257,7 +219,6 @@ const FindDishPage = () => {
           </section>
         </div>
       </main>
-      <button className="floating-action-button"></button>
     </div>
   );
 };

@@ -36,7 +36,6 @@ if(!chef) return <div className='text-black'>Đầu bếp không tồn tại</di
 
   return (
     <div>
-        <HeaderClient> </HeaderClient>
         <ChefHeader chef={chef}></ChefHeader>
         <ChefTabs chef={chef}></ChefTabs>
     </div>

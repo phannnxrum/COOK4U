@@ -15,32 +15,32 @@ import FindDish from './FindDish/FindDish'
 import PickChef from './PickChef/PickChef'
 import ProfileUser from './Profile/ProfileUser'
 import MyCart from './MyCart/MyCart.jsx'
+import BookingPage from './Booking/booking.jsx'
+import AboutUs from './AboutUs/AboutUs.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Users></Users>}></Route>
-          <Route path='sign-in' element={<SignIn></SignIn>}></Route>
-          <Route path='sign-up' element={<SignUp></SignUp>}></Route>
-          <Route path='client' element={<HeaderClient></HeaderClient>}>
-            <Route index element={<CarouselClient></CarouselClient>}></Route>
-            <Route path='profile' element={<ProfileUser></ProfileUser>}></Route>
-            <Route path='mycart' element={<MyCart></MyCart>}></Route>
-          </Route>
-
-          <Route path='admin'>
-            <Route path='sign-in' element={<AdminSignIn></AdminSignIn>}></Route>
-          </Route>
-
-          <Route>
-            <Route path='home' element={<HomePage></HomePage>}></Route>
-            <Route path='profile' element={<ProfileUser></ProfileUser>}></Route>
-            <Route path='findachef' element={<FindChef></FindChef>}></Route>
-            <Route path='pickchef/:chefId' element={<PickChef></PickChef>}></Route>
-            <Route path='findadish' element={<FindDish></FindDish>}></Route>
-            <Route path='dish/:dishId' element={<DishDetail></DishDetail>}></Route>
+          <Route path='/'>
+            <Route index element={<Users></Users>}></Route>
+            <Route path='sign-in' element={<SignIn></SignIn>}></Route>
+            <Route path='sign-up' element={<SignUp></SignUp>}></Route>
+            <Route path='admin'>
+              <Route path='sign-in' element={<AdminSignIn></AdminSignIn>}></Route>
+            </Route>
+            <Route path='home' element={<HeaderClient></HeaderClient>}>
+              <Route index element={<HomePage></HomePage>}></Route>
+              <Route path='findachef' element={<FindChef></FindChef>}></Route>
+              <Route path='findadish' element={<FindDish></FindDish>}></Route>
+              <Route path='pickchef/:chefId' element={<PickChef></PickChef>}></Route>
+              <Route path='dish/:dishId' element={<DishDetail></DishDetail>}></Route>
+              <Route path='mycart' element={<MyCart></MyCart>}></Route>
+              <Route path='profile' element={<ProfileUser></ProfileUser>}></Route>
+              <Route path="book" element={<BookingPage></BookingPage>}></Route>
+              <Route path='aboutus' element={<AboutUs></AboutUs>}></Route>
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>
