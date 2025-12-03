@@ -1,20 +1,3 @@
-/* --- Cài đặt tổng thể & Biến --- */
-:root {
-  --primary-color: #ff641a;
-  --text-dark: #2d3748;
-  --text-light: #718096;
-  --border-color: #e2e8f0;
-  --background-light: #f7fafc;
-  --background-white: #ffffff;
-  --font-family: "Arimo", sans-serif; 
-}
-
-body {
-  font-family: var(--font-family);
-  background-color: var(--background-light);
-  color: var(--text-dark);
-  margin: 0;
-}
 
 .w-4 {
   width: 1rem;

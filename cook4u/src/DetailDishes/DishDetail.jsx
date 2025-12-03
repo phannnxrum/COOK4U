@@ -1,41 +1,28 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router';
 import HeaderClient from '../Client/HeaderClient';
 import { ShoppingCart, Clock, Users, Star, MessageCircle } from 'lucide-react';
 
-const DishDetail = () => {
-  const [selectedImage, setSelectedImage] = useState(0);
-  const [quantity, setQuantity] = useState(1);
-  const [scrolled, setScrolled] = useState(false);
-
-  // Xử lý scroll cho header
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Dữ liệu món ăn mẫu
-  const dish = {
-    name: "Homemade Pasta Carbonara",
-    price: 950000,
-    rating: 4.5,
+const dishesData = [
+  {
+    id: 1,
+    name: "Phở bò truyền thống Việt",
+    price: 200000,
+    rating: 4.8,
+    reviewsCount: 48,
     servings: 4,
-    cookTime: 45,
+    cookTime: 240,
     difficulty: "Bao gồm",
-    category: ["Món Ý", "Món Âu", "Gluten-free"],
+    category: ["Món Việt", "Món Á"],
     images: [
-      'https://images.unsplash.com/photo-1739417083034-4e9118f487be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpdGFsaWFuJTIwcGFzdGElMjBkaXNofGVufDF8fHx8MTc1OTI3OTMwOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+      'https://images.unsplash.com/photo-1631709497146-a239ef373cf1?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2670',
       'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600'
     ],
-    description: "Mì carbonara La Mã chính thống với trứng tươi, phô mai pecorino và pancetta. Món ăn Ý cổ điển này được chế biến theo phương pháp truyền thống được truyền qua nhiều thế hệ.",
-    about: "Trải nghiệm hương vị dịch thực của Rome với món Carbonara đặc trưng của chúng tôi. Được làm từ trứng tươi ngon từ nông trại, phô mai Pecorino Romano lâu năm và thật pancetta giòn tan, món ăn này đại diện cho đỉnh cao của ẩm thực Ý. Dầu bếp của chúng tôi chỉ sử dụng những nguyên liệu nhập khẩu hảo hạng nhất và kỹ thuật truyền thống La Mã để tạo nên loại nước sốt mịn màng, kèo ngậy mà không cần kem - chỉ có trứng, phô mai và nước sốt mì ống tận tâm ký.",
+    description: "Nước dùng thịt bò đậm đà với bún gạo, rau thơm và thịt bò mềm.",
+    about: "Món phở bò truyền thống được nấu theo công thức gia truyền.",
     ingredients: [
-      { name: "Mì ống tươi (Spaghetti hoặc Linguine)", amount: "400g" },
-      { name: "Trứng gà thả vườn lớn", amount: "4 quả" },
-      { name: "Phô mai Pecorino Romano", amount: "100g, tươi, mới xay" },
-      { name: "Pancetta hoặc Guanciale", amount: "150g, thái lưu" },
+      { name: "Bún gạo", amount: "400g" },
+      { name: "Thịt bò", amount: "300g" },
       { name: "Tiêu đen", amount: "Mới xay" },
       { name: "Muối", amount: "Tự nêm" }
     ],
@@ -51,7 +38,7 @@ const DishDetail = () => {
         initial: "S",
         rating: 5,
         time: "2 ngày trước",
-        comment: "Đây là món carbonara ngon nhất mà tôi từng ăn! Kỹ thuật của Tony thật hoàn hảo và hương vị thì tuyệt vời."
+        comment: "Món Phở ngon quá đi"
       },
       {
         name: "Michael Chen",
@@ -61,16 +48,79 @@ const DishDetail = () => {
         comment: "Chuẩn vị và ngon tuyệt!"
       }
     ]
-  };
+  },
+  {
+    id: 2,
+    name: "Tiệc BBQ Hàn Quốc",
+    price: 1200000,
+    rating: 4.9,
+    reviewsCount: 3,
+    servings: 6,
+    cookTime: 210,
+    difficulty: "Bao gồm",
+    category: ["Món Hàn", "Món Á"],
+    images: [
+      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1974&auto=format&fit=crop"
+    ],
+    description: "Trải nghiệm BBQ Hàn Quốc trọn vẹn với banchan và thịt nướng.",
+    about: "Bữa tiệc BBQ đầy đủ với các món banchan truyền thống...",
+    ingredients: [
+      { name: "Thịt ba chỉ", amount: "500g" },
+      { name: "Kimchi", amount: "200g" }
+    ],
+    nutrition: {
+      calories: 650,
+      protein: 35,
+      carbs: 30,
+      fat: 40
+    },
+    reviews: [
+      {
+        name: "Trần Thị B",
+        initial: "T",
+        rating: 5,
+        time: "1 tuần trước",
+        comment: "Chuẩn vị Hàn Quốc!"
+      }
+    ]
+  }
+];
+
+const DishDetail = () => {
+  const { dishId } = useParams();
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Tìm món ăn theo ID
+  const dish = dishesData.find(d => d.id === parseInt(dishId));
+
+  // Xử lý scroll cho header
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Nếu không tìm thấy món ăn
+  if (!dish) {
+    return (
+      <div className='pt-20 bg-gray-50 min-h-screen flex items-center justify-center'>
+        <div className='text-center'>
+          <h1 className='text-2xl font-bold text-gray-900 mb-2'>Không tìm thấy món ăn</h1>
+          <p className='text-gray-600'>Món ăn bạn đang tìm không tồn tại.</p>
+        </div>
+      </div>
+    );
+  }
 
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
 
   return (
     <>
-      <div className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'shadow-md' : ''}`}>
-        <HeaderClient />
-      </div>
       
       <div className='pt-20 bg-gray-50 min-h-screen'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
@@ -291,14 +341,6 @@ const DishDetail = () => {
           </div>
         </div>
       </div>
-
-      {/* Chat Button */}
-      <button
-        onClick={() => {/*Mở chat AI */ }}
-        className="fixed bottom-24 right-6 lg:bottom-8 lg:right-8 w-16 h-16 bg-orange-500 hover:bg-orange-600 rounded-full shadow-2xl flex items-center justify-center text-white transition-all hover:scale-110 z-50"
-      >
-        <MessageCircle className="w-7 h-7" />
-      </button>
     </>
   );
 };
