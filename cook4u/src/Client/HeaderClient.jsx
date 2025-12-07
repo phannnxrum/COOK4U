@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { ChevronDown, LogOut, Menu, MessageCircle, ShoppingBag, ShoppingCart, User, X } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router'
+import { useCart } from '../contexts/CartContext'
 import Footer from '../User/Footer.jsx'
 
 const HeaderClient = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const { getCartCount } = useCart()
+  const cartCount = getCartCount()
 
   return (
     <div className="">
@@ -77,9 +80,11 @@ const HeaderClient = () => {
                 <div className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
                   <ShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-gray-700 hover:text-orange-500 transition-colors" />
                 </div>
-                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  3
-                </span>
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
               </NavLink>
 
               {/* Avatar Dropdown */}
@@ -211,9 +216,11 @@ const HeaderClient = () => {
                   </div>
                   <NavLink to={'/home/mycart'} className="relative" onClick={() => setMenuOpen(false)}>
                     <ShoppingCart className="w-6 h-6 text-gray-700" />
-                    <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                      3
-                    </span>
+                    {cartCount > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                        {cartCount}
+                      </span>
+                    )}
                   </NavLink>
                 </div>
               </div>

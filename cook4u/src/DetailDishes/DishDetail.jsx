@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
+import { useCart } from '../contexts/CartContext';
 import HeaderClient from '../Client/HeaderClient';
 import { ShoppingCart, Clock, Users, Star, MessageCircle } from 'lucide-react';
 
@@ -88,6 +89,8 @@ const dishesData = [
 
 const DishDetail = () => {
   const { dishId } = useParams();
+  const navigate = useNavigate();
+  const { addDish } = useCart();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [scrolled, setScrolled] = useState(false);
@@ -118,6 +121,26 @@ const DishDetail = () => {
 
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
+
+  const handleAddToCart = () => {
+    if (dish) {
+      // Add dish multiple times based on quantity
+      for (let i = 0; i < quantity; i++) {
+        addDish({
+          id: dish.id,
+          name: dish.name,
+          price: dish.price,
+          image: dish.images[0],
+          cookTime: `${dish.cookTime} phút`,
+          servings: `${dish.servings} người`,
+          time: `${dish.cookTime} phút`,
+          people: `${dish.servings} người`
+        });
+      }
+      // Optionally navigate to cart
+      navigate('/home/mycart');
+    }
+  };
 
   return (
     <>
@@ -318,7 +341,10 @@ const DishDetail = () => {
                   </div>
                 </div>
 
-                <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 rounded-xl flex items-center justify-center space-x-2 transition-all shadow-md hover:shadow-lg">
+                <button 
+                  onClick={handleAddToCart}
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 rounded-xl flex items-center justify-center space-x-2 transition-all shadow-md hover:shadow-lg"
+                >
                   <ShoppingCart className="w-5 h-5" />
                   <span>Đặt Ngay</span>
                 </button>
@@ -332,7 +358,10 @@ const DishDetail = () => {
                   <p className='text-2xl font-bold text-gray-900'>VNĐ {dish.price.toLocaleString()}</p>
                   <p className='text-xs text-gray-500'>Bao gồm nguyên liệu</p>
                 </div>
-                <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-xl flex items-center space-x-2 transition-all shadow-md">
+                <button 
+                  onClick={handleAddToCart}
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-xl flex items-center space-x-2 transition-all shadow-md"
+                >
                   <ShoppingCart className="w-5 h-5" />
                   <span>Đặt Ngay</span>
                 </button>

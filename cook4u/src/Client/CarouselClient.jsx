@@ -1,8 +1,25 @@
 import { MessageCircle, Search, Star, Users, ChefHat, Clock, Shield } from 'lucide-react'
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router'
 
 const CarouselClient = () => {
   const [searchQuery, setSearchQuery] = useState('')
+  const navigate = useNavigate()
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      // Navigate to findadish with search query
+      navigate(`/home/findadish?search=${encodeURIComponent(searchQuery.trim())}`)
+    } else {
+      navigate('/home/findadish')
+    }
+  }
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch()
+    }
+  }
 
   return (
     <div className="relative overflow-x-hidden w-full">
@@ -49,10 +66,14 @@ const CarouselClient = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
                   placeholder="Tìm món ăn, đầu bếp hoặc loại ẩm thực..."
                   className="flex-1 px-4 py-4 outline-none text-gray-800 text-base placeholder-gray-400 bg-transparent"
                 />
-                <button className="bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 md:px-8 py-4 hover:from-orange-600 hover:to-amber-600 transition-all duration-300 font-semibold flex items-center gap-2 group/btn">
+                <button 
+                  onClick={handleSearch}
+                  className="bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 md:px-8 py-4 hover:from-orange-600 hover:to-amber-600 transition-all duration-300 font-semibold flex items-center gap-2 group/btn"
+                >
                   <span>Tìm kiếm</span>
                   <Search className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                 </button>

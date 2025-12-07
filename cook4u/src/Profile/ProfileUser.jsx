@@ -1,8 +1,24 @@
 import { Award, Calendar, Camera, Edit3, Heart, Mail, MapPin, Phone, User } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 
 const ProfileUser = () => {
     const [tab, setTab] = useState("info");
+    const [isEditing, setIsEditing] = useState(false);
+    const [profileData, setProfileData] = useState({
+        name: "Nguyễn Văn A",
+        email: "nguyenvana@email.com",
+        phone: "+84 123 456 789",
+        address: "123 Đường ABC, Quận 1, TP.HCM",
+        bio: "Yêu thích ẩm thực Ý và Nhật Bản. Thích khám phá những món ăn mới và trải nghiệm văn hóa ẩm thực.",
+        avatar: "https://randomuser.me/api/portraits/men/1.jpg"
+    });
+    const [preferences, setPreferences] = useState({
+        taste: ["Không ăn hải sản", "Ít cay"],
+        allergies: ["Đậu phộng"],
+        favoriteDishes: "",
+        budget: ""
+    });
+    const fileInputRef = useRef(null);
     return (
         <div className='container'>
             <div className="w-full mx-auto mt-8 px-6">
@@ -16,16 +32,38 @@ const ProfileUser = () => {
                     <div className="bg-white lg:col-span-2 p-6 shadow-sm flex flex-col items-center">
                         <div className="relative">
                             <img
-                                src="https://randomuser.me/api/portraits/men/1.jpg"
+                                src={profileData.avatar}
                                 alt="avatar"
                                 className="w-32 h-32 rounded-full object-cover"
                             />
-                            <button className="absolute bottom-2 right-2 bg-orange-500 p-2 rounded-full text-white hover:bg-orange-600">
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    if (file) {
+                                        const reader = new FileReader();
+                                        reader.onloadend = () => {
+                                            setProfileData(prev => ({
+                                                ...prev,
+                                                avatar: reader.result
+                                            }));
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }
+                                }}
+                            />
+                            <button 
+                                onClick={() => fileInputRef.current?.click()}
+                                className="absolute bottom-2 right-2 bg-orange-500 p-2 rounded-full text-white hover:bg-orange-600"
+                            >
                                 <Camera size={16} />
                             </button>
                         </div>
-                        <h3 className="mt-4 text-lg font-semibold">Nguyễn Văn A</h3>
-                        <p className="text-gray-500 text-sm">nguyenvana@email.com</p>
+                        <h3 className="mt-4 text-lg font-semibold">{profileData.name}</h3>
+                        <p className="text-gray-500 text-sm">{profileData.email}</p>
                         <p className="text-xs text-gray-400 my-6 border px-3 py-1 rounded-full">
                             Thành viên từ 15/1/2024
                         </p>
@@ -54,12 +92,19 @@ const ProfileUser = () => {
                             <h4 className="font-semibold mb-2">Sở thích ẩm thực</h4>
                             <p className="text-sm mb-2">
                                 <span className="font-medium">Khẩu vị:</span>{" "}
-                                <span className="bg-gray-100 px-2 py-1 rounded-full text-sm mr-2">Không ăn hải sản</span>
-                                <span className="bg-gray-100 px-2 py-1 rounded-full text-sm">Ít cay</span>
+                                {preferences.taste.map((item, index) => (
+                                    <span key={index} className="bg-gray-100 px-2 py-1 rounded-full text-sm mr-2">
+                                        {item}
+                                    </span>
+                                ))}
                             </p>
                             <p className="text-sm">
                                 <span className="font-medium">Dị ứng:</span>{" "}
-                                <span className="bg-red-100 text-red-600 px-2 py-1 rounded-full text-sm">Đậu phộng</span>
+                                {preferences.allergies.map((item, index) => (
+                                    <span key={index} className="bg-red-100 text-red-600 px-2 py-1 rounded-full text-sm mr-2">
+                                        {item}
+                                    </span>
+                                ))}
                             </p>
                         </div>
                     </div>
@@ -93,8 +138,11 @@ const ProfileUser = () => {
                             <div className="bg-white p-6 shadow-sm">
                                 <div className="flex justify-between items-center mb-4">
                                     <h4 className="font-semibold text-lg">Thông tin cá nhân</h4>
-                                    <button className="flex items-center cursor-pointer gap-2 text-orange-600 hover:text-orange-700">
-                                        <Edit3 size={16} /> Chỉnh sửa
+                                    <button 
+                                        onClick={() => setIsEditing(!isEditing)}
+                                        className="flex items-center cursor-pointer gap-2 text-orange-600 hover:text-orange-700"
+                                    >
+                                        <Edit3 size={16} /> {isEditing ? 'Hủy' : 'Chỉnh sửa'}
                                     </button>
                                 </div>
 
@@ -105,7 +153,16 @@ const ProfileUser = () => {
                                             <User size={16} className="text-gray-500" />
                                             <span className="text-sm font-medium text-gray-600">Họ và tên</span>
                                         </div>
-                                        <p className="text-sm text-gray-800">Nguyễn Văn A</p>
+                                        {isEditing ? (
+                                            <input
+                                                type="text"
+                                                value={profileData.name}
+                                                onChange={(e) => setProfileData(prev => ({...prev, name: e.target.value}))}
+                                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                            />
+                                        ) : (
+                                            <p className="text-sm text-gray-800">{profileData.name}</p>
+                                        )}
                                     </div>
 
                                     {/* Email */}
@@ -114,7 +171,16 @@ const ProfileUser = () => {
                                             <Mail size={16} className="text-gray-500" />
                                             <span className="text-sm font-medium text-gray-600">Email</span>
                                         </div>
-                                        <p className="text-sm text-gray-800">nguyenvana@email.com</p>
+                                        {isEditing ? (
+                                            <input
+                                                type="email"
+                                                value={profileData.email}
+                                                onChange={(e) => setProfileData(prev => ({...prev, email: e.target.value}))}
+                                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                            />
+                                        ) : (
+                                            <p className="text-sm text-gray-800">{profileData.email}</p>
+                                        )}
                                     </div>
 
                                     {/* Số điện thoại */}
@@ -123,7 +189,16 @@ const ProfileUser = () => {
                                             <Phone size={16} className="text-gray-500" />
                                             <span className="text-sm font-medium text-gray-600">Số điện thoại</span>
                                         </div>
-                                        <p className="text-sm text-gray-800">+84 123 456 789</p>
+                                        {isEditing ? (
+                                            <input
+                                                type="tel"
+                                                value={profileData.phone}
+                                                onChange={(e) => setProfileData(prev => ({...prev, phone: e.target.value}))}
+                                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                            />
+                                        ) : (
+                                            <p className="text-sm text-gray-800">{profileData.phone}</p>
+                                        )}
                                     </div>
 
                                     {/* Địa chỉ */}
@@ -132,24 +207,67 @@ const ProfileUser = () => {
                                             <MapPin size={16} className="text-gray-500" />
                                             <span className="text-sm font-medium text-gray-600">Địa chỉ</span>
                                         </div>
-                                        <p className="text-sm text-gray-800">123 Đường ABC, Quận 1, TP.HCM</p>
+                                        {isEditing ? (
+                                            <input
+                                                type="text"
+                                                value={profileData.address}
+                                                onChange={(e) => setProfileData(prev => ({...prev, address: e.target.value}))}
+                                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                            />
+                                        ) : (
+                                            <p className="text-sm text-gray-800">{profileData.address}</p>
+                                        )}
                                     </div>
 
                                     {/* Giới thiệu bản thân */}
                                     <div className="sm:col-span-2 mt-4">
                                         <p className="text-sm font-medium text-gray-600 mb-1">Giới thiệu bản thân</p>
-                                        <p className="text-sm text-gray-500 leading-relaxed">
-                                            Yêu thích ẩm thực Ý và Nhật Bản. Thích khám phá những món ăn mới và trải nghiệm
-                                            văn hóa ẩm thực.
-                                        </p>
+                                        {isEditing ? (
+                                            <textarea
+                                                value={profileData.bio}
+                                                onChange={(e) => setProfileData(prev => ({...prev, bio: e.target.value}))}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                                rows="3"
+                                            />
+                                        ) : (
+                                            <p className="text-sm text-gray-500 leading-relaxed">{profileData.bio}</p>
+                                        )}
                                     </div>
                                 </div>
+
+                                {isEditing && (
+                                    <div className="mt-6 flex justify-end gap-3">
+                                        <button
+                                            onClick={() => setIsEditing(false)}
+                                            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                                        >
+                                            Hủy
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                // Save logic here - could save to localStorage or API
+                                                setIsEditing(false);
+                                                alert('Đã lưu thông tin thành công!');
+                                            }}
+                                            className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+                                        >
+                                            Lưu thay đổi
+                                        </button>
+                                    </div>
+                                )}
 
                             </div>
                         ) : (
                             <div className="bg-white p-6 shadow-sm">
                                 <h4 className="font-semibold text-lg mb-4">Sở thích ẩm thực</h4>
-                                <form className="space-y-6 text-gray-700">
+                                <form 
+                                    onSubmit={(e) => {
+                                        e.preventDefault();
+                                        // Save preferences logic here
+                                        alert('Đã lưu sở thích thành công!');
+                                    }}
+                                    className="space-y-6 text-gray-700"
+                                >
                                     {/* Khẩu vị & Chế độ ăn */}
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">
@@ -157,6 +275,11 @@ const ProfileUser = () => {
                                         </label>
                                         <input
                                             type="text"
+                                            value={preferences.taste.join(', ')}
+                                            onChange={(e) => setPreferences(prev => ({
+                                                ...prev,
+                                                taste: e.target.value.split(',').map(s => s.trim()).filter(s => s)
+                                            }))}
                                             placeholder="VD: Ăn chay, Không ăn hải sản, Ít cay..."
                                             className="mt-1 w-full border border-gray-200 rounded-xl px-4 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-400"
                                         />
@@ -172,6 +295,11 @@ const ProfileUser = () => {
                                         </label>
                                         <input
                                             type="text"
+                                            value={preferences.allergies.join(', ')}
+                                            onChange={(e) => setPreferences(prev => ({
+                                                ...prev,
+                                                allergies: e.target.value.split(',').map(s => s.trim()).filter(s => s)
+                                            }))}
                                             placeholder="VD: Đậu phộng, Hải sản, Sữa..."
                                             className="mt-1 w-full border border-gray-200 rounded-xl px-4 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-400"
                                         />
@@ -187,6 +315,11 @@ const ProfileUser = () => {
                                         </label>
                                         <input
                                             type="text"
+                                            value={preferences.favoriteDishes}
+                                            onChange={(e) => setPreferences(prev => ({
+                                                ...prev,
+                                                favoriteDishes: e.target.value
+                                            }))}
                                             placeholder="VD: Pasta Ý, Sushi Nhật, Phở Việt Nam..."
                                             className="mt-1 w-full border border-gray-200 rounded-xl px-4 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-400"
                                         />
@@ -199,6 +332,11 @@ const ProfileUser = () => {
                                         </label>
                                         <input
                                             type="number"
+                                            value={preferences.budget}
+                                            onChange={(e) => setPreferences(prev => ({
+                                                ...prev,
+                                                budget: e.target.value
+                                            }))}
                                             placeholder="VD: 100"
                                             className="mt-1 w-full border border-gray-200 rounded-xl px-4 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-400"
                                         />

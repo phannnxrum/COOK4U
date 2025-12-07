@@ -6,36 +6,49 @@ import {
   CheckCircle,
   ChefHat,
 } from "lucide-react";
+import { useCart } from "../contexts/CartContext";
+import { useNavigate } from "react-router";
 
 const MyCart = () => {
-  const chef = {
-    name: "Đầu bếp Tony",
-    price: 85,
-    rating: 4.9,
-    reviews: 142,
-    avatar: "https://i.pravatar.cc/100?img=12",
-  };
+  const { cart, removeChef, removeDish, clearCart } = useCart();
+  const navigate = useNavigate();
 
-  const dishes = [
-    {
-      id: 1,
-      name: "Vietnamese Pho Bo",
-      price: 75,
-      time: "4 giờ",
-      people: "4-5 người",
-    },
-  ];
+  const chef = cart.chef;
+  const dishes = cart.dishes;
 
   const hasChef = !!chef;
   const hasDish = dishes.length > 0;
   const canCheckout = hasChef && hasDish;
 
-  const chefTotal = hasChef ? chef.price : 0;
-  const dishesTotal = dishes.reduce((sum, d) => sum + d.price, 0);
+  const chefTotal = hasChef ? (typeof chef.price === 'number' ? chef.price : parseInt(chef.price.replace(/,/g, ''))) : 0;
+  const dishesTotal = dishes.reduce((sum, d) => {
+    const price = typeof d.price === 'number' ? d.price : parseInt(d.price.replace(/,/g, ''));
+    return sum + price;
+  }, 0);
   const total = chefTotal + dishesTotal;
 
   const handleClearAll = () => {
-    console.log("Clear all items in cart");
+    if (window.confirm("Bạn có chắc chắn muốn xóa tất cả các mục trong giỏ hàng?")) {
+      clearCart();
+    }
+  };
+
+  const handleRemoveChef = () => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa đầu bếp này?")) {
+      removeChef();
+    }
+  };
+
+  const handleRemoveDish = (cartId) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa món ăn này?")) {
+      removeDish(cartId);
+    }
+  };
+
+  const handleCheckout = () => {
+    if (canCheckout) {
+      navigate('/home/book');
+    }
   };
 
   return (
@@ -92,12 +105,15 @@ const MyCart = () => {
                           <span>{chef.reviews} đánh giá</span>
                         </div>
                         <p className="font-semibold mt-2 text-gray-900">
-                          ${chef.price}/giờ
+                          VNĐ {typeof chef.price === 'number' ? chef.price.toLocaleString() : chef.price}/giờ
                         </p>
                       </div>
                     </div>
 
-                    <button className="text-gray-400 hover:text-red-500">
+                    <button 
+                      onClick={handleRemoveChef}
+                      className="text-gray-400 hover:text-red-500"
+                    >
                       <Trash2 className="w-5 h-5" />
                     </button>
                   </div>
@@ -135,12 +151,15 @@ const MyCart = () => {
                             </span>
                           </div>
                           <p className="font-semibold mt-2 text-gray-900">
-                            ${dish.price}
+                            VNĐ {typeof dish.price === 'number' ? dish.price.toLocaleString() : dish.price}
                           </p>
                         </div>
                       </div>
 
-                      <button className="self-center text-gray-400 hover:text-red-500">
+                      <button 
+                        onClick={() => handleRemoveDish(dish.cartId)}
+                        className="self-center text-gray-400 hover:text-red-500"
+                      >
                         <Trash2 className="w-5 h-5" />
                       </button>
                     </div>
@@ -160,11 +179,11 @@ const MyCart = () => {
               <div className="space-y-2 text-sm text-gray-700">
                 <div className="flex justify-between">
                   <span>Đầu bếp:</span>
-                  <span>${chefTotal}</span>
+                  <span>VNĐ {chefTotal.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Món ăn ({dishes.length}):</span>
-                  <span>${dishesTotal}</span>
+                  <span>VNĐ {dishesTotal.toLocaleString()}</span>
                 </div>
               </div>
 
@@ -172,10 +191,11 @@ const MyCart = () => {
 
               <div className="flex justify-between items-center font-semibold mb-4">
                 <span className="text-gray-900">Tổng cộng:</span>
-                <span className="text-orange-500 text-lg">${total}</span>
+                <span className="text-orange-500 text-lg">VNĐ {total.toLocaleString()}</span>
               </div>
 
               <button
+                onClick={handleCheckout}
                 disabled={!canCheckout}
                 className={`w-full py-3 rounded-lg font-semibold text-sm transition
                   ${

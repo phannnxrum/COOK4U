@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router'
+import { CartProvider } from './contexts/CartContext'
 import HeaderUsers from './User/HeaderUsers'
 import SignIn from './SignInUp/SignIn'
 import AdminSignIn from './SignInUp/AdminSignIn'
@@ -20,7 +21,7 @@ import AboutUs from './AboutUs/AboutUs.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <>
+    <CartProvider>
       <BrowserRouter>
         <Routes>
           <Route path='/'>
@@ -44,6 +45,6 @@ createRoot(document.getElementById('root')).render(
           </Route>
         </Routes>
       </BrowserRouter>
-    </>
+    </CartProvider>
   </StrictMode>,
 )
