@@ -1,7 +1,26 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import { useCart } from "../contexts/CartContext";
+import { useNavigate } from "react-router";
 
 const ChefFavoriteDishes = ({ dishes }) => {
+  const { addDish } = useCart();
+  const navigate = useNavigate();
+
+  const handleAddDishToCart = (dish) => {
+    addDish({
+      id: dish.id || Date.now(),
+      name: dish.name,
+      price: typeof dish.dishPrice === 'number' ? dish.dishPrice : parseInt(dish.dishPrice.replace(/,/g, '')),
+      image: dish.image,
+      cookTime: dish.cookTime,
+      servings: dish.numberOfPeople,
+      time: dish.cookTime,
+      people: dish.numberOfPeople
+    });
+    // Optionally navigate to cart
+    navigate('/home/mycart');
+  };
   const visibleDishes =
     dishes.length < 4 ? [...dishes, ...dishes, ...dishes] : dishes;
   return (
@@ -49,6 +68,7 @@ const ChefFavoriteDishes = ({ dishes }) => {
                 </div>
 
                 <button
+                  onClick={() => handleAddDishToCart(item)}
                   className="mt-3 flex items-center justify-center gap-2 bg-orange-500 text-white px-3 py-2 rounded-lg transition-all duration-200 
                     whitespace-nowrap hover:-translate-y-1 hover:shadow-lg"
                 >

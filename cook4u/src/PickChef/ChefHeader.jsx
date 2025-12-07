@@ -9,8 +9,27 @@ import {
   Heart,
   Star,
 } from "lucide-react";
+import { useCart } from "../contexts/CartContext";
+import { useNavigate } from "react-router";
 
 const ChefHeader = ({ chef }) => {
+  const { addChef } = useCart();
+  const navigate = useNavigate();
+
+  const handleAddChefToCart = () => {
+    if (chef) {
+      addChef({
+        id: chef.id,
+        name: chef.name,
+        price: typeof chef.price === 'number' ? chef.price : parseInt(chef.price.replace(/,/g, '')),
+        avatar: chef.avatar,
+        rating: chef.rating,
+        reviews: chef.reviews
+      });
+      // Optionally navigate to cart
+      navigate('/home/mycart');
+    }
+  };
   return (
     <div className="flex flex-row bg-white justify-center gap-10 py-5">
       {/* avatar */}
@@ -96,6 +115,7 @@ const ChefHeader = ({ chef }) => {
 
           <div className="flex flex-row md:flex-col items-center gap-2">
             <button
+              onClick={handleAddChefToCart}
               className="flex items-center justify-center gap-2 bg-orange-500 text-white px-2 py-2 rounded-lg transition-all duration-200 
                       whitespace-nowrap max-w-fit md:px-20 md:py-2 hover:-translate-y-1 hover:shadow-lg"
             >

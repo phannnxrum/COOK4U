@@ -1,8 +1,10 @@
 import MainTitle from "./commons/MainTitle";
 import DishTypeCard from "./commons/DishTypeCard";
 import { ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router";
 
 const FavoriteDishSection = () => {
+    const navigate = useNavigate();
     const dishes = [
         { 
             type: "Món Việt chuẩn gu", 
@@ -80,7 +82,10 @@ const FavoriteDishSection = () => {
                                 </h3>
                                 
                                 {/* View button */}
-                                <div className="flex items-center text-amber-600 text-sm font-medium">
+                                <div 
+                                    onClick={() => navigate('/home/findadish')}
+                                    className="flex items-center text-amber-600 text-sm font-medium cursor-pointer"
+                                >
                                     <span>Xem tất cả</span>
                                     <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" />
                                 </div>
@@ -91,7 +96,10 @@ const FavoriteDishSection = () => {
 
                 {/* Simple CTA */}
                 <div className="text-center mt-12">
-                    <button className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 text-white font-medium rounded-lg hover:bg-amber-600 transition-colors duration-300">
+                    <button 
+                        onClick={() => navigate('/home/findadish')}
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 text-white font-medium rounded-lg hover:bg-amber-600 transition-colors duration-300"
+                    >
                         <span>Xem tất cả món ăn</span>
                         <ChevronRight className="w-4 h-4" />
                     </button>
