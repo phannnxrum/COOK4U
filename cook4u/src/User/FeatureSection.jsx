@@ -8,7 +8,7 @@ const FeatureSection = () => {
   };
 
   return (
-    <section className="bg-amber-50" id="feature-section">
+    <section className="bg-amber-50 pt-20" id="feature-section">
       <div className="container mx-auto px-10">
         <ul className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-20 justify-items-center">
           <li className="w-80 min-h-[280px] border border-orange-200 rounded-2xl bg-white text-center shadow-sm hover:shadow-md transition p-6 flex flex-col justify-start overflow-hidden">
@@ -45,7 +45,7 @@ const FeatureSection = () => {
         </ul>
       </div>
 
-      <h2 className="text-4xl font-bold py-1 text-center">Cách thức hoạt động</h2>
+      <h2 className="text-4xl font-bold py-15 text-center">Cách thức hoạt động</h2>
       <HowItWork />
 
       <div className="flex justify-center">

@@ -1,71 +1,118 @@
 import MainTitle from "./commons/MainTitle";
-import Item from "./commons/Item";
-import AchievementCard from "./commons/AchievementCard";
 
 const Cook4USection = () => {
     return (
-        <section className="w-full max-w-[896px] min-h-auto md:h-auto lg:h-[782px] mt-12 md:mt-16 lg:mt-[182px] gap-6 md:gap-8 lg:gap-[48px] flex flex-col items-center justify-center mx-auto px-4 md:px-6 lg:px-0">
-            {/*Title*/}
-            <MainTitle 
-                title="Về COOK4U"
-                subtitle="Kết nối những người yêu thích ẩm thực với các đầu bếp tài năng để có những trải nghiệm ẩm thực khó quên"
-            />
-            {/*Content & Image*/}
-            <div className="w-full max-w-[896px] min-h-auto md:h-auto lg:h-[518px] flex flex-col lg:flex-row justify-between items-center gap-8 lg:gap-0">
-                <div className="w-full lg:w-[424px] min-h-auto lg:h-[518px] flex flex-col justify-between">
-                    {/*Content*/}
-                    <div className="w-full lg:w-auto min-h-auto lg:h-[518px] mx-auto flex items-center justify-center gap-6 lg:gap-[48px]">
-                        <div className="w-full lg:w-auto min-h-auto lg:h-[518px] mx-auto flex flex-col items-center lg:items-start justify-center gap-4 md:gap-6 lg:gap-[24px]">
-                            <span className="w-full lg:w-[424px] h-auto lg:h-[32px] font-bevietnampro text-xl md:text-2xl lg:text-[24px] leading-[32px] text-[#0A0A0A]">
-                                Sứ mệnh của chúng tôi
-                            </span>
-                            <p className="w-full lg:w-[424px] h-auto lg:h-[120px] font-arimo text-sm md:text-base lg:text-[16px] leading-6 md:leading-7 lg:leading-[28px] text-[#717182]">
-                                COOK4U thu hẹp khoảng cách giữa các đầu bếp chuyên nghiệp tài năng và những người đam mê ẩm thực mong muốn trải nghiệm những bữa ăn chất lượng nhà hàng ngay tại nhà. Chúng tôi tin rằng ẩm thực tuyệt vời sẽ gắn kết mọi người lại với nhau và tạo nên những kỷ niệm khó quên.
-                            </p>
-                            <span className="w-full lg:w-[424px] h-auto lg:h-[32px] font-bevietnampro text-xl md:text-2xl lg:text-[24px] leading-[32px] text-[#0A0A0A]">
-                                Tại sao bạn nên chọn COOK4U?
-                            </span>
-                            {/*Items*/}
-                            <div className="w-full lg:w-[424px] h-auto lg:h-[120px] flex flex-col gap-4">
-                                <Item
-                                    mainContent={"Đầu bếp chuyên nghiệp đã được xác minh:"}
-                                    description={"Tất cả các đầu bếp của chúng tôi đều được kiểm tra kỹ lưỡng và có nền tảng ẩm thực chuyên nghiệp"}
-                                    />
-                                <Item
-                                    mainContent={"Thành phần tươi ngon, chất lượng:"}
-                                    description={"Đầu bếp tìm nguồn nguyên liệu tốt nhất cho bữa ăn của bạn"}
-                                    />
-                                <Item
-                                    mainContent={"Trải nghiệm cá nhân hóa:"}
-                                    description={"Thực đơn tùy chỉnh dựa trên sở thích và nhu cầu ăn kiêng của bạn"}
-                                    />
-                                <Item
-                                    mainContent={"An toàn & Bảo mật:"}
-                                    description={"Đầu bếp được kiểm tra lý lịch và xử lý thanh toán an toàn"}
-                                />
+        <section className="w-[80%] py-8 md:py-12 bg-white">
+            <div className="container mx-auto px-4">
+                {/* Title */}
+                <div className="mb-10 md:mb-12">
+                    <MainTitle 
+                        title="Về COOK4U"
+                        subtitle="Kết nối những người yêu thích ẩm thực với các đầu bếp tài năng để có những trải nghiệm ẩm thực khó quên"
+                    />
+                </div>
+                
+                {/* Content & Image */}
+                <div className="flex flex-col lg:flex-row items-start gap-10 lg:gap-12 mb-12 md:mb-16">
+                    {/* Content */}
+                    <div className="lg:w-1/2">
+                        <div className="space-y-8">
+                            {/* Mission */}
+                            <div className="space-y-3">
+                                <h3 className="text-xl md:text-2xl font-semibold text-gray-900">
+                                    Sứ mệnh của chúng tôi
+                                </h3>
+                                <p className="text-gray-600 leading-relaxed">
+                                    COOK4U thu hẹp khoảng cách giữa các đầu bếp chuyên nghiệp tài năng và những người đam mê ẩm thực mong muốn trải nghiệm những bữa ăn chất lượng nhà hàng ngay tại nhà.
+                                </p>
+                            </div>
+                            
+                            {/* Why Choose Us */}
+                            <div className="space-y-6">
+                                <h3 className="text-xl md:text-2xl font-semibold text-gray-900">
+                                    Tại sao bạn nên chọn COOK4U?
+                                </h3>
+                                
+                                <div className="space-y-4">
+                                    <div className="flex items-start gap-3">
+                                        <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                                        <div>
+                                            <h4 className="font-medium text-gray-900 mb-1">
+                                                Đầu bếp chuyên nghiệp đã được xác minh
+                                            </h4>
+                                            <p className="text-gray-600 text-sm">
+                                                Tất cả các đầu bếp của chúng tôi đều được kiểm tra kỹ lưỡng và có nền tảng ẩm thực chuyên nghiệp
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex items-start gap-3">
+                                        <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                                        <div>
+                                            <h4 className="font-medium text-gray-900 mb-1">
+                                                Thành phần tươi ngon, chất lượng
+                                            </h4>
+                                            <p className="text-gray-600 text-sm">
+                                                Đầu bếp tìm nguồn nguyên liệu tốt nhất cho bữa ăn của bạn
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex items-start gap-3">
+                                        <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                                        <div>
+                                            <h4 className="font-medium text-gray-900 mb-1">
+                                                Trải nghiệm cá nhân hóa
+                                            </h4>
+                                            <p className="text-gray-600 text-sm">
+                                                Thực đơn tùy chỉnh dựa trên sở thích và nhu cầu ăn kiêng của bạn
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex items-start gap-3">
+                                        <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                                        <div>
+                                            <h4 className="font-medium text-gray-900 mb-1">
+                                                An toàn & Bảo mật
+                                            </h4>
+                                            <p className="text-gray-600 text-sm">
+                                                Đầu bếp được kiểm tra lý lịch và xử lý thanh toán an toàn
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    
+                    {/* Image */}
+                    <div className="lg:w-1/2">
+                        <img 
+                            src="/image/Cook4U-HomePage.png" 
+                            alt="Đầu bếp COOK4U" 
+                            className="w-full h-auto rounded-lg shadow-md object-cover"
+                        />
+                    </div>
                 </div>
-                {/*Image*/}
-                <div className="flex items-center w-full lg:w-auto justify-center">
-                    <img src="/image/Cook4U-HomePage.png" alt="Cook4U" className="w-full max-w-[424px] h-auto lg:h-[300px] object-cover rounded-lg"/>
+                
+                {/* Achievements */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                    <div className="bg-gray-50 p-5 rounded-lg border border-orange-300">
+                        <div className="text-2xl font-bold text-orange-600 mb-1">500+</div>
+                        <div className="text-orange-400 font-medium">Khách hàng yêu thích</div>
+                    </div>
+                    
+                    <div className="bg-gray-50 p-5 rounded-lg border border-orange-300">
+                        <div className="text-2xl font-bold text-orange-600 mb-1">50+</div>
+                        <div className="text-orange-400 font-medium">Đầu bếp chuyên nghiệp</div>
+                    </div>
+                    
+                    <div className="bg-gray-50 p-5 rounded-lg border border-orange-300">
+                        <div className="text-2xl font-bold text-orange-600 mb-1">4.9</div>
+                        <div className="text-orange-400 font-medium">Đánh giá trung bình</div>
+                    </div>
                 </div>
-            </div>
-            {/*Achievements*/}
-            <div className="w-full max-w-[896px] h-auto lg:h-[120px] mt-8 md:mt-10 lg:mt-[48px] flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 lg:gap-[48px]">
-                <AchievementCard
-                    number={"36+"}
-                    title={"Khách hàng yêu thích"}
-                />
-                <AchievementCard
-                    number={"36+"}
-                    title={"Đầu bếp chuyên nghiệp "}
-                />
-                <AchievementCard
-                    number={"3.6"}
-                    title={"Đánh giá trung bình"}
-                />
             </div>
         </section>
     );
