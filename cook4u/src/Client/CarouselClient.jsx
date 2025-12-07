@@ -5,8 +5,8 @@ const CarouselClient = () => {
   const [searchQuery, setSearchQuery] = useState('')
 
   return (
-    <div className="relative overflow-x-hidden">
-      <section className="bg-gradient-to-br from-amber-100 via-orange-100 to-amber-200 py-16 md:py-20 flex flex-col-reverse md:flex-row items-center justify-between min-h-[85vh] w-screen relative">
+    <div className="relative overflow-x-hidden w-full">
+      <section className="bg-gradient-to-br from-amber-100 via-orange-100 to-amber-200 py-16 md:py-20 flex flex-col-reverse md:flex-row items-center justify-between min-h-[85vh] w-full relative">
         {/* Background decorative elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-orange-200/30 to-amber-300/20 rounded-full blur-3xl"></div>
@@ -15,7 +15,7 @@ const CarouselClient = () => {
         </div>
 
         {/* Container để giữ nội dung không quá rộng */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col-reverse md:flex-row items-center justify-between w-full">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-12 flex flex-col-reverse md:flex-row items-center justify-between w-full">
           {/* Left Content */}
           <div className="w-full md:w-1/2 space-y-8 text-center md:text-left mt-12 md:mt-0 relative z-10">
             <div className="space-y-4">

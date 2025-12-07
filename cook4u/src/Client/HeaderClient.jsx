@@ -8,9 +8,9 @@ const HeaderClient = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
   return (
-    <div className=" flex flex-col">
+    <div className="">
       {/* Header */}
-      <header className="w-full bg-white border-b rounded border-gray-100 shadow-sm sticky top-0 z-50">
+      <header className="w-full bg-white border-b rounded border-gray-300 shadow-sm sticky top-0 z-50">
         <div className="mx-auto px-4 py-3 md:px-6 md:py-6">
           <div className="flex items-center justify-between">
             {/* Logo */}
@@ -31,7 +31,7 @@ const HeaderClient = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-1">
+            <nav className="hidden md:flex items-center gap-5 space-x-1">
               <NavLink 
                 to="/home/findachef" 
                 className={({ isActive }) => 
@@ -55,12 +55,6 @@ const HeaderClient = () => {
                 }
               >
                 Tìm món ăn
-              </NavLink>
-              <NavLink 
-                to="#" 
-                className="px-4 py-2 rounded-lg text-base font-medium text-gray-700 hover:text-orange-500 hover:bg-gray-50 transition-all duration-200"
-              >
-                Cách đặt hàng
               </NavLink>
               <NavLink 
                 to="/home/aboutus" 
@@ -192,13 +186,6 @@ const HeaderClient = () => {
                   onClick={() => setMenuOpen(false)}
                 >
                   Tìm món ăn
-                </NavLink>
-                <NavLink 
-                  to="#" 
-                  className="px-4 py-3 rounded-lg text-base font-medium text-gray-700 hover:text-orange-500 hover:bg-gray-50 transition-colors"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Cách đặt hàng
                 </NavLink>
                 <NavLink 
                   to="/home/aboutus" 

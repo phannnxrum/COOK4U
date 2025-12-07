@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 html {
   scroll-behavior: smooth;
 }
@@ -13,9 +14,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-display: swap;
 }
-
-h1,
-h2,
 .bold-text {
   font-weight: 700;
   /* Bold */

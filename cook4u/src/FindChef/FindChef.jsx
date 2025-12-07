@@ -1,7 +1,19 @@
 import React from "react";
 import { useNavigate } from "react-router";
-import "./FindChef.css";
-import HeaderClient from "../Client/HeaderClient";
+import { 
+  Search, 
+  Filter, 
+  User, 
+  MapPin, 
+  Clock, 
+  DollarSign,
+  Star,
+  ChevronRight,
+  Users,
+  UtensilsCrossed,
+  Thermometer,
+  Cloud
+} from "lucide-react";
 
 // Dự án thật lấy từ API
 const chefsData = [
@@ -79,217 +91,207 @@ const chefsData = [
   },
 ];
 
-// --- COMPONENTS ---
-
-// Icon component
-const Icon = ({ path, className = "w-6 h-6" }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className={className}
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-  </svg>
-);
-
-// Component Header
-const AppHeader = () => (
-  <header className="app-header">
-    <div className="logo">
-      <img src="/image/LogoCook4u.png" alt="Cook4U Logo" />
-      <span>COOK4U</span>
-    </div>
-    <nav>
-      <a href="#" className="active">
-        Tìm đầu bếp
-      </a>
-      <a href="#">Tìm món ăn</a>
-      <a href="#">Cách đặt hàng</a>
-      <a href="#">Về chúng tôi</a>
-    </nav>
-    <div className="user-actions">
-      <button className="orders-btn">
-        <Icon
-          path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-          className="w-5 h-5"
-        />
-        Đơn hàng của tôi
-      </button>
-      <img
-        src="https://images.unsplash.com/photo-1741121625227-8ab247bf9d22?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2070"
-        alt="User Avatar"
-        className="user-avatar"
-      />
-    </div>
-  </header>
-);
-
 // Component Sidebar Lọc
 const FiltersSidebar = () => (
-  <aside className="filters-sidebar">
-    <h3>
-      <Icon
-        path="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0M3.75 18H7.5M3.75 12h16.5m-16.5 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0"
-        className="w-5 h-5"
-      />
-      Lọc
-    </h3>
-    <div className="filter-group">
-      <label>Loại ẩm thực</label>
-      <select>
-        <option>Tất cả</option>
-      </select>
+  <aside className="filters-sidebar bg-white rounded-xl border border-orange-300 p-5 h-fit">
+    <div className="flex items-center gap-2 mb-6">
+      <Filter className="w-5 h-5 text-gray-600" />
+      <h3 className="text-lg font-semibold text-gray-900">Lọc</h3>
     </div>
-    <div className="filter-group">
-      <label>Giá cả</label>
-      <input type="range" min="50000" max="5000000" defaultValue="2500000" />
-      <div className="price-range">
-        <span>VND 50,000</span>
-        <span>VND 5,000,000</span>
+    
+    <div className="space-y-5">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Loại ẩm thực
+        </label>
+        <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white">
+          <option>Tất cả</option>
+          <option>Món Việt</option>
+          <option>Món Âu</option>
+          <option>Món Á</option>
+        </select>
+      </div>
+      
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Giá cả
+        </label>
+        <input 
+          type="range" 
+          min="50000" 
+          max="5000000" 
+          defaultValue="2500000"
+          className="w-full h-2 bg-gray-200 rounded-lg"
+        />
+        <div className="flex justify-between text-sm text-gray-600 mt-2">
+          <span>VND 50,000</span>
+          <span>VND 5,000,000</span>
+        </div>
+      </div>
+      
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Đánh giá
+        </label>
+        <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white">
+          <option>Bất kỳ</option>
+          <option>4.5+ ★</option>
+          <option>4.0+ ★</option>
+        </select>
+      </div>
+      
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Thời gian nấu
+        </label>
+        <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white">
+          <option>Bất kỳ</option>
+          <option>1-2 tiếng</option>
+          <option>2-3 tiếng</option>
+        </select>
       </div>
     </div>
-    <div className="filter-group">
-      <label>Đánh giá</label>
-      <select>
-        <option>Bất kỳ</option>
-      </select>
-    </div>
-    <div className="filter-group">
-      <label>Thời gian nấu</label>
-      <select>
-        <option>Bất kỳ</option>
-      </select>
-    </div>
-    <div className="filter-group">
-      <label>Địa điểm</label>
-      <select>
-        <option>Tất cả</option>
-      </select>
-    </div>
-    <button className="clear-filters-btn">Xóa lọc</button>
   </aside>
 );
 
 // Component cho mỗi thẻ thông tin đầu bếp
-const ChefCard = ({ chef }) => (
-  <div className="chef-card" onClick={() => window.location.href = '/home/pickchef/' + chef.id}>
-    <div className="chef-card-header">
-      <img src={chef.avatar} alt={chef.name} className="chef-avatar" />
-      <div className="chef-info">
-        <h3>{chef.name}</h3>
-        <div className="chef-rating">
-          <span className="star">★</span> {chef.rating} ({chef.reviews} đánh
-          giá)
+const ChefCard = ({ chef }) => {
+  const navigate = useNavigate();
+  
+  const handleClick = () => {
+    navigate(`/home/pickchef/${chef.id}`);
+  };
+  
+  return (
+    <div 
+      onClick={handleClick}
+      className="bg-orange-50 rounded-xl border border-gray-300 p-5 hover:shadow-xl hover:border-orange-300 transition-all duration-300 cursor-pointer"
+    >
+      <div className="flex items-start gap-4 mb-4">
+        <img 
+          src={chef.avatar} 
+          alt={chef.name}
+          className="w-16 h-16 rounded-full object-cover border-2 border-orange-100"
+        />
+        <div className="flex-1">
+          <div className="flex justify-between items-start">
+            <h3 className="text-lg font-semibold text-gray-900">{chef.name}</h3>
+            <ChevronRight className="w-5 h-5 text-gray-400" />
+          </div>
+          <div className="flex items-center gap-2 mt-1">
+            <div className="flex items-center">
+              <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+              <span className="ml-1 font-medium text-gray-900">{chef.rating}</span>
+            </div>
+            <span className="text-gray-500 text-sm">({chef.reviews} đánh giá)</span>
+          </div>
         </div>
       </div>
+      
+      <div className="space-y-3 mb-4">
+        <div className="flex items-center gap-2 text-gray-700">
+          <UtensilsCrossed className="w-4 h-4 text-gray-400" />
+          <span className="text-sm">{chef.cuisine}</span>
+        </div>
+        <div className="flex items-center gap-2 text-gray-700">
+          <MapPin className="w-4 h-4 text-gray-400" />
+          <span className="text-sm">{chef.district}</span>
+        </div>
+        <div className="flex items-center gap-2 text-gray-700">
+          <Clock className="w-4 h-4 text-gray-400" />
+          <span className="text-sm">{chef.cookTime}</span>
+        </div>
+        <div className="flex items-center gap-2 text-gray-700">
+          <DollarSign className="w-4 h-4 text-gray-400" />
+          <span className="text-sm font-medium">VND {chef.price}/tiếng</span>
+        </div>
+      </div>
+      
+      <div className="flex flex-wrap gap-2">
+        {chef.tags.map((tag) => (
+          <span 
+            key={tag} 
+            className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
     </div>
-    <div className="chef-details">
-      <p>{chef.cuisine}</p>
-      <p>
-        <Icon path="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" className="w-4 h-4" />
-        <Icon
-          path="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
-          className="w-4 h-4"
-        />
-        {chef.district}
-      </p>
-      <p>
-        <Icon
-          path="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-          className="w-4 h-4"
-        />
-        {chef.cookTime}
-      </p>
-      <p>
-        <Icon
-          path="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V6.375c0-.621.504-1.125 1.125-1.125h.375m16.5 3.375V18a1.125 1.125 0 01-1.125 1.125h-12.75A1.125 1.125 0 013.75 18v-9.375m16.5 3.375c0 .621-.504 1.125-1.125 1.125h-1.5c-.621 0-1.125-.504-1.125-1.125v-1.5c0-.621.504-1.125 1.125-1.125h1.5c.621 0 1.125.504 1.125 1.125v1.5z"
-          className="w-4 h-4"
-        />
-        VND {chef.price}/tiếng
-      </p>
-    </div>
-    <div className="chef-tags">
-      {chef.tags.map((tag) => (
-        <span key={tag} className="tag">
-          {tag}
-        </span>
-      ))}
-    </div>
-  </div>
-);
+  );
+};
 
 // --- MAIN PAGE COMPONENT ---
 const FindChefPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="find-chef-page">
-
-      <main className="container">
-        <div className="search-header">
-          <h1>Tìm đầu bếp phù hợp</h1>
-          <div className="tabs">
+    <div className="min-h-screen bg-gray-50">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Logo và Title */}
+        <div className=" mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Tìm đầu bếp phù hợp</h1>
+        </div>
+        
+        {/* Tabs và Search */}
+        <div className="mb-8">
+          <div className="flex border-b border-gray-200 mb-6">
             <button
-              className="tab-item active"
               onClick={() => navigate("/home/findachef")}
+              className="flex items-center gap-2 px-6 py-3 border-b-2 border-orange-500 text-orange-500 font-medium"
             >
-              <Icon
-                path="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                className="w-5 h-5"
-              />
+              <Users className="w-5 h-5" />
               Đầu bếp
             </button>
             <button
-              className="tab-item"
               onClick={() => navigate("/home/findadish")}
+              className="flex items-center gap-2 px-6 py-3 text-gray-500 hover:text-gray-700 font-medium"
             >
-              <Icon
-                path="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
-                className="w-5 h-5"
-              />
+              <UtensilsCrossed className="w-5 h-5" />
               Món ăn
             </button>
           </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Tìm kiếm món ăn, phong cách ẩm thực hoặc tên đầu bếp..."
+                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg bg-white"
+              />
+            </div>
+            <button className="flex items-center gap-2 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+              <Filter className="w-5 h-5" />
+              <span className="font-medium">Bộ lọc</span>
+            </button>
+          </div>
         </div>
-
-        <div className="search-bar">
-          <Icon
-            path="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-            className="w-5 h-5"
-          />
-          <input
-            type="text"
-            placeholder="Tìm kiếm món ăn, phong cách ẩm thực hoặc tên đầu bếp..."
-          />
-          <button className="filter-btn">
-            <Icon
-              path="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z"
-              className="w-5 h-5"
-            />
-            Bộ lọc
-          </button>
-        </div>
-
-        <div className="content-wrapper">
-          <FiltersSidebar />
-          <section className="chef-list-section">
-            <div className="list-header">
-              <h2>6 đầu bếp sẵn có</h2>
-              <select className="sort-by">
+        
+        {/* Main content */}
+        <div className="grid grid-cols-4 gap-8">
+          {/* Filters sidebar */}
+          <div className="col-span-1">
+            <FiltersSidebar />
+          </div>
+          
+          {/* Chef list */}
+          <div className="col-span-3">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">6 đầu bếp sẵn có</h2>
+              <select className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700">
                 <option>Đánh giá cao</option>
                 <option>Giá thấp đến cao</option>
                 <option>Giá cao đến thấp</option>
               </select>
             </div>
-            <div className="chef-grid">
+            
+            <div className="grid grid-cols-2 gap-6">
               {chefsData.map((chef) => (
                 <ChefCard key={chef.id} chef={chef} />
               ))}
             </div>
-          </section>
+          </div>
         </div>
       </main>
     </div>
