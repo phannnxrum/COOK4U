@@ -3,6 +3,7 @@ import ChefFavoriteDishes from "./ChefFavoriteDishes";
 import { useState } from "react";
 import ChefIntro from "./ChefIntro";
 import ChefFeedback from "./ChefFeedback";
+import { motion } from "framer-motion";
 
 const ChefTabs = ({ chef }) => {
   const [activeTabs, setActiveTabs] = useState("fDishes");
@@ -20,13 +21,21 @@ const ChefTabs = ({ chef }) => {
           <button
             key={tab.id}
             onClick={() => setActiveTabs(tab.id)}
-            className={`inline-block py-1.5 w-1/3 rounded-full font-semibold transition-all duration-200 ${
+            className={`relative z-10 inline-block py-1.5 w-1/3 rounded-full font-semibold transition-all duration-200 focus:outline-none ${
               activeTabs === tab.id
-                ? "bg-white shadow-md text-orange-500 font-medium"
+                ? " text-orange-500 font-medium"
                 : "text-gray-700 hover:text-orange-400"
             }`}
           >
             {tab.label}
+            {activeTabs == tab.id && (
+              <motion.div
+                layoutId="active-pill"
+                className="absolute inset-0 bg-white rounded-full shadow-md border border-gray-100"
+                style={{ zIndex: -1 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              />
+            )}
           </button>
         ))}
       </div>
@@ -34,12 +43,9 @@ const ChefTabs = ({ chef }) => {
       <div className="">
         {activeTabs === "fDishes" && (
           <ChefFavoriteDishes dishes={chef.dishes}></ChefFavoriteDishes>
-
         )}
 
-        {activeTabs === "intro" && (
-            <ChefIntro chef = {chef}></ChefIntro>
-        )}
+        {activeTabs === "intro" && <ChefIntro chef={chef}></ChefIntro>}
 
         {activeTabs === "feedback" && (
           <ChefFeedback reviewLists={chef.reviewsList}></ChefFeedback>

@@ -1,0 +1,83 @@
+[
+  {
+    "id": 1,
+    "date": "13/12/2025",
+    "name": "Đầu bếp Tony",
+    "avatar": "https://i.pravatar.cc/150?img=1",
+    "rating": 4.9,
+    "dishes": [
+      {
+        "id": 1,
+        "name": "Sườn Nướng BBQ",
+        "image": "https://foodish-api.com/images/butter-chicken/butter-chicken20.jpg",
+        "code": "ORD-001-1",
+        "startTime": "18:00",
+        "status": "complete",
+        "dishPrice": 250000
+      },
+      {
+        "id": 2,
+        "name": "Salad Ceasar",
+        "image": "https://foodish-api.com/images/dessert/dessert17.jpg",
+        "code": "ORD-001-2",
+        "startTime": "18:15",
+        "status": "complete",
+        "dishPrice": 120000
+      },
+      {
+        "id": 3,
+        "name": "Rượu Vang Đỏ",
+        "image": "https://foodish-api.com/images/dessert/dessert35.jpg",
+        "code": "ORD-001-3",
+        "startTime": "18:20",
+        "status": "complete",
+        "dishPrice": 500000
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "date": "14/12/2025",
+    "name": "Bếp trưởng Mai",
+    "avatar": "https://i.pravatar.cc/150?img=5",
+    "rating": 4.7,
+    "dishes": [
+      {
+        "id": 1,
+        "name": "Cơm Chiên Hải Sản",
+        "image": "https://foodish-api.com/images/rice/rice2.jpg",
+        "code": "ORD-002-1",
+        "startTime": "11:30",
+        "status": "onWork",
+        "dishPrice": 95000
+      },
+      {
+        "id": 2,
+        "name": "Canh Rong Biển",
+        "image": "https://foodish-api.com/images/idly/idly16.jpg",
+        "code": "ORD-002-2",
+        "startTime": "11:40",
+        "status": "poll",
+        "dishPrice": 45000
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "date": "14/12/2025",
+    "name": "Chef John",
+    "avatar": "https://i.pravatar.cc/150?img=12",
+    "rating": 4.3,
+    "dishes": [
+      {
+        "id": 1,
+        "name": "Hamburger Bò",
+        "image": "https://foodish-api.com/images/burger/burger1.jpg",
+        "code": "ORD-003-1",
+        "startTime": "19:00",
+        "status": "cancel",
+        "dishPrice": 110000
+      }
+    ]
+  }
+]
