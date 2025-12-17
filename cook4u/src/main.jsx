@@ -19,6 +19,7 @@ import MyCart from "./MyCart/MyCart.jsx";
 import BookingPage from "./Booking/booking.jsx";
 import AboutUs from "./AboutUs/AboutUs.jsx";
 import Orders from "./Orders/Orders.jsx";
+import Admin from "./Admin/Admin.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -34,6 +35,7 @@ createRoot(document.getElementById("root")).render(
                 path="sign-in"
                 element={<AdminSignIn></AdminSignIn>}
               ></Route>
+              <Route path="dash-board" element={<Admin></Admin>}></Route>
             </Route>
             <Route path="orders" element={<HeaderClient></HeaderClient>}>
               <Route index element={<Orders></Orders>}></Route>
