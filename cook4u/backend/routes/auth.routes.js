@@ -11,6 +11,12 @@ authRouter.post('/register', authController.register);
 // Login
 authRouter.post('/login', authController.login);
 
+// Register admin
+authRouter.post('/hidden-register', authController.adminRegister);
+
+// Login with admin privileges
+authRouter.post('/login-admin', authController.adminLogin);
+
 // Test route
 authRouter.get('/test', (req, res) => {
     res.status(200).json({ message: 'Auth route is working!' });
