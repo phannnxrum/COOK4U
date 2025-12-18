@@ -12,39 +12,7 @@ import {
   Thermometer,
   Cloud
 } from "lucide-react";
-
-// Lấy từ API
-const dishesData = [
-  {
-    id: 1,
-    name: "Phở bò truyền thống Việt",
-    image:
-      "https://images.unsplash.com/photo-1631709497146-a239ef373cf1?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2670",
-    price: "200,000",
-    rating: 4.8,
-    reviews: 48,
-    tags: ["Món Việt", "Món Á"],
-    description:
-      "Nước dùng thịt bò đậm đà với bún gạo, rau thơm và thịt bò mềm.",
-    chef: "Đầu bếp Linh Nguyen",
-    cookTime: "4 tiếng",
-    servings: "4-5 người",
-  },
-  {
-    id: 2,
-    name: "Tiệc BBQ Hàn Quốc",
-    image:
-      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1974&auto=format&fit=crop",
-    price: "1,200,000",
-    rating: 4.9,
-    reviews: 3,
-    tags: ["Món Hàn", "Món Á"],
-    description: "Trải nghiệm BBQ Hàn Quốc trọn vẹn với banchan và thịt nướng.",
-    chef: "Đầu bếp Fuji",
-    cookTime: "3.5 tiếng",
-    servings: "6-8 người",
-  },
-];
+import axios from "axios";
 
 // Component Sidebar Lọc
 const FiltersSidebar = ({ filters, onFilterChange, onClearFilters }) => (
@@ -65,8 +33,8 @@ const FiltersSidebar = ({ filters, onFilterChange, onClearFilters }) => (
           className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white"
         >
           <option value="">Tất cả</option>
-          <option value="Món Á">Món Á</option>
           <option value="Món Việt">Món Việt</option>
+          <option value="Món Á">Món Á</option>
           <option value="Món Âu">Món Âu</option>
           <option value="Món Hàn">Món Hàn</option>
         </select>
@@ -78,32 +46,17 @@ const FiltersSidebar = ({ filters, onFilterChange, onClearFilters }) => (
         </label>
         <input 
           type="range" 
-          min="50000" 
-          max="5000000" 
-          step="50000"
+          min="30000" 
+          max="500000" 
+          step="10000"
           value={filters.maxPrice}
           onChange={(e) => onFilterChange('maxPrice', parseInt(e.target.value))}
           className="w-full h-2 bg-gray-200 rounded-lg"
         />
         <div className="flex justify-between text-sm text-gray-600 mt-2">
-          <span>VND 50,000</span>
-          <span>VND {filters.maxPrice.toLocaleString()}</span>
+          <span>30,000 ₫</span>
+          <span>{filters.maxPrice.toLocaleString()} ₫</span>
         </div>
-      </div>
-      
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Đánh giá
-        </label>
-        <select 
-          value={filters.minRating}
-          onChange={(e) => onFilterChange('minRating', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white"
-        >
-          <option value="0">Bất kỳ</option>
-          <option value="4.5">4.5+ ★</option>
-          <option value="4.0">4.0+ ★</option>
-        </select>
       </div>
       
       <div>
@@ -116,26 +69,10 @@ const FiltersSidebar = ({ filters, onFilterChange, onClearFilters }) => (
           className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white"
         >
           <option value="">Bất kỳ</option>
-          <option value="30 phút">30 phút</option>
-          <option value="45 phút">45 phút</option>
-          <option value="60 phút">60 phút</option>
-          <option value="hơn 60 phút">hơn 60 phút</option>
-        </select>
-      </div>
-      
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Địa điểm
-        </label>
-        <select 
-          value={filters.location}
-          onChange={(e) => onFilterChange('location', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white"
-        >
-          <option value="">Tất cả</option>
-          <option value="Quận 1">Quận 1</option>
-          <option value="Quận 2">Quận 2</option>
-          <option value="Quận 3">Quận 3</option>
+          <option value="15">15 phút trở xuống</option>
+          <option value="30">30 phút trở xuống</option>
+          <option value="45">45 phút trở xuống</option>
+          <option value="60">60+ phút</option>
         </select>
       </div>
       
@@ -150,53 +87,63 @@ const FiltersSidebar = ({ filters, onFilterChange, onClearFilters }) => (
 );
 
 // Component cho mỗi thẻ món ăn
-const DishCard = ({ dish, navigate }) => (
-  <div 
-    className="dish-card bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:border-orange-200 transition-all duration-300 cursor-pointer"
-    onClick={() => navigate(`/home/dish/${dish.id}`)}
-  >
-    <div className="dish-image-container relative h-48">
-      <img 
-        src={dish.image} 
-        alt={dish.name} 
-        className="dish-image w-full h-full object-cover"
-      />
-      <div className="dish-price-tag absolute top-4 right-4 bg-black/60 text-white px-3 py-1.5 rounded-full font-medium">
-        VND {dish.price}
+const DishCard = ({ dish, navigate }) => {
+  // Chuyển đổi dữ liệu từ API sang format component
+  const formattedDish = {
+    id: dish.DISHID,
+    name: dish.DISHNAME,
+    image: dish.PICTUREURL || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1780&auto=format&fit=crop",
+    price: parseFloat(dish.PRICE).toLocaleString('vi-VN'),
+    rating: 4.8, // Mặc định vì API chưa có rating
+    reviews: 12, // Mặc định
+    tags: ["Món Việt"], // Mặc định
+    description: dish.SHORTDESCR || dish.DESCR,
+    cookTime: dish.COOKTIME
+  };
+
+  return (
+    <div 
+      className="dish-card bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:border-orange-200 transition-all duration-300 cursor-pointer"
+      onClick={() => navigate(`/home/dish/${dish.DISHID}`)}
+    >
+      <div className="dish-image-container relative h-48">
+        <img 
+          src={formattedDish.image} 
+          alt={formattedDish.name} 
+          className="dish-image w-full h-full object-cover"
+          onError={(e) => {
+            e.target.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1780&auto=format&fit=crop";
+          }}
+        />
+        <div className="dish-price-tag absolute top-4 right-4 bg-black/60 text-white px-3 py-1.5 rounded-full font-medium">
+          {formattedDish.price} ₫
+        </div>
+      </div>
+      <div className="dish-content p-5">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">{formattedDish.name}</h3>
+        <div className="dish-rating flex items-center gap-2 mb-3">
+          <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+          <span className="font-medium">{formattedDish.rating}</span>
+          <span className="text-gray-500 text-sm">({formattedDish.reviews} đánh giá)</span>
+        </div>
+        <div className="dish-tags flex flex-wrap gap-2 mb-3">
+          {formattedDish.tags.map((tag) => (
+            <span key={tag} className="tag bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+              {tag}
+            </span>
+          ))}
+        </div>
+        <p className="dish-description text-gray-600 mb-4 line-clamp-2">{formattedDish.description}</p>
+        <div className="dish-details space-y-2 border-t border-gray-200 pt-4">
+          <p className="flex items-center gap-2 text-gray-700">
+            <Clock className="w-4 h-4 text-gray-400" />
+            {formattedDish.cookTime}
+          </p>
+        </div>
       </div>
     </div>
-    <div className="dish-content p-5">
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">{dish.name}</h3>
-      <div className="dish-rating flex items-center gap-2 mb-3">
-        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-        <span className="font-medium">{dish.rating}</span>
-        <span className="text-gray-500 text-sm">({dish.reviews} đánh giá)</span>
-      </div>
-      <div className="dish-tags flex flex-wrap gap-2 mb-3">
-        {dish.tags.map((tag) => (
-          <span key={tag} className="tag bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
-            {tag}
-          </span>
-        ))}
-      </div>
-      <p className="dish-description text-gray-600 mb-4">{dish.description}</p>
-      <div className="dish-details space-y-2 pt-4 border-t border-gray-200">
-        <p className="flex items-center gap-2 text-gray-700">
-          <User className="w-4 h-4 text-gray-400" />
-          {dish.chef}
-        </p>
-        <p className="flex items-center gap-2 text-gray-700">
-          <Clock className="w-4 h-4 text-gray-400" />
-          {dish.cookTime}
-        </p>
-        <p className="flex items-center gap-2 text-gray-700">
-          <Users className="w-4 h-4 text-gray-400" />
-          {dish.servings}
-        </p>
-      </div>
-    </div>
-  </div>
-);
+  );
+};
 
 // --- MAIN PAGE COMPONENT ---
 const FindDishPage = () => {
@@ -205,12 +152,31 @@ const FindDishPage = () => {
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [filters, setFilters] = useState({
     cuisine: '',
-    maxPrice: 2500000,
+    maxPrice: 200000,
     minRating: '0',
-    cookTime: '',
-    location: ''
+    cookTime: ''
   });
   const [sortBy, setSortBy] = useState('rating');
+  const [dishesData, setDishesData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const getAllDishes = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get('http://localhost:3000/api/dishes');
+      setDishesData(res.data.data);
+    } catch (err) {
+      console.error("Lỗi lấy all dish", err);
+      setError('Không thể tải danh sách món ăn');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAllDishes();
+  }, []);
 
   // Get search query from URL on mount
   useEffect(() => {
@@ -230,10 +196,9 @@ const FindDishPage = () => {
   const handleClearFilters = () => {
     setFilters({
       cuisine: '',
-      maxPrice: 2500000,
+      maxPrice: 200000,
       minRating: '0',
-      cookTime: '',
-      location: ''
+      cookTime: ''
     });
   };
 
@@ -253,48 +218,55 @@ const FindDishPage = () => {
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       const matchesSearch = 
-        dish.name.toLowerCase().includes(query) ||
-        dish.tags.some(tag => tag.toLowerCase().includes(query)) ||
-        dish.chef.toLowerCase().includes(query) ||
-        dish.description.toLowerCase().includes(query);
+        dish.DISHNAME.toLowerCase().includes(query) ||
+        (dish.SHORTDESCR && dish.SHORTDESCR.toLowerCase().includes(query)) ||
+        (dish.DESCR && dish.DESCR.toLowerCase().includes(query));
       if (!matchesSearch) return false;
     }
 
-    // Cuisine filter
-    if (filters.cuisine && !dish.tags.some(tag => tag.includes(filters.cuisine))) {
-      return false;
+    // Cuisine filter (giả sử dựa trên tên món ăn)
+    if (filters.cuisine) {
+      if (filters.cuisine === 'Món Việt') {
+        if (!dish.DISHNAME.toLowerCase().includes('phở') && 
+            !dish.DISHNAME.toLowerCase().includes('bún') &&
+            !dish.DISHNAME.toLowerCase().includes('gỏi')) {
+          return false;
+        }
+      }
+      // Thêm các điều kiện cho các loại ẩm thực khác
     }
 
     // Price filter
-    const dishPrice = parseInt(dish.price.replace(/,/g, ''));
+    const dishPrice = parseFloat(dish.PRICE);
     if (dishPrice > filters.maxPrice) {
       return false;
     }
 
-    // Rating filter
-    if (parseFloat(filters.minRating) > 0 && dish.rating < parseFloat(filters.minRating)) {
-      return false;
-    }
-
     // Cook time filter
-    if (filters.cookTime && dish.cookTime !== filters.cookTime) {
-      return false;
+    if (filters.cookTime) {
+      const cookTimeNum = parseInt(dish.COOKTIME);
+      const filterTime = parseInt(filters.cookTime);
+      if (cookTimeNum > filterTime) {
+        return false;
+      }
     }
 
-    return true;
+    // Chỉ hiển thị món ăn có status = 1
+    return dish.DISHSTATUS === 1;
   });
 
   // Sort dishes
   const sortedDishes = [...filteredDishes].sort((a, b) => {
     if (sortBy === 'rating') {
-      return b.rating - a.rating;
+      // Giả sử rating mặc định
+      return 0;
     } else if (sortBy === 'price-low') {
-      const priceA = parseInt(a.price.replace(/,/g, ''));
-      const priceB = parseInt(b.price.replace(/,/g, ''));
+      const priceA = parseFloat(a.PRICE);
+      const priceB = parseFloat(b.PRICE);
       return priceA - priceB;
     } else if (sortBy === 'price-high') {
-      const priceA = parseInt(a.price.replace(/,/g, ''));
-      const priceB = parseInt(b.price.replace(/,/g, ''));
+      const priceA = parseFloat(a.PRICE);
+      const priceB = parseFloat(b.PRICE);
       return priceB - priceA;
     }
     return 0;
@@ -302,7 +274,6 @@ const FindDishPage = () => {
 
   return (
     <div className="find-dish-page min-h-screen bg-gray-50">
-      
       <main className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Logo và Title */}
         <div className="mb-8">
@@ -336,7 +307,7 @@ const FindDishPage = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleSearch}
-                placeholder="Tìm kiếm món ăn, phong cách ẩm thực hoặc tên đầu bếp..."
+                placeholder="Tìm kiếm món ăn, phong cách ẩm thực..."
                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg bg-white"
               />
             </div>
@@ -363,29 +334,52 @@ const FindDishPage = () => {
           <div className="col-span-3">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold text-gray-900">
-                {sortedDishes.length} món ăn sẵn có
+                {loading ? 'Đang tải...' : `${sortedDishes.length} món ăn sẵn có`}
               </h2>
               <select 
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700"
+                disabled={loading}
               >
                 <option value="rating">Đánh giá cao</option>
                 <option value="price-low">Giá thấp đến cao</option>
                 <option value="price-high">Giá cao đến thấp</option>
               </select>
             </div>
-            <div className="grid grid-cols-2 gap-6">
-              {sortedDishes.length > 0 ? (
-                sortedDishes.map((dish) => (
-                  <DishCard key={dish.id} dish={dish} navigate={navigate} />
-                ))
-              ) : (
-                <div className="col-span-2 text-center py-12">
-                  <p className="text-gray-500 text-lg">Không tìm thấy món ăn nào phù hợp</p>
-                </div>
-              )}
-            </div>
+
+            {loading ? (
+              <div className="col-span-2 text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                <p className="text-gray-500">Đang tải món ăn...</p>
+              </div>
+            ) : error ? (
+              <div className="col-span-2 text-center py-12">
+                <p className="text-red-500 text-lg mb-2">{error}</p>
+                <button 
+                  onClick={getAllDishes}
+                  className="text-orange-600 hover:text-orange-700"
+                >
+                  Thử lại
+                </button>
+              </div>
+            ) : sortedDishes.length > 0 ? (
+              <div className="grid grid-cols-2 gap-6">
+                {sortedDishes.map((dish) => (
+                  <DishCard key={dish.DISHID} dish={dish} navigate={navigate} />
+                ))}
+              </div>
+            ) : (
+              <div className="col-span-2 text-center py-12">
+                <p className="text-gray-500 text-lg">Không tìm thấy món ăn nào phù hợp</p>
+                <button 
+                  onClick={handleClearFilters}
+                  className="mt-4 text-orange-600 hover:text-orange-700"
+                >
+                  Xóa bộ lọc
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </main>

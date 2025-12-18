@@ -111,11 +111,13 @@ const HeaderClient = () => {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                 >
                   <div className="relative">
-                    <img
-                      src={user?.avatar || "https://i.pravatar.cc/150?img=50"}
-                      alt="User Avatar"
-                      className="w-9 h-9 rounded-full object-cover border-2 border-gray-200 group-hover:border-orange-400 transition-all duration-200 shadow-sm"
-                    />
+                    {user.avatar ? (
+                        <img src={user.avatar} alt={user.fullname} className='w-12 h-12 rounded-full' />
+                      ) : (
+                        <div className='w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-lg'>
+                          {user.fullname.charAt(0)}
+                        </div>
+                      )}
                     <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
                   </div>
                   <ChevronDown
