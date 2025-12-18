@@ -1,5 +1,19 @@
 import pool from "../config/db.js";
 
+// Controller functions
+// export const getAllChefs = async (req, res) => {
+//     const conn = await pool.getConnection();
+//     try {
+//         const [chefs] = await conn.query(
+//             'SELECT CHEFID, CHEFNAME, AVTURL, DESCR, EXPYEAR, PRICEPERHOUR, CHEFSTATUS, CREATEDAT FROM CHEF WHERE CHEFSTATUS = TRUE'
+//         );
+//         res.status(200).json({ message: 'Chefs retrieved successfully', data: chefs });
+//     } catch (error) {
+//         res.status(500).json({ message: 'Server error', error: error.message });
+//     } finally {
+//         conn.release();
+//     }
+// };
 export const getAllChefs = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -26,7 +40,7 @@ export const getAllChefs = async (req, res) => {
                 -- Định dạng giá tiền có dấu phẩy (ví dụ: 100,000)
                 FORMAT(c.PRICEPERHOUR, 0) AS price,
                 -- Lấy danh sách các thẻ món ăn sở trường (Tags)
-                GROUP_CONCAT(DISTINCT d.name SEPARATOR ', ') AS tags
+                GROUP_CONCAT(DISTINCT d.DISHNAME SEPARATOR ', ') AS tags
             FROM CHEF c
             LEFT JOIN REVIEW r ON c.CHEFID = r.CHEFID
             LEFT JOIN CHEF_SIGNATURE_DISH csd ON c.CHEFID = csd.CHEFID
@@ -66,6 +80,9 @@ export const getChefbyId = async (req, res) => {
         c.CHEFID AS id,
         c.CHEFNAME AS name,
         c.AVTURL AS avatar,
+        c.PHONENUMBER AS phone,
+        c.EMAIL AS email,
+        c.CHEFSTATUS AS status,
         COALESCE(ROUND(AVG(r.STAR), 1), 0) AS rating,
         COUNT(DISTINCT r.REVIEWID) AS reviews,
         -- Sử dụng COALESCE và mảng rỗng để tránh lỗi null
@@ -77,7 +94,7 @@ export const getChefbyId = async (req, res) => {
         c.VALID AS valid,
         c.DESCR AS description,
         c.DESCR AS bio,
-        COALESCE((SELECT JSON_ARRAYAGG(d.name) 
+        COALESCE((SELECT JSON_ARRAYAGG(d.DISHNAME) 
           FROM CHEF_SIGNATURE_DISH csd 
           JOIN DISH d ON csd.DISHID = d.DISHID 
           WHERE csd.CHEFID = c.CHEFID), JSON_ARRAY()) AS tags,
@@ -109,7 +126,7 @@ export const getChefbyId = async (req, res) => {
     DATE_FORMAT(r.REVIEWTIME, '%d/%m/%Y') AS date,
     r.REVIEWCONTENT AS comment,
     -- Subquery lấy tên các món ăn khách đã đặt trong đơn hàng này
-    (SELECT GROUP_CONCAT(d.name SEPARATOR ', ') 
+    (SELECT GROUP_CONCAT(d.DISHNAME SEPARATOR ', ') 
      FROM ORDER_ITEM oi 
      JOIN DISH d ON oi.DISHID = d.DISHID 
      WHERE oi.ORDERID = r.ORDERID) AS dish
@@ -125,7 +142,7 @@ export const getChefbyId = async (req, res) => {
     const [dishesDetail] = await conn.query(
       `
       SELECT 
-        d.name AS name,
+        d.DISHNAME AS name,
         d.PICTUREURL AS image,
         d.DESCR AS description,
         d.COOKTIME AS cookTime,
@@ -207,7 +224,7 @@ export const createChef = async (req, res) => {
   }
 };
 
-// tên đầu bếp, email, số điện thoại, avturl, expyear, chefarea, cheftime, priceperhour, 
+// tên đầu bếp, email, số điện thoại, avturl, expyear, chefarea, cheftime, priceperhour,
 // chefstatus, valid, cuisine, descr, languages, certifications, serviceDetails, minhour
 
 export const createChefV2 = async (req, res) => {
@@ -227,12 +244,13 @@ export const createChefV2 = async (req, res) => {
     languages,
     certifications,
     serviceDetails,
-    minhour
+    minhour,
   } = req.body;
   const conn = await pool.getConnection();
   try {
     await conn.beginTransaction();
-    const [result] = await conn.query(`
+    const [result] = await conn.query(
+      `
       INSERT INTO CHEF
         (CHEFNAME, EMAIL, PHONENUMBER, AVTURL, EXPYEAR, CHEFAREA, CHEFTIME, PRICEPERHOUR,
          CHEFSTATUS, VALID, DESCR, MINHOUR)
@@ -250,22 +268,22 @@ export const createChefV2 = async (req, res) => {
         toNull(chefstatus),
         toNull(valid),
         toNull(descr),
-        toNull(minhour)
+        toNull(minhour),
       ]
     );
-    
+
     const [rows] = await conn.query(
-      'SELECT CHEFID FROM CHEF ORDER BY CREATEDAT DESC LIMIT 1'
+      "SELECT CHEFID FROM CHEF ORDER BY CREATEDAT DESC LIMIT 1"
     );
     const chefId = rows[0].CHEFID;
-    
+
     // Insert cuisine types
-    console.log('Cuisine data:', cuisine);
+    console.log("Cuisine data:", cuisine);
     if (Array.isArray(cuisine)) {
       for (const type of cuisine) {
-        console.log('Inserting cuisine type:', type);
+        console.log("Inserting cuisine type:", type);
         await conn.query(
-          'INSERT INTO CHEF_CUISINE_TYPE (CHEFID, CUISINETYPE) VALUES (?, ?)',
+          "INSERT INTO CHEF_CUISINE_TYPE (CHEFID, CUISINETYPE) VALUES (?, ?)",
           [chefId, type]
         );
       }
@@ -275,7 +293,7 @@ export const createChefV2 = async (req, res) => {
     if (Array.isArray(languages)) {
       for (const lang of languages) {
         await conn.query(
-          'INSERT INTO CHEF_LANGUAGE (CHEFID, LANGUAGE) VALUES (?, ?)',
+          "INSERT INTO CHEF_LANGUAGE (CHEFID, LANGUAGE) VALUES (?, ?)",
           [chefId, lang]
         );
       }
@@ -285,7 +303,7 @@ export const createChefV2 = async (req, res) => {
     if (Array.isArray(certifications)) {
       for (const cert of certifications) {
         await conn.query(
-          'INSERT INTO CHEFCERTIFICATE (CHEFID, CERTIFICATE) VALUES (?, ?)',
+          "INSERT INTO CHEFCERTIFICATE (CHEFID, CERTIFICATE) VALUES (?, ?)",
           [chefId, cert]
         );
       }
@@ -295,7 +313,7 @@ export const createChefV2 = async (req, res) => {
     if (serviceDetails && Array.isArray(serviceDetails.includes)) {
       for (const service of serviceDetails.includes) {
         await conn.query(
-          'INSERT INTO CHEFSERVICE (CHEFID, SERVICE) VALUES (?, ?)',
+          "INSERT INTO CHEFSERVICE (CHEFID, SERVICE) VALUES (?, ?)",
           [chefId, service]
         );
       }
@@ -392,7 +410,7 @@ export const updateChefV2 = async (req, res) => {
     chefstatus,
     valid,
     descr,
-    minhour
+    minhour,
   } = req.body;
   const conn = await pool.getConnection();
   try {
@@ -455,15 +473,17 @@ export const updateChefV2 = async (req, res) => {
 
 // Update chef_cuisine_type
 export const updateChefCuisineTypes = async (req, res) => {
-  const { id } = req.params;        // id của chef
-  const { cuisine } = req.body;     // cuisine mới
+  const { id } = req.params; // id của chef
+  const { cuisine } = req.body; // cuisine mới
 
   const conn = await pool.getConnection();
   try {
     await conn.beginTransaction();
 
     // Kiểm tra chef có tồn tại không
-    const [rows] = await conn.query("SELECT * FROM CHEF WHERE CHEFID = ?", [id]);
+    const [rows] = await conn.query("SELECT * FROM CHEF WHERE CHEFID = ?", [
+      id,
+    ]);
     if (rows.length === 0) {
       await conn.rollback();
       return res.status(404).json({ message: "Chef not found" });
@@ -504,7 +524,9 @@ export const updateChefLanguages = async (req, res) => {
   const conn = await pool.getConnection();
   try {
     await conn.beginTransaction();
-    const [rows] = await conn.query("SELECT * FROM CHEF WHERE CHEFID = ?", [id]);
+    const [rows] = await conn.query("SELECT * FROM CHEF WHERE CHEFID = ?", [
+      id,
+    ]);
     if (rows.length === 0) {
       await conn.rollback();
       return res.status(404).json({ message: "Chef not found" });
@@ -540,7 +562,9 @@ export const updateChefCertifications = async (req, res) => {
   const conn = await pool.getConnection();
   try {
     await conn.beginTransaction();
-    const [rows] = await conn.query("SELECT * FROM CHEF WHERE CHEFID = ?", [id]);
+    const [rows] = await conn.query("SELECT * FROM CHEF WHERE CHEFID = ?", [
+      id,
+    ]);
     if (rows.length === 0) {
       await conn.rollback();
       return res.status(404).json({ message: "Chef not found" });
@@ -560,9 +584,10 @@ export const updateChefCertifications = async (req, res) => {
       );
     }
     await conn.commit();
-    res.status(200).json({ message: "Chef certifications updated successfully" });
-  }
-  catch (error) {
+    res
+      .status(200)
+      .json({ message: "Chef certifications updated successfully" });
+  } catch (error) {
     await conn.rollback();
     res.status(500).json({ message: "Server error", error: error.message });
   } finally {
@@ -577,7 +602,9 @@ export const updateChefServiceDetails = async (req, res) => {
   const conn = await pool.getConnection();
   try {
     await conn.beginTransaction();
-    const [rows] = await conn.query("SELECT * FROM CHEF WHERE CHEFID = ?", [id]);
+    const [rows] = await conn.query("SELECT * FROM CHEF WHERE CHEFID = ?", [
+      id,
+    ]);
     if (rows.length === 0) {
       await conn.rollback();
       return res.status(404).json({ message: "Chef not found" });
@@ -592,7 +619,9 @@ export const updateChefServiceDetails = async (req, res) => {
       }
     }
     await conn.commit();
-    res.status(200).json({ message: "Chef service details updated successfully" });
+    res
+      .status(200)
+      .json({ message: "Chef service details updated successfully" });
   } catch (error) {
     await conn.rollback();
     res.status(500).json({ message: "Server error", error: error.message });

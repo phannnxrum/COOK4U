@@ -8,7 +8,7 @@ export const getAllDishes = async (req, res) => {
       `
             SELECT 
                 d.DISHID AS id,
-                d.name AS name,
+                d.DISHNAME AS name,
                 d.DESCR AS description,
                 d.SHORTDESCR AS shortDescription,
                 d.COOKTIME AS cookTime,
@@ -61,7 +61,7 @@ export const getDishById = async (req, res) => {
   try {
     const { id } = req.params;
     const [dishes] = await conn.query(
-      "SELECT DISHID, name, DESCR, SHORTDESCR, COOKTIME, PRICE, DISHSTATUS, PICTUREURL, CREATEDAT FROM DISH WHERE DISHID = ?",
+      "SELECT DISHID, DISHNAME, DESCR, SHORTDESCR, COOKTIME, PRICE, DISHSTATUS, PICTUREURL, CREATEDAT FROM DISH WHERE DISHID = ?",
       [id]
     );
     if (dishes.length === 0) {
@@ -90,7 +90,7 @@ export const createDish = async (req, res) => {
     await conn.beginTransaction();
     const [result] = await conn.query(
       `INSERT INTO DISH
-                (name, DESCR, SHORTDESCR, COOKTIME, PRICE, PICTUREURL, DISHSTATUS)
+                (DISHNAME, DESCR, SHORTDESCR, COOKTIME, PRICE, PICTUREURL, DISHSTATUS)
                 VALUES (?, ?, ?, ?, ?, ?, TRUE)`,
       [
         toNull(dishname),
@@ -142,7 +142,7 @@ export const updateDish = async (req, res) => {
     const currentDish = rows[0];
     // Merge dữ liệu mới với dữ liệu cũ
     const updatedDish = {
-      dishname: dishname ?? currentDish.name,
+      dishname: dishname ?? currentDish.DISHNAME,
       descr: descr ?? currentDish.DESCR,
       shortdescr: shortdescr ?? currentDish.SHORTDESCR,
       cooktime: cooktime ?? currentDish.COOKTIME,
@@ -156,7 +156,7 @@ export const updateDish = async (req, res) => {
     // Cập nhật dữ liệu
     const [result] = await conn.query(
       `UPDATE DISH SET
-                name = ?, DESCR = ?, SHORTDESCR = ?, COOKTIME = ?, PRICE = ?, DISHSTATUS = ?, PICTUREURL = ?
+                DISHNAME = ?, DESCR = ?, SHORTDESCR = ?, COOKTIME = ?, PRICE = ?, DISHSTATUS = ?, PICTUREURL = ?
              WHERE DISHID = ?`,
       [
         updatedDish.dishname,
