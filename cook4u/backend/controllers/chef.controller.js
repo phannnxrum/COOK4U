@@ -221,6 +221,112 @@ export const createChef = async (req, res) => {
   }
 };
 
+// tên đầu bếp, email, số điện thoại, avturl, expyear, chefarea, cheftime, priceperhour, 
+// chefstatus, valid, cuisine, descr, languages, certifications, serviceDetails, minhour
+
+export const createChefV2 = async (req, res) => {
+  const {
+    chefname,
+    email,
+    phonenumber,
+    avturl,
+    expyear,
+    chefarea,
+    cheftime,
+    priceperhour,
+    chefstatus,
+    valid,
+    cuisine,
+    descr,
+    languages,
+    certifications,
+    serviceDetails,
+    minhour
+  } = req.body;
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+    const [result] = await conn.query(`
+      INSERT INTO CHEF
+        (CHEFNAME, EMAIL, PHONENUMBER, AVTURL, EXPYEAR, CHEFAREA, CHEFTIME, PRICEPERHOUR,
+         CHEFSTATUS, VALID, DESCR, MINHOUR)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+      [
+        toNull(chefname),
+        toNull(email),
+        toNull(phonenumber),
+        toNull(avturl),
+        toNull(expyear),
+        toNull(chefarea),
+        toNull(cheftime),
+        toNull(priceperhour),
+        toNull(chefstatus),
+        toNull(valid),
+        toNull(descr),
+        toNull(minhour)
+      ]
+    );
+    
+    const [rows] = await conn.query(
+      'SELECT CHEFID FROM CHEF ORDER BY CREATEDAT DESC LIMIT 1'
+    );
+    const chefId = rows[0].CHEFID;
+    
+    // Insert cuisine types
+    console.log('Cuisine data:', cuisine);
+    if (Array.isArray(cuisine)) {
+      for (const type of cuisine) {
+        console.log('Inserting cuisine type:', type);
+        await conn.query(
+          'INSERT INTO CHEF_CUISINE_TYPE (CHEFID, CUISINETYPE) VALUES (?, ?)',
+          [chefId, type]
+        );
+      }
+    }
+
+    // Insert languages
+    if (Array.isArray(languages)) {
+      for (const lang of languages) {
+        await conn.query(
+          'INSERT INTO CHEF_LANGUAGE (CHEFID, LANGUAGE) VALUES (?, ?)',
+          [chefId, lang]
+        );
+      }
+    }
+
+    // Insert certifications
+    if (Array.isArray(certifications)) {
+      for (const cert of certifications) {
+        await conn.query(
+          'INSERT INTO CHEFCERTIFICATE (CHEFID, CERTIFICATE) VALUES (?, ?)',
+          [chefId, cert]
+        );
+      }
+    }
+
+    // Insert service details
+    if (serviceDetails && Array.isArray(serviceDetails.includes)) {
+      for (const service of serviceDetails.includes) {
+        await conn.query(
+          'INSERT INTO CHEFSERVICE (CHEFID, SERVICE) VALUES (?, ?)',
+          [chefId, service]
+        );
+      }
+    }
+
+    await conn.commit();
+    res
+      .status(201)
+      .json({ message: "Chef created successfully", chefId: chefId });
+  } catch (error) {
+    await conn.rollback();
+    res.status(500).json({ message: "Server error", error: error.message });
+  } finally {
+    conn.release();
+  }
+};
+
 export const updateChef = async (req, res) => {
   const { id } = req.params;
   const {
@@ -277,6 +383,230 @@ export const updateChef = async (req, res) => {
 
     await conn.commit();
     res.status(200).json({ message: "Chef updated successfully" });
+  } catch (error) {
+    await conn.rollback();
+    res.status(500).json({ message: "Server error", error: error.message });
+  } finally {
+    conn.release();
+  }
+};
+
+export const updateChefV2 = async (req, res) => {
+  const { id } = req.params;
+  // Lấy tất cả các trường có thể cập nhật từ req.body
+  const {
+    chefname,
+    email,
+    phonenumber,
+    avturl,
+    expyear,
+    chefarea,
+    cheftime,
+    priceperhour,
+    chefstatus,
+    valid,
+    descr,
+    minhour
+  } = req.body;
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+    // Lấy dữ liệu hiện tại
+    const [rows] = await conn.query("SELECT * FROM CHEF WHERE CHEFID = ?", [
+      id,
+    ]);
+    if (rows.length === 0) {
+      await conn.rollback();
+      return res.status(404).json({ message: "Chef not found" });
+    }
+    const currentChef = rows[0];
+    // Merge dữ liệu mới với dữ liệu cũ
+    const updatedChef = {
+      chefname: chefname ?? currentChef.CHEFNAME,
+      email: email ?? currentChef.EMAIL,
+      phonenumber: phonenumber ?? currentChef.PHONENUMBER,
+      avturl: avturl ?? currentChef.AVTURL,
+      expyear: expyear ?? currentChef.EXPYEAR,
+      chefarea: chefarea ?? currentChef.CHEFAREA,
+      cheftime: cheftime ?? currentChef.CHEFTIME,
+      priceperhour: priceperhour ?? currentChef.PRICEPERHOUR,
+      chefstatus: chefstatus ?? currentChef.CHEFSTATUS,
+      valid: valid ?? currentChef.VALID,
+      descr: descr ?? currentChef.DESCR,
+      minhour: minhour ?? currentChef.MINHOUR,
+    };
+    // Update
+    const [result] = await conn.query(
+      `UPDATE CHEF
+        SET CHEFNAME = ?, EMAIL = ?, PHONENUMBER = ?, AVTURL = ?, EXPYEAR = ?, CHEFAREA = ?, CHEFTIME = ?,
+            PRICEPERHOUR = ?, CHEFSTATUS = ?, VALID = ?, DESCR = ?, MINHOUR = ?
+        WHERE CHEFID = ?`,
+      [
+        updatedChef.chefname,
+        updatedChef.email,
+        updatedChef.phonenumber,
+        updatedChef.avturl,
+        updatedChef.expyear,
+        updatedChef.chefarea,
+        updatedChef.cheftime,
+        updatedChef.priceperhour,
+        updatedChef.chefstatus,
+        updatedChef.valid,
+        updatedChef.descr,
+        updatedChef.minhour,
+        id,
+      ]
+    );
+    await conn.commit();
+    res.status(200).json({ message: "Chef updated successfully" });
+  } catch (error) {
+    await conn.rollback();
+    res.status(500).json({ message: "Server error", error: error.message });
+  } finally {
+    conn.release();
+  }
+};
+
+// Update chef_cuisine_type
+export const updateChefCuisineTypes = async (req, res) => {
+  const { id } = req.params;        // id của chef
+  const { cuisine } = req.body;     // cuisine mới
+
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    // Kiểm tra chef có tồn tại không
+    const [rows] = await conn.query("SELECT * FROM CHEF WHERE CHEFID = ?", [id]);
+    if (rows.length === 0) {
+      await conn.rollback();
+      return res.status(404).json({ message: "Chef not found" });
+    }
+
+    // Xóa cuisine cũ
+    await conn.query("DELETE FROM CHEF_CUISINE_TYPE WHERE CHEFID = ?", [id]);
+
+    // Thêm cuisine mới (có thể là array hoặc string)
+    if (Array.isArray(cuisine)) {
+      for (const item of cuisine) {
+        await conn.query(
+          "INSERT INTO CHEF_CUISINE_TYPE (CHEFID, CUISINE) VALUES (?, ?)",
+          [id, item]
+        );
+      }
+    } else if (cuisine) {
+      await conn.query(
+        "INSERT INTO CHEF_CUISINE_TYPE (CHEFID, CUISINE) VALUES (?, ?)",
+        [id, cuisine]
+      );
+    }
+
+    await conn.commit();
+    res.status(200).json({ message: "Chef cuisine updated successfully" });
+  } catch (error) {
+    await conn.rollback();
+    res.status(500).json({ message: "Server error", error: error.message });
+  } finally {
+    conn.release();
+  }
+};
+
+// Update chef languages
+export const updateChefLanguages = async (req, res) => {
+  const { id } = req.params;
+  const { languages } = req.body;
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+    const [rows] = await conn.query("SELECT * FROM CHEF WHERE CHEFID = ?", [id]);
+    if (rows.length === 0) {
+      await conn.rollback();
+      return res.status(404).json({ message: "Chef not found" });
+    }
+    await conn.query("DELETE FROM CHEF_LANGUAGE WHERE CHEFID = ?", [id]);
+    if (Array.isArray(languages)) {
+      for (const lang of languages) {
+        await conn.query(
+          "INSERT INTO CHEF_LANGUAGE (CHEFID, LANGUAGE) VALUES (?, ?)",
+          [id, lang]
+        );
+      }
+    } else if (languages) {
+      await conn.query(
+        "INSERT INTO CHEF_LANGUAGE (CHEFID, LANGUAGE) VALUES (?, ?)",
+        [id, languages]
+      );
+    }
+    await conn.commit();
+    res.status(200).json({ message: "Chef languages updated successfully" });
+  } catch (error) {
+    await conn.rollback();
+    res.status(500).json({ message: "Server error", error: error.message });
+  } finally {
+    conn.release();
+  }
+};
+
+// Update chef certifications
+export const updateChefCertifications = async (req, res) => {
+  const { id } = req.params;
+  const { certifications } = req.body;
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+    const [rows] = await conn.query("SELECT * FROM CHEF WHERE CHEFID = ?", [id]);
+    if (rows.length === 0) {
+      await conn.rollback();
+      return res.status(404).json({ message: "Chef not found" });
+    }
+    await conn.query("DELETE FROM CHEFCERTIFICATE WHERE CHEFID = ?", [id]);
+    if (Array.isArray(certifications)) {
+      for (const cert of certifications) {
+        await conn.query(
+          "INSERT INTO CHEFCERTIFICATE (CHEFID, CERTIFICATE) VALUES (?, ?)",
+          [id, cert]
+        );
+      }
+    } else if (certifications) {
+      await conn.query(
+        "INSERT INTO CHEFCERTIFICATE (CHEFID, CERTIFICATE) VALUES (?, ?)",
+        [id, certifications]
+      );
+    }
+    await conn.commit();
+    res.status(200).json({ message: "Chef certifications updated successfully" });
+  }
+  catch (error) {
+    await conn.rollback();
+    res.status(500).json({ message: "Server error", error: error.message });
+  } finally {
+    conn.release();
+  }
+};
+
+// Update chef service details
+export const updateChefServiceDetails = async (req, res) => {
+  const { id } = req.params;
+  const { serviceDetails } = req.body;
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+    const [rows] = await conn.query("SELECT * FROM CHEF WHERE CHEFID = ?", [id]);
+    if (rows.length === 0) {
+      await conn.rollback();
+      return res.status(404).json({ message: "Chef not found" });
+    }
+    await conn.query("DELETE FROM CHEFSERVICE WHERE CHEFID = ?", [id]);
+    if (serviceDetails && Array.isArray(serviceDetails)) {
+      for (const service of serviceDetails) {
+        await conn.query(
+          "INSERT INTO CHEFSERVICE (CHEFID, SERVICE) VALUES (?, ?)",
+          [id, service]
+        );
+      }
+    }
+    await conn.commit();
+    res.status(200).json({ message: "Chef service details updated successfully" });
   } catch (error) {
     await conn.rollback();
     res.status(500).json({ message: "Server error", error: error.message });

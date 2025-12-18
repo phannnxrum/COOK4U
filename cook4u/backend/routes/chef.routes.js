@@ -12,10 +12,22 @@ chefRouter.get('/', chefsController.getAllChefs);
 chefRouter.get('/:id', chefsController.getChefbyId);
 
 // POST create chef
-chefRouter.post('/', chefsController.createChef);
+chefRouter.post('/', chefsController.createChefV2);
 
 // PATCH update chef
-chefRouter.patch('/:id', chefsController.updateChef);
+chefRouter.patch('/:id', chefsController.updateChefV2);
+
+// PATCH update chef_cuisine_type
+chefRouter.patch('/:id/cuisine-types', chefsController.updateChefCuisineTypes);
+
+// PATCH update chef_language
+chefRouter.patch('/:id/languages', chefsController.updateChefLanguages);
+
+// PATCH update chef_certifications
+chefRouter.patch('/:id/certifications', chefsController.updateChefCertifications);
+
+// PATCH update chef_services_details
+chefRouter.patch('/:id/services-details', chefsController.updateChefServiceDetails);
 
 
 export default chefRouter;
