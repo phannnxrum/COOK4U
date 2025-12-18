@@ -18,6 +18,7 @@ orderRouter.get("/:id", orderController.getOrderDetails);
 orderRouter.get("/customer/:customerId", orderController.getOrderHistoryByCustomerId);
 
 // PATCH  /api/orders/:id/status
+orderRouter.patch("/:id/status", orderController.updateOrderStatus);
 
 
 export default orderRouter;
