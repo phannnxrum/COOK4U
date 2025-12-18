@@ -1,39 +1,40 @@
-// cook4u/src/SignInUp/SignIn.jsx
-// rafce
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router'
-import { ArrowLeft, UserCog, Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import axios from 'axios';
+import React, { useState } from 'react'
+import { Link } from 'react-router'
+import { ArrowLeft, UserCog, Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
+import axios from 'axios'
 
 const SignIn = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate()
+  const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const { loginUser } = useAuth()
 
-  const handleLogin = (event) => {
-    event.preventDefault();
-    navigate('/');
-  }
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    setError('')
+    setLoading(true)
 
-  const login = async () => {
     try {
-      let res = await axios({
-        url: `http://localhost:3000/api/auth/login`,
-        method: "POST",
-        data: {
-          "email": "baohdds@gmail.com",
-          "password": "string"
-        }
+      const res = await axios.post('http://localhost:3000/api/auth/login', {
+        email,
+        password
       })
-      console.log(res.data);
-    }
-    catch (err) {
-      console.log(err);
+
+      console.log('Login success:', res.data)
+      
+      // Lưu thông tin user bằng AuthContext
+      loginUser(res.data.user, res.data.token)
+      
+    } catch (err) {
+      console.error('Login error:', err)
+      setError(err.response?.data?.message || 'Đăng nhập thất bại')
+    } finally {
+      setLoading(false)
     }
   }
-
-  useEffect(()=>{
-    login();
-  }, [])
 
   return (
     <div className="bg-white min-h-screen text-gray-800">
@@ -53,8 +54,13 @@ const SignIn = () => {
           <h1 className="text-3xl mb-2 text-center">Chào mừng trở lại</h1>
           <p className="text-gray-500 mb-6 text-center">Đăng nhập vào tài khoản COOK4U của bạn</p>
 
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleLogin}>
-            {/*Email*/}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
               <div className="relative">
@@ -64,11 +70,12 @@ const SignIn = () => {
                   placeholder="cook4u@example.com"
                   className="w-full bg-gray-100 border-none rounded-lg py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-orange-500"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
 
-            {/*Mật khẩu*/}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">Mật khẩu</label>
               <div className="relative">
@@ -78,6 +85,8 @@ const SignIn = () => {
                   placeholder="••••••••"
                   className="w-full bg-gray-100 border-none rounded-lg py-3 pl-11 pr-11 focus:outline-none focus:ring-2 focus:ring-orange-500"
                   required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
                   type="button"
@@ -89,26 +98,24 @@ const SignIn = () => {
               </div>
             </div>
 
-            {/*Quên mật khẩu*/}
             <div className="text-right mb-3">
               <a href="#" className="text-sm text-orange-600 hover:underline">Quên mật khẩu?</a>
             </div>
 
-            {/* Nút Đăng nhập */}
             <button
               type="submit"
-              className="w-full bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition duration-300 mb-2"
+              disabled={loading}
+              className={`w-full ${
+                loading ? 'bg-orange-400' : 'bg-orange-500'
+              } text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition duration-300 mb-2 disabled:opacity-50`}
             >
-              Đăng nhập
+              {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
             </button>
 
-            {/* Link Đăng ký */}
             <p className="text-center text-sm text-gray-500 mt-6">
               Chưa có tài khoản?{' '}
-
               <Link
                 to="/sign-up"
-                state={{ from: 'signin' }}         //edit: báo cho trang SignUp biết là đi từ SignIn
                 className="text-orange-600 font-bold hover:underline"
               >
                 Đăng ký

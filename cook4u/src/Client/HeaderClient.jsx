@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ChevronDown,
   LogOut,
@@ -9,26 +9,34 @@ import {
   User,
   X,
 } from "lucide-react";
-import { NavLink, Outlet } from "react-router";
+import { NavLink, Outlet, useNavigate } from "react-router";
 import { useCart } from "../contexts/CartContext";
+import { useAuth } from "../contexts/AuthContext";
 import Footer from "../User/Footer.jsx";
 
 const HeaderClient = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { getCartCount } = useCart();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const cartCount = getCartCount();
+
+  const handleLogout = () => {
+    logout();
+    setDropdownOpen(false);
+    setMenuOpen(false);
+  };
 
   return (
     <div className="">
-      {/* Header */}
       <header className="w-full bg-white border-b rounded border-gray-300 shadow-sm sticky top-0 z-50">
         <div className="mx-auto px-4 py-3 md:px-6 md:py-6">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div
               className="flex items-center space-x-2 cursor-pointer group"
-              onClick={() => (window.location.href = "/home")}
+              onClick={() => navigate('/home')}
             >
               <div className="relative">
                 <img
@@ -104,7 +112,7 @@ const HeaderClient = () => {
                 >
                   <div className="relative">
                     <img
-                      src="https://i.pravatar.cc/150?img=50"
+                      src={user?.avatar || "https://i.pravatar.cc/150?img=50"}
                       alt="User Avatar"
                       className="w-9 h-9 rounded-full object-cover border-2 border-gray-200 group-hover:border-orange-400 transition-all duration-200 shadow-sm"
                     />
@@ -122,20 +130,17 @@ const HeaderClient = () => {
                 {/* Dropdown Menu */}
                 {dropdownOpen && (
                   <>
-                    {/* Backdrop */}
                     <div
                       className="fixed inset-0 z-40"
                       onClick={() => setDropdownOpen(false)}
                     />
-
-                    {/* Menu */}
                     <div className="absolute right-0 top-14 bg-white rounded-xl shadow-lg border border-gray-100 py-2 w-52 z-50 animate-fadeIn">
                       <div className="px-4 py-3 border-b border-gray-100">
                         <p className="font-semibold text-gray-900">
-                          Nguyễn Văn A
+                          {user?.fullname || "Người dùng"}
                         </p>
                         <p className="text-xs text-gray-500 mt-1">
-                          user@example.com
+                          {user?.email || "user@example.com"}
                         </p>
                       </div>
 
@@ -159,14 +164,13 @@ const HeaderClient = () => {
 
                       <div className="border-t border-gray-100 my-1"></div>
 
-                      <NavLink
-                        to="/logout"
-                        className="flex items-center px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors rounded-b-xl"
-                        onClick={() => setDropdownOpen(false)}
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors rounded-b-xl"
                       >
                         <LogOut className="mr-3 w-4 h-4" />
                         <span>Đăng xuất</span>
-                      </NavLink>
+                      </button>
                     </div>
                   </>
                 )}
@@ -195,7 +199,7 @@ const HeaderClient = () => {
               <div className="flex flex-col space-y-1">
                 <NavLink
                   to="/home/findachef"
-                  className="px-4 py-3 rounded-lg text-base font-medium= text-gray-700 hover:text-orange-500 hover:bg-gray-50 transition-colors"
+                  className="px-4 py-3 rounded-lg text-base font-medium text-gray-700 hover:text-orange-500 hover:bg-gray-50 transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   Tìm đầu bếp
@@ -220,13 +224,17 @@ const HeaderClient = () => {
                 <div className="flex items-center justify-between px-4 py-3">
                   <div className="flex items-center space-x-3">
                     <img
-                      src="/image/avatar.jpg"
+                      src={user?.avatar || "/image/avatar.jpg"}
                       alt="User Avatar"
                       className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
                     />
                     <div>
-                      <p className="font-medium text-gray-900">Nguyễn Văn A</p>
-                      <p className="text-xs text-gray-500">Xem hồ sơ</p>
+                      <p className="font-medium text-gray-900">
+                        {user?.fullname || "Người dùng"}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {user?.email ? user.email.substring(0, 15) + (user.email.length > 15 ? "..." : "") : "Xem hồ sơ"}
+                      </p>
                     </div>
                   </div>
                   <NavLink
@@ -242,6 +250,15 @@ const HeaderClient = () => {
                     )}
                   </NavLink>
                 </div>
+
+                <div className="h-px bg-gray-200 my-2"></div>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors rounded-lg"
+                >
+                  <LogOut className="mr-3 w-4 h-4" />
+                  <span>Đăng xuất</span>
+                </button>
               </div>
             </div>
           </div>
