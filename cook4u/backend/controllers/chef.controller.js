@@ -1,19 +1,5 @@
 import pool from "../config/db.js";
 
-// Controller functions
-// export const getAllChefs = async (req, res) => {
-//     const conn = await pool.getConnection();
-//     try {
-//         const [chefs] = await conn.query(
-//             'SELECT CHEFID, CHEFNAME, AVTURL, DESCR, EXPYEAR, PRICEPERHOUR, CHEFSTATUS, CREATEDAT FROM CHEF WHERE CHEFSTATUS = TRUE'
-//         );
-//         res.status(200).json({ message: 'Chefs retrieved successfully', data: chefs });
-//     } catch (error) {
-//         res.status(500).json({ message: 'Server error', error: error.message });
-//     } finally {
-//         conn.release();
-//     }
-// };
 export const getAllChefs = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -36,7 +22,7 @@ export const getAllChefs = async (req, res) => {
                 -- Định dạng giá tiền có dấu phẩy (ví dụ: 100,000)
                 FORMAT(c.PRICEPERHOUR, 0) AS price,
                 -- Lấy danh sách các thẻ món ăn sở trường (Tags)
-                GROUP_CONCAT(DISTINCT d.DISHNAME SEPARATOR ', ') AS tags
+                GROUP_CONCAT(DISTINCT d.name SEPARATOR ', ') AS tags
             FROM CHEF c
             LEFT JOIN REVIEW r ON c.CHEFID = r.CHEFID
             LEFT JOIN CHEF_SIGNATURE_DISH csd ON c.CHEFID = csd.CHEFID
@@ -87,7 +73,7 @@ export const getChefbyId = async (req, res) => {
         c.VALID AS valid,
         c.DESCR AS description,
         c.DESCR AS bio,
-        COALESCE((SELECT JSON_ARRAYAGG(d.DISHNAME) 
+        COALESCE((SELECT JSON_ARRAYAGG(d.name) 
           FROM CHEF_SIGNATURE_DISH csd 
           JOIN DISH d ON csd.DISHID = d.DISHID 
           WHERE csd.CHEFID = c.CHEFID), JSON_ARRAY()) AS tags,
@@ -119,7 +105,7 @@ export const getChefbyId = async (req, res) => {
     DATE_FORMAT(r.REVIEWTIME, '%d/%m/%Y') AS date,
     r.REVIEWCONTENT AS comment,
     -- Subquery lấy tên các món ăn khách đã đặt trong đơn hàng này
-    (SELECT GROUP_CONCAT(d.DISHNAME SEPARATOR ', ') 
+    (SELECT GROUP_CONCAT(d.name SEPARATOR ', ') 
      FROM ORDER_ITEM oi 
      JOIN DISH d ON oi.DISHID = d.DISHID 
      WHERE oi.ORDERID = r.ORDERID) AS dish
@@ -135,7 +121,7 @@ export const getChefbyId = async (req, res) => {
     const [dishesDetail] = await conn.query(
       `
       SELECT 
-        d.DISHNAME AS name,
+        d.name AS name,
         d.PICTUREURL AS image,
         d.DESCR AS description,
         d.COOKTIME AS cookTime,

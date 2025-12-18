@@ -86,7 +86,7 @@ const ChefHeader = ({ chef }) => {
           ))}
         </div>
 
-        <p className="text-gray-500">{chef.experience}</p>
+        <p className="text-gray-500">{chef.description}</p>
 
         <div className="hidden md:flex flex-col md:flex-row justify-between text-md ">
           <div className="flex flex-row gap-2">
