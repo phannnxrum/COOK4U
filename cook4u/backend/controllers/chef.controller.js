@@ -80,6 +80,8 @@ export const getChefbyId = async (req, res) => {
         c.CHEFID AS id,
         c.CHEFNAME AS name,
         c.AVTURL AS avatar,
+        c.PHONENUMBER AS phone,
+        c.EMAIL AS email,
         COALESCE(ROUND(AVG(r.STAR), 1), 0) AS rating,
         COUNT(DISTINCT r.REVIEWID) AS reviews,
         -- Sử dụng COALESCE và mảng rỗng để tránh lỗi null
