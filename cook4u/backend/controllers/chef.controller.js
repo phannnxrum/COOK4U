@@ -64,7 +64,6 @@ export const getAllChefs = async (req, res) => {
   }
 };
 
-
 export const getChefbyId = async (req, res) => {
   const conn = await pool.getConnection();
   try {
@@ -79,8 +78,8 @@ export const getChefbyId = async (req, res) => {
         c.AVTURL AS avatar,
         COALESCE(ROUND(AVG(r.STAR), 1), 0) AS rating,
         COUNT(DISTINCT r.REVIEWID) AS reviews,
-        -- Lấy danh sách loại món ăn dạng mảng
-        (SELECT JSON_ARRAYAGG(CUISINETYPE) FROM CHEF_CUISINE_TYPE WHERE CHEFID = c.CHEFID) AS cuisine,
+        -- Sử dụng COALESCE và mảng rỗng để tránh lỗi null
+        COALESCE((SELECT JSON_ARRAYAGG(CUISINETYPE) FROM CHEF_CUISINE_TYPE WHERE CHEFID = c.CHEFID), JSON_ARRAY()) AS cuisine,
         c.CHEFAREA AS district,
         c.CHEFTIME AS cookTime,
         c.EXPYEAR AS yearNum,
@@ -88,19 +87,15 @@ export const getChefbyId = async (req, res) => {
         c.VALID AS valid,
         c.DESCR AS description,
         c.DESCR AS bio,
-        -- CHỈNH SỬA TẠI ĐÂY: Lấy tên món ăn thay vì ID để làm tags
-        (SELECT JSON_ARRAYAGG(d.DISHNAME) 
-         FROM CHEF_SIGNATURE_DISH csd 
-         JOIN DISH d ON csd.DISHID = d.DISHID 
-         WHERE csd.CHEFID = c.CHEFID) AS tags,
-        -- Danh sách ngôn ngữ
-        (SELECT JSON_ARRAYAGG(LANGUAGE) FROM CHEF_LANGUAGE WHERE CHEFID = c.CHEFID) AS languages,
-        -- Danh sách chứng chỉ
-        (SELECT JSON_ARRAYAGG(CERTIFICATE) FROM CHEFCERTIFICATE WHERE CHEFID = c.CHEFID) AS certifications,
-        -- Chi tiết dịch vụ
+        COALESCE((SELECT JSON_ARRAYAGG(d.DISHNAME) 
+          FROM CHEF_SIGNATURE_DISH csd 
+          JOIN DISH d ON csd.DISHID = d.DISHID 
+          WHERE csd.CHEFID = c.CHEFID), JSON_ARRAY()) AS tags,
+        COALESCE((SELECT JSON_ARRAYAGG(LANGUAGE) FROM CHEF_LANGUAGE WHERE CHEFID = c.CHEFID), JSON_ARRAY()) AS languages,
+        COALESCE((SELECT JSON_ARRAYAGG(CERTIFICATE) FROM CHEFCERTIFICATE WHERE CHEFID = c.CHEFID), JSON_ARRAY()) AS certifications,
         JSON_OBJECT(
             'minDuration', c.MINHOUR,
-            'includes', (SELECT JSON_ARRAYAGG(SERVICE) FROM CHEFSERVICE WHERE CHEFID = c.CHEFID)
+            'includes', COALESCE((SELECT JSON_ARRAYAGG(SERVICE) FROM CHEFSERVICE WHERE CHEFID = c.CHEFID), JSON_ARRAY())
         ) AS serviceDetails
       FROM CHEF c
       LEFT JOIN REVIEW r ON c.CHEFID = r.CHEFID
@@ -114,26 +109,29 @@ export const getChefbyId = async (req, res) => {
       return res.status(404).json({ message: "Chef not found" });
     }
 
-    // 2. Lấy danh sách review chi tiết (kèm tên món ăn)
+    // 2. Lấy danh sách review chi tiết (Lấy tên món ăn từ mối quan hệ gián tiếp)
     const [reviewsList] = await conn.query(
       `
-      SELECT 
-        u.FULLNAME AS name,
-        u.AVTURL AS avatar,
-        r.STAR AS rating,
-        DATE_FORMAT(r.REVIEWTIME, '%d/%m/%Y') AS date,
-        r.REVIEWCONTENT AS comment,
-        d.DISHNAME AS dish
-      FROM REVIEW r
-      JOIN USER u ON r.CUSTOMERID = u.USERID
-      LEFT JOIN DISH d ON r.DISHID = d.DISHID
-      WHERE r.CHEFID = ?
-      ORDER BY r.REVIEWTIME DESC
-    `,
+  SELECT 
+    u.FULLNAME AS name,
+    u.AVTURL AS avatar,
+    r.STAR AS rating,
+    DATE_FORMAT(r.REVIEWTIME, '%d/%m/%Y') AS date,
+    r.REVIEWCONTENT AS comment,
+    -- Subquery lấy tên các món ăn khách đã đặt trong đơn hàng này
+    (SELECT GROUP_CONCAT(d.DISHNAME SEPARATOR ', ') 
+     FROM ORDER_ITEM oi 
+     JOIN DISH d ON oi.DISHID = d.DISHID 
+     WHERE oi.ORDERID = r.ORDERID) AS dish
+  FROM REVIEW r
+  JOIN USER u ON r.CUSTOMERID = u.USERID
+  WHERE r.CHEFID = ?
+  ORDER BY r.REVIEWTIME DESC
+`,
       [id]
     );
 
-    // 3. Lấy thông tin chi tiết các món ăn (cho phần thực đơn bên dưới)
+    // 3. Lấy thông tin chi tiết các món ăn (Giữ nguyên)
     const [dishesDetail] = await conn.query(
       `
       SELECT 
@@ -161,6 +159,8 @@ export const getChefbyId = async (req, res) => {
       data: finalData,
     });
   } catch (error) {
+    // Log lỗi chi tiết ra console server để bạn dễ debug
+    console.error("Lỗi tại getChefbyId:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   } finally {
     conn.release();
