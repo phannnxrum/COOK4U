@@ -18,7 +18,7 @@ const AdminSignIn = () => {
 
     try {
       // Gọi API đăng nhập admin
-      const res = await axios.post('http://localhost:3000/api/auth/admin/login', {
+      const res = await axios.post('http://localhost:3000/api/auth/login-admin', {
         email,
         password
       })

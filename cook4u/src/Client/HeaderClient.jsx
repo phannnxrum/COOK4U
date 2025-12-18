@@ -166,7 +166,7 @@ const HeaderClient = () => {
 
                       <button
                         onClick={handleLogout}
-                        className="flex items-center w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors rounded-b-xl"
+                        className="flex items-center w-full cursor-pointer px-4 py-3 text-sm font-medium text-red-600 hover:bg-orange-500 hover:text-white transition-colors rounded-b-xl"
                       >
                         <LogOut className="mr-3 w-4 h-4" />
                         <span>Đăng xuất</span>

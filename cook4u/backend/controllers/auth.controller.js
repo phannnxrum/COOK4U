@@ -60,7 +60,7 @@ export const login = async (req, res) => {
 
         // Find user - QUAN TRỌNG: Chọn tất cả cột và dùng chữ HOA
         const [users] = await conn.query(
-            'SELECT USERID, EMAIL, PASS, FULLNAME FROM USER WHERE EMAIL = ?', 
+            'SELECT USERID, EMAIL, PASS, FULLNAME, ISADMIN FROM USER WHERE EMAIL = ?', 
             [email]
         );
         
@@ -86,7 +86,7 @@ export const login = async (req, res) => {
         const token = jwt.sign(
             { 
                 id: user.USERID, 
-                email: user.EMAIL 
+                email: user.EMAIL
             },
             process.env.JWT_SECRET || 'your-secret-key-change-this', // Fallback nếu không có env
             { expiresIn: '24h' }
@@ -98,7 +98,8 @@ export const login = async (req, res) => {
             user: {
                 id: user.USERID,
                 email: user.EMAIL,
-                fullname: user.FULLNAME
+                fullname: user.FULLNAME,
+                isAdmin: user.ISADMIN
             }
         });
     } catch (error) {
