@@ -28,7 +28,5 @@ authRouter.get('/test', (req, res) => {
     res.status(200).json({ message: 'Auth route is working!' });
 });
 
-// Get current user
-// authRouter.get('/me', authenticate, authController.getCurrentUser);
 
 export default authRouter;

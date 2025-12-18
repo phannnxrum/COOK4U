@@ -8,6 +8,7 @@ import cartRouter from "./cart.routes.js";
 import orderRouter from "./order.routes.js";
 import reviewRouter from "./review.routes.js";
 import favoriteRouter from "./favorite.routes.js";
+import userRouter from "./user.routes.js";
 
 // Main router
 const router = express.Router();
@@ -38,5 +39,8 @@ router.use("/reviews", reviewRouter);
 
 // Mount favoriteRouter at /favorites
 router.use("/favorites", favoriteRouter);
+
+// Mount userRouter at /users
+router.use("/users", userRouter);
 
 export default router;
