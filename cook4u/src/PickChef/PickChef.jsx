@@ -9,8 +9,8 @@ import ChefTabs from "./ChefTabs";
 
 const PickChef = () => {
   const { chefId } = useParams();
-  console.log("chefId:", chefId);
-  const [chef, setChef] = useState(null);
+  // console.log("chefId:", chefId);
+  const [chef, setChef] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const PickChef = () => {
       try {
         const data = await getChefById(chefId);
         console.log("Kết quả fetch:", data);
-        setChef(data);
+        setChef(data.data);
         setLoading(false);
       } catch (error) {
         console.error("Lỗi khi lấy thông tin đầu bếp:", error);

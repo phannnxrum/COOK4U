@@ -22,7 +22,7 @@ const ChefFavoriteDishes = ({ dishes }) => {
     navigate('/home/mycart');
   };
   const visibleDishes =
-    dishes.length < 4 ? [...dishes, ...dishes, ...dishes] : dishes;
+    dishes?.length < 4 ? [...dishes, ...dishes, ...dishes] : dishes;
   return (
     <div className="bg-white p-5 min-h-90">
       <Swiper
@@ -39,7 +39,7 @@ const ChefFavoriteDishes = ({ dishes }) => {
           1280: { slidesPerView: 4, spaceBetween: 25 },
         }}
       >
-        {visibleDishes.map((item, index) => (
+        {visibleDishes?.map((item, index) => (
           <SwiperSlide key={index}>
             <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all mt-1 mb-1 duration-200">
               <div

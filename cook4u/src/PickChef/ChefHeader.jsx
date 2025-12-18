@@ -21,13 +21,16 @@ const ChefHeader = ({ chef }) => {
       addChef({
         id: chef.id,
         name: chef.name,
-        price: typeof chef.price === 'number' ? chef.price : parseInt(chef.price.replace(/,/g, '')),
+        price:
+          typeof chef.price === "number"
+            ? chef.price
+            : parseInt(chef.price.replace(/,/g, "")),
         avatar: chef.avatar,
         rating: chef.rating,
-        reviews: chef.reviews
+        reviews: chef.reviewsList,
       });
       // Optionally navigate to cart
-      navigate('/home/mycart');
+      navigate("/home/mycart");
     }
   };
   return (
@@ -75,7 +78,8 @@ const ChefHeader = ({ chef }) => {
         </div>
 
         <div className="flex flex-wrap gap-3">
-          {chef.cuisine.map((item, index) => (
+          {/* Thêm dấu ? sau cuisine */}
+          {chef?.cuisine?.map((item, index) => (
             <span key={index} className="bg-gray-200 px-4 rounded-full ">
               {item}
             </span>
