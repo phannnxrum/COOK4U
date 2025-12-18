@@ -7,6 +7,7 @@ import dishRouter from "./dish.routes.js";
 import cartRouter from "./cart.routes.js";
 import orderRouter from "./order.routes.js";
 import reviewRouter from "./review.routes.js";
+import favoriteRouter from "./favorite.routes.js";
 
 // Main router
 const router = express.Router();
@@ -34,5 +35,8 @@ router.use("/orders", orderRouter);
 
 // Mount reviewRouter at /reviews
 router.use("/reviews", reviewRouter);
+
+// Mount favoriteRouter at /favorites
+router.use("/favorites", favoriteRouter);
 
 export default router;
