@@ -5,6 +5,7 @@ import customerRouter from "./customer.routes.js";
 import chefRouter from "./chef.routes.js";
 import dishRouter from "./dish.routes.js";
 import cartRouter from "./cart.routes.js";
+import orderRouter from "./order.routes.js";
 
 // Main router
 const router = express.Router();
@@ -26,5 +27,8 @@ router.use("/dishes", dishRouter);
 
 // Mount cartRouter at /cart
 router.use("/cart", cartRouter);
+
+// Mount orderRouter at /orders
+router.use("/orders", orderRouter);
 
 export default router;
