@@ -26,7 +26,7 @@ const AdminSignIn = () => {
       console.log('Admin login success:', res.data)
       
       // Lưu thông tin admin
-      loginAdmin(res.data.admin, res.data.token)
+      loginAdmin(res.data.user, res.data.token)
       
     } catch (err) {
       console.error('Admin login error:', err)
