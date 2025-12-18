@@ -23,6 +23,10 @@ export const getAllChefs = async (req, res) => {
                 c.CHEFID AS id,
                 c.CHEFNAME AS name,
                 c.AVTURL AS avatar,
+                c.PHONENUMBER AS phone,
+                c.EMAIL AS email,
+                c.EXPYEAR AS experience,
+                c.CHEFSTATUS AS status,
                 -- Tính điểm trung bình (Rating) từ bảng REVIEW
                 COALESCE(ROUND(AVG(r.STAR), 1), 0) AS rating,
                 -- Đếm tổng số lượng đánh giá
