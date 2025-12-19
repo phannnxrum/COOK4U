@@ -17,8 +17,11 @@ authRouter.post('/hidden-register', authController.adminRegister);
 // Login with admin privileges
 authRouter.post('/login-admin', authController.adminLogin);
 
-// Forgot password - Check if account exists
-authRouter.post('/check-account', authController.checkAccount);
+// Forgot password - Send OTP to email
+authRouter.post('/send-otp', authController.sendOTP);
+
+// Forgot password - Verify OTP
+authRouter.post('/verify-otp', authController.verifyOTPCode);
 
 // Forgot password - Reset password
 authRouter.post('/reset-password', authController.resetPassword);

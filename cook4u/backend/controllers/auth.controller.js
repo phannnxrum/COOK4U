@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import pool from '../config/db.js';
+import { generateOTP, saveOTP, verifyOTP, sendOTPEmail } from '../services/email.service.js';
 
 // Register Controller
 export const register = async (req, res) => {
@@ -142,40 +143,79 @@ export const adminRegister = async (req, res) => {
     }
 };
 
-export const checkAccount = async (req, res) => {
+// Send OTP to email for password reset
+export const sendOTP = async (req, res) => {
     const conn = await pool.getConnection();
     try {
         const { email } = req.body;
-        console.log('Check account - received email:', email);
-        console.log('Check account - req.body:', req.body);
+        console.log('Send OTP - received email:', email);
 
         if (!email) {
             return res.status(400).json({ message: 'Vui lòng nhập email' });
         }
 
-        // Tim email co san khong
+        // Tìm email có tồn tại không
         const [users] = await conn.query(
             'SELECT USERID, EMAIL, FULLNAME FROM USER WHERE EMAIL = ?',
             [email]
         );
-        console.log('Check account - found users:', users);
 
         if (users.length === 0) {
             return res.status(404).json({ message: 'Không tìm thấy tài khoản với email này' });
         }
 
         const user = users[0];
+
+        // Tạo OTP và lưu vào store
+        const otp = generateOTP();
+        saveOTP(email, otp);
+
+        // Gửi email OTP
+        const emailResult = await sendOTPEmail(email, otp, user.FULLNAME);
+
+        if (!emailResult.success) {
+            return res.status(500).json({
+                message: 'Không thể gửi email. Vui lòng thử lại sau.',
+                error: emailResult.error
+            });
+        }
+
         res.status(200).json({
-            message: 'Tài khoản tồn tại',
+            message: 'Mã OTP đã được gửi đến email của bạn',
             userId: user.USERID,
             email: user.EMAIL,
             fullname: user.FULLNAME
         });
     } catch (error) {
-        console.error('Check account error:', error);
+        console.error('Send OTP error:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     } finally {
         conn.release();
+    }
+};
+
+// Verify OTP code
+export const verifyOTPCode = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+
+        if (!email || !otp) {
+            return res.status(400).json({ message: 'Vui lòng nhập email và mã OTP' });
+        }
+
+        const result = verifyOTP(email, otp);
+
+        if (!result.valid) {
+            return res.status(400).json({ message: result.message });
+        }
+
+        res.status(200).json({
+            message: result.message,
+            verified: true
+        });
+    } catch (error) {
+        console.error('Verify OTP error:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 

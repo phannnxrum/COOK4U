@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router'
-import { ArrowLeft, UserCog, Mail, Lock, Eye, EyeOff, X, CheckCircle, AlertCircle } from 'lucide-react'
+import { ArrowLeft, UserCog, Mail, Lock, Eye, EyeOff, X, CheckCircle, AlertCircle, KeyRound, RefreshCw } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import axios from 'axios'
 
@@ -12,16 +12,34 @@ const SignIn = () => {
   const [error, setError] = useState('')
   const { loginUser } = useAuth()
 
+  // Forgot Password States
   const [showForgotPassword, setShowForgotPassword] = useState(false)
-  const [forgotStep, setForgotStep] = useState(1) // 1: nhập email, 2: nhập mật khẩu mới, 3: thành công
+  const [forgotStep, setForgotStep] = useState(1) // 1: nhập email, 2: nhập OTP, 3: đặt mật khẩu mới, 4: thành công
   const [forgotEmail, setForgotEmail] = useState('')
   const [foundUser, setFoundUser] = useState(null)
+  const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [forgotLoading, setForgotLoading] = useState(false)
   const [forgotError, setForgotError] = useState('')
+  const [countdown, setCountdown] = useState(0)
+  const [canResend, setCanResend] = useState(false)
+
+  // Refs for OTP inputs
+  const otpInputRefs = useRef([])
+
+  // Countdown timer for resend OTP
+  useEffect(() => {
+    let timer
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000)
+    } else if (countdown === 0 && forgotStep === 2) {
+      setCanResend(true)
+    }
+    return () => clearTimeout(timer)
+  }, [countdown, forgotStep])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -35,8 +53,6 @@ const SignIn = () => {
       })
 
       console.log('Login success:', res.data)
-
-      // Lưu thông tin user bằng AuthContext
       loginUser(res.data.user, res.data.token)
 
     } catch (err) {
@@ -54,9 +70,12 @@ const SignIn = () => {
     setForgotStep(1)
     setForgotEmail('')
     setFoundUser(null)
+    setOtp(['', '', '', '', '', ''])
     setNewPassword('')
     setConfirmPassword('')
     setForgotError('')
+    setCountdown(0)
+    setCanResend(false)
   }
 
   // Đóng modal quên mật khẩu
@@ -65,32 +84,127 @@ const SignIn = () => {
     setForgotStep(1)
     setForgotEmail('')
     setFoundUser(null)
+    setOtp(['', '', '', '', '', ''])
     setNewPassword('')
     setConfirmPassword('')
     setForgotError('')
+    setCountdown(0)
+    setCanResend(false)
   }
 
-  // Bước 1: Kiểm tra email
-  const handleCheckAccount = async (e) => {
+  // Bước 1: Gửi OTP đến email
+  const handleSendOTP = async (e) => {
     e.preventDefault()
     setForgotError('')
     setForgotLoading(true)
 
     try {
-      const res = await axios.post('http://localhost:3000/api/auth/check-account', {
+      const res = await axios.post('http://localhost:3000/api/auth/send-otp', {
         email: forgotEmail
       })
 
       setFoundUser(res.data)
       setForgotStep(2)
+      setCountdown(60) // 60 giây để gửi lại
+      setCanResend(false)
     } catch (err) {
-      setForgotError(err.response?.data?.message || 'Không tìm thấy tài khoản')
+      setForgotError(err.response?.data?.message || 'Không thể gửi mã OTP')
     } finally {
       setForgotLoading(false)
     }
   }
 
-  // Bước 2: Đổi mật khẩu mới
+  // Gửi lại OTP
+  const handleResendOTP = async () => {
+    if (!canResend) return
+
+    setForgotError('')
+    setForgotLoading(true)
+    setOtp(['', '', '', '', '', ''])
+
+    try {
+      await axios.post('http://localhost:3000/api/auth/send-otp', {
+        email: forgotEmail
+      })
+      setCountdown(60)
+      setCanResend(false)
+    } catch (err) {
+      setForgotError(err.response?.data?.message || 'Không thể gửi lại mã OTP')
+    } finally {
+      setForgotLoading(false)
+    }
+  }
+
+  // Xử lý nhập OTP
+  const handleOtpChange = (index, value) => {
+    if (value.length > 1) {
+      value = value.slice(-1)
+    }
+
+    if (!/^\d*$/.test(value)) return
+
+    const newOtp = [...otp]
+    newOtp[index] = value
+    setOtp(newOtp)
+
+    // Tự động focus sang ô tiếp theo
+    if (value && index < 5) {
+      otpInputRefs.current[index + 1]?.focus()
+    }
+  }
+
+  // Xử lý khi nhấn phím trong OTP input
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      otpInputRefs.current[index - 1]?.focus()
+    }
+  }
+
+  // Xử lý paste OTP
+  const handleOtpPaste = (e) => {
+    e.preventDefault()
+    const pastedData = e.clipboardData.getData('text').slice(0, 6)
+    if (!/^\d+$/.test(pastedData)) return
+
+    const newOtp = [...otp]
+    for (let i = 0; i < pastedData.length && i < 6; i++) {
+      newOtp[i] = pastedData[i]
+    }
+    setOtp(newOtp)
+
+    // Focus vào ô cuối cùng được điền
+    const lastFilledIndex = Math.min(pastedData.length - 1, 5)
+    otpInputRefs.current[lastFilledIndex]?.focus()
+  }
+
+  // Bước 2: Xác thực OTP
+  const handleVerifyOTP = async (e) => {
+    e.preventDefault()
+    setForgotError('')
+
+    const otpString = otp.join('')
+    if (otpString.length !== 6) {
+      setForgotError('Vui lòng nhập đầy đủ 6 số OTP')
+      return
+    }
+
+    setForgotLoading(true)
+
+    try {
+      await axios.post('http://localhost:3000/api/auth/verify-otp', {
+        email: forgotEmail,
+        otp: otpString
+      })
+
+      setForgotStep(3)
+    } catch (err) {
+      setForgotError(err.response?.data?.message || 'Mã OTP không đúng')
+    } finally {
+      setForgotLoading(false)
+    }
+  }
+
+  // Bước 3: Đổi mật khẩu mới
   const handleResetPassword = async (e) => {
     e.preventDefault()
     setForgotError('')
@@ -113,7 +227,7 @@ const SignIn = () => {
         newPassword
       })
 
-      setForgotStep(3)
+      setForgotStep(4)
     } catch (err) {
       setForgotError(err.response?.data?.message || 'Đổi mật khẩu thất bại')
     } finally {
@@ -231,8 +345,9 @@ const SignIn = () => {
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-white">
                   {forgotStep === 1 && 'Quên mật khẩu'}
-                  {forgotStep === 2 && 'Đặt mật khẩu mới'}
-                  {forgotStep === 3 && 'Thành công!'}
+                  {forgotStep === 2 && 'Xác thực OTP'}
+                  {forgotStep === 3 && 'Đặt mật khẩu mới'}
+                  {forgotStep === 4 && 'Thành công!'}
                 </h2>
                 <button
                   onClick={handleCloseForgotPassword}
@@ -246,6 +361,7 @@ const SignIn = () => {
                 <div className={`flex-1 h-1 rounded-full ${forgotStep >= 1 ? 'bg-white' : 'bg-white/30'}`} />
                 <div className={`flex-1 h-1 rounded-full ${forgotStep >= 2 ? 'bg-white' : 'bg-white/30'}`} />
                 <div className={`flex-1 h-1 rounded-full ${forgotStep >= 3 ? 'bg-white' : 'bg-white/30'}`} />
+                <div className={`flex-1 h-1 rounded-full ${forgotStep >= 4 ? 'bg-white' : 'bg-white/30'}`} />
               </div>
             </div>
 
@@ -261,9 +377,9 @@ const SignIn = () => {
 
               {/* Step 1: Nhập email */}
               {forgotStep === 1 && (
-                <form onSubmit={handleCheckAccount}>
+                <form onSubmit={handleSendOTP}>
                   <p className="text-gray-600 mb-4">
-                    Nhập email đã đăng ký để khôi phục mật khẩu.
+                    Nhập email đã đăng ký. Chúng tôi sẽ gửi mã OTP đến email của bạn.
                   </p>
 
                   <div className="mb-4">
@@ -288,19 +404,87 @@ const SignIn = () => {
                     disabled={forgotLoading || !forgotEmail}
                     className="w-full bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {forgotLoading ? 'Đang kiểm tra...' : 'Tiếp tục'}
+                    {forgotLoading ? 'Đang gửi...' : 'Gửi mã OTP'}
                   </button>
                 </form>
               )}
 
-              {/* Step 2: Đặt mật khẩu mới */}
+              {/* Step 2: Nhập OTP */}
               {forgotStep === 2 && (
+                <form onSubmit={handleVerifyOTP}>
+                  <div className="text-center mb-4">
+                    <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <KeyRound size={32} className="text-orange-500" />
+                    </div>
+                    <p className="text-gray-600">
+                      Mã OTP đã được gửi đến
+                    </p>
+                    <p className="font-semibold text-gray-800">{forgotEmail}</p>
+                  </div>
+
+                  {/* OTP Inputs */}
+                  <div className="flex justify-center gap-2 mb-4">
+                    {otp.map((digit, index) => (
+                      <input
+                        key={index}
+                        ref={(el) => (otpInputRefs.current[index] = el)}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={digit}
+                        onChange={(e) => handleOtpChange(index, e.target.value)}
+                        onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                        onPaste={handleOtpPaste}
+                        className="w-12 h-14 text-center text-2xl font-bold bg-gray-100 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-colors"
+                      />
+                    ))}
+                  </div>
+
+                  {/* Countdown & Resend */}
+                  <div className="text-center mb-4">
+                    {countdown > 0 ? (
+                      <p className="text-gray-500 text-sm">
+                        Gửi lại mã sau <span className="font-semibold text-orange-500">{countdown}s</span>
+                      </p>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleResendOTP}
+                        disabled={forgotLoading}
+                        className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1 mx-auto"
+                      >
+                        <RefreshCw size={14} />
+                        Gửi lại mã OTP
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setForgotStep(1)}
+                      className="flex-1 bg-gray-200 text-gray-700 font-medium py-3 rounded-lg hover:bg-gray-300 transition duration-300"
+                    >
+                      Quay lại
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={forgotLoading || otp.join('').length !== 6}
+                      className="flex-1 bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {forgotLoading ? 'Đang xác thực...' : 'Xác nhận'}
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {/* Step 3: Đặt mật khẩu mới */}
+              {forgotStep === 3 && (
                 <form onSubmit={handleResetPassword}>
-                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
-                    <p className="text-sm text-orange-700">
-                      <span className="font-medium">Xin chào, {foundUser?.fullname}!</span>
-                      <br />
-                      Tài khoản: {foundUser?.email}
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                    <p className="text-sm text-green-700 flex items-center gap-2">
+                      <CheckCircle size={16} />
+                      <span>Xác thực thành công! Hãy đặt mật khẩu mới.</span>
                     </p>
                   </div>
 
@@ -360,27 +544,18 @@ const SignIn = () => {
                     )}
                   </div>
 
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setForgotStep(1)}
-                      className="flex-1 bg-gray-200 text-gray-700 font-medium py-3 rounded-lg hover:bg-gray-300 transition duration-300"
-                    >
-                      Quay lại
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={forgotLoading || !newPassword || !confirmPassword || newPassword !== confirmPassword}
-                      className="flex-1 bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {forgotLoading ? 'Đang xử lý...' : 'Đổi mật khẩu'}
-                    </button>
-                  </div>
+                  <button
+                    type="submit"
+                    disabled={forgotLoading || !newPassword || !confirmPassword || newPassword !== confirmPassword}
+                    className="w-full bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {forgotLoading ? 'Đang xử lý...' : 'Đổi mật khẩu'}
+                  </button>
                 </form>
               )}
 
-              {/* Step 3: Thành công */}
-              {forgotStep === 3 && (
+              {/* Step 4: Thành công */}
+              {forgotStep === 4 && (
                 <div className="text-center">
                   <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
                     <CheckCircle size={48} className="text-green-500" />
