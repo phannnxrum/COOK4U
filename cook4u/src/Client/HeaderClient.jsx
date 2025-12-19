@@ -13,6 +13,7 @@ import { NavLink, Outlet, useNavigate } from "react-router";
 import { useCart } from "../contexts/CartContext";
 import { useAuth } from "../contexts/AuthContext";
 import Footer from "../User/Footer.jsx";
+import axios from "axios";
 
 const HeaderClient = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,6 +22,54 @@ const HeaderClient = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const cartCount = getCartCount();
+  const [originalData, setOriginalData] = useState({});
+  const [profileData, setProfileData] = useState({
+    fullname: "",
+    email: "",
+    phone: "",
+    address: "",
+    bio: "",
+    reward: "",
+    avatar: "https://i.pravatar.cc/150?img=50",
+  });
+
+  // Lấy token từ localStorage
+  const getAuthHeader = () => {
+    const token = localStorage.getItem("token");
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  };
+
+  // Hàm lấy thông tin user
+  const fetchUserData = () => {
+    axios
+      .get("http://localhost:3000/api/users/me", getAuthHeader())
+      .then((res) => {
+        const user = res.data.data;
+        const newData = {
+          fullname: user.FULLNAME || "",
+          email: user.EMAIL || "",
+          phone: user.PHONENUMBER || "",
+          address: user.ADDRESS || "",
+          bio: user.INTRODUCTION || "",
+          reward: user.REWARDPOINT || "0",
+          avatar: user.AVTURL || "https://i.pravatar.cc/150?img=50",
+        };
+        setProfileData(newData);
+        setOriginalData(newData); // Lưu dữ liệu gốc để hủy
+      })
+      .catch((err) => {
+        console.error("Error fetching user data:", err);
+        alert("Không thể tải thông tin người dùng");
+      });
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -36,7 +85,7 @@ const HeaderClient = () => {
             {/* Logo */}
             <div
               className="flex items-center space-x-2 cursor-pointer group"
-              onClick={() => navigate('/home')}
+              onClick={() => navigate("/home")}
             >
               <div className="relative">
                 <img
@@ -111,13 +160,17 @@ const HeaderClient = () => {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                 >
                   <div className="relative">
-                    {user.avatar ? (
-                        <img src={user.avatar} alt={user.fullname} className='w-12 h-12 rounded-full' />
-                      ) : (
-                        <div className='w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-lg'>
-                          {user.fullname.charAt(0)}
-                        </div>
-                      )}
+                    {profileData.avatar ? (
+                      <img
+                        src={profileData.avatar}
+                        alt={user.fullname}
+                        className="w-10 h-10 rounded-full"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-lg">
+                        {user.fullname.charAt(0)}
+                      </div>
+                    )}
                     <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
                   </div>
                   <ChevronDown
@@ -235,7 +288,10 @@ const HeaderClient = () => {
                         {user?.fullname || "Người dùng"}
                       </p>
                       <p className="text-xs text-gray-500">
-                        {user?.email ? user.email.substring(0, 15) + (user.email.length > 15 ? "..." : "") : "Xem hồ sơ"}
+                        {user?.email
+                          ? user.email.substring(0, 15) +
+                            (user.email.length > 15 ? "..." : "")
+                          : "Xem hồ sơ"}
                       </p>
                     </div>
                   </div>

@@ -123,7 +123,7 @@ const DishCard = ({ dish, navigate }) => {
           className="dish-image w-full h-full object-cover"
           onError={(e) => {
             e.target.src =
-              "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1780&auto=format&fit=crop";
+              "https://lavenderstudio.com.vn/wp-content/uploads/2017/03/chup-san-pham.jpg";
           }}
         />
         <div className="dish-price-tag absolute top-4 right-4 bg-black/60 text-white px-3 py-1.5 rounded-full font-medium">
