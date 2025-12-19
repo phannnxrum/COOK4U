@@ -11,4 +11,7 @@ userRouter.get('/test', (req, res) => {
 // GET    /api/users/me      Lấy thông tin user hiện tại
 userRouter.get('/me', authMiddleware, userController.getCurrentUser);
 
+// PUT    /api/users/me      Cập nhật thông tin user hiện tại
+userRouter.put('/me', authMiddleware, userController.updateCurrentUser);
+
 export default userRouter;

@@ -10,21 +10,51 @@ import { useCart } from "../contexts/CartContext";
 import { useNavigate } from "react-router";
 
 const MyCart = () => {
-  const { cart, removeChef, removeDish, clearCart } = useCart();
+  const { cart, removeChef, removeDish, clearCart, loading } = useCart();
   const navigate = useNavigate();
 
+    if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+          <p className="mt-4 text-gray-600">Đang tải giỏ hàng...</p>
+        </div>
+      </div>
+    );
+  }
+
   const chef = cart.chef;
-  const dishes = cart.dishes;
+  const dishes = cart.dishes || [];
 
   const hasChef = !!chef;
   const hasDish = dishes.length > 0;
   const canCheckout = hasChef && hasDish;
 
-  const chefTotal = hasChef ? (typeof chef.price === 'number' ? chef.price : parseInt(chef.price.replace(/,/g, ''))) : 0;
-  const dishesTotal = dishes.reduce((sum, d) => {
-    const price = typeof d.price === 'number' ? d.price : parseInt(d.price.replace(/,/g, ''));
-    return sum + price;
-  }, 0);
+  const chefTotal = hasChef
+  ? (() => {
+      if (typeof chef?.price === "number") {
+        return chef.price;
+      }
+      if (typeof chef?.price === "string") {
+        return parseInt(chef.price.replace(/,/g, ""), 10);
+      }
+      return 0;
+    })()
+  : 0;
+
+  const dishesTotal = Array.isArray(dishes)
+  ? dishes.reduce((sum, d) => {
+      let price = 0;
+      if (typeof d.price === "number") {
+        price = d.price;
+      } else if (typeof d.price === "string") {
+        price = parseInt(d.price.replace(/,/g, ""));
+      }
+      return sum + price;
+    }, 0)
+  : 0;
+
   const total = chefTotal + dishesTotal;
 
   const handleClearAll = () => {
@@ -90,20 +120,20 @@ const MyCart = () => {
                   <div className="flex justify-between items-start">
                     <div className="flex gap-4">
                       <img
-                        src={chef.avatar}
-                        alt={chef.name}
+                        src={chef.AVTURL}
+                        alt={chef.CHEFNAME}
                         className="w-16 h-16 rounded-full object-cover"
                       />
                       <div>
                         <p className="font-semibold text-gray-900">
-                          {chef.name}
+                          {chef.CHEFNAME}
                         </p>
-                        <div className="flex items-center text-sm text-gray-500 gap-1 mt-1">
+                        {/* <div className="flex items-center text-sm text-gray-500 gap-1 mt-1">
                           <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                           <span>{chef.rating}</span>
                           <span>·</span>
                           <span>{chef.reviews} đánh giá</span>
-                        </div>
+                        </div> */}
                         <p className="font-semibold mt-2 text-gray-900">
                           VNĐ {typeof chef.price === 'number' ? chef.price.toLocaleString() : chef.price}/giờ
                         </p>
@@ -111,7 +141,7 @@ const MyCart = () => {
                     </div>
 
                     <button 
-                      onClick={handleRemoveChef}
+                      onClick={() => handleRemoveChef(chef.CHEFID)}
                       className="text-gray-400 hover:text-red-500"
                     >
                       <Trash2 className="w-5 h-5" />
@@ -131,33 +161,33 @@ const MyCart = () => {
                 <div className="space-y-4">
                   {dishes.map((dish) => (
                     <div
-                      key={dish.id}
+                      key={dish.DISHID}
                       className="bg-white rounded-2xl border border-gray-200 p-4 flex justify-between items-stretch shadow-sm hover:shadow-md transition-shadow"
                     >
                       <div className="flex gap-4">
                         <div className="w-20 h-20 bg-gray-100 rounded-lg" />
                         <div className="flex flex-col justify-center">
                           <p className="font-semibold text-gray-900">
-                            {dish.name}
+                            {dish.DISHNAME}
                           </p>
                           <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
                             <span className="flex items-center gap-1">
                               <Clock className="w-4 h-4" />
-                              {dish.time}
+                              {dish.COOKTIME}
                             </span>
                             <span className="flex items-center gap-1">
                               <Users className="w-4 h-4" />
-                              {dish.people}
+                              {dish.NUMPEOPLE}
                             </span>
                           </div>
                           <p className="font-semibold mt-2 text-gray-900">
-                            VNĐ {typeof dish.price === 'number' ? dish.price.toLocaleString() : dish.price}
+                            {typeof dish.PRICE === 'number' ? dish.PRICE.toLocaleString() : dish.PRICE} VNĐ
                           </p>
                         </div>
                       </div>
 
                       <button 
-                        onClick={() => handleRemoveDish(dish.cartId)}
+                        onClick={() => handleRemoveDish(dish.DISHID)}
                         className="self-center text-gray-400 hover:text-red-500"
                       >
                         <Trash2 className="w-5 h-5" />

@@ -16,18 +16,15 @@ const ChefHeader = ({ chef }) => {
   const { addChef } = useCart();
   const navigate = useNavigate();
 
-  const handleAddChefToCart = () => {
+  const handleAddChefToCart = async () => {
     if (chef) {
-      addChef({
-        id: chef.id,
-        name: chef.name,
-        price:
-          typeof chef.price === "number"
-            ? chef.price
-            : parseInt(chef.price.replace(/,/g, "")),
-        avatar: chef.avatar,
+      await addChef({
+        CHEFID: chef.id,
+        CHEFNAME: chef.name,
+        AVTURL: chef.avatar,
+        PRICEPERHOUR: chef.price,
         rating: chef.rating,
-        reviews: chef.reviewsList,
+        reviews: chef.reviews || 0
       });
       // Optionally navigate to cart
       navigate("/home/mycart");
