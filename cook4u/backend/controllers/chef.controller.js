@@ -472,6 +472,7 @@ export const updateChefV2 = async (req, res) => {
 };
 
 // Update chef_cuisine_type
+// Update chef_cuisine_type
 export const updateChefCuisineTypes = async (req, res) => {
   const { id } = req.params; // id của chef
   const { cuisine } = req.body; // cuisine mới
@@ -496,13 +497,13 @@ export const updateChefCuisineTypes = async (req, res) => {
     if (Array.isArray(cuisine)) {
       for (const item of cuisine) {
         await conn.query(
-          "INSERT INTO CHEF_CUISINE_TYPE (CHEFID, CUISINE) VALUES (?, ?)",
+          "INSERT INTO CHEF_CUISINE_TYPE (CHEFID, CUISINETYPE) VALUES (?, ?)", // SỬA Ở ĐÂY
           [id, item]
         );
       }
     } else if (cuisine) {
       await conn.query(
-        "INSERT INTO CHEF_CUISINE_TYPE (CHEFID, CUISINE) VALUES (?, ?)",
+        "INSERT INTO CHEF_CUISINE_TYPE (CHEFID, CUISINETYPE) VALUES (?, ?)", // VÀ SỬA Ở ĐÂY
         [id, cuisine]
       );
     }
@@ -516,7 +517,6 @@ export const updateChefCuisineTypes = async (req, res) => {
     conn.release();
   }
 };
-
 // Update chef languages
 export const updateChefLanguages = async (req, res) => {
   const { id } = req.params;
