@@ -568,7 +568,7 @@ const ChefManagement = () => {
             rules={[{ required: true, message: 'Vui lòng nhập số điện thoại' }]}
           >
             <Input
-              placeholder="+84 123 456 789"
+              placeholder="123456789"
               className="h-10"
             />
           </Form.Item>
@@ -836,7 +836,7 @@ const ChefManagement = () => {
             name="phone"
             label={<span className="font-semibold text-gray-700">Số điện thoại</span>}
           >
-            <Input placeholder="+84 123 456 789" className="h-10" disabled={updating} />
+            <Input placeholder="123456789" className="h-10" disabled={updating} />
           </Form.Item>
 
           <Form.Item
