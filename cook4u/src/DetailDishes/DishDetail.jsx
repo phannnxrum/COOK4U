@@ -20,6 +20,7 @@ const DishDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [dish, setDish] = useState(null);
+  
 
   // Lấy chi tiết món ăn từ API
   useEffect(() => {
@@ -47,27 +48,35 @@ const DishDetail = () => {
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
 
-  const handleAddToCart = () => {
-    if (dish) {
-      // Add dish multiple times based on quantity
-      for (let i = 0; i < quantity; i++) {
-        addDish({
+  const handleAddToCart = async () => {
+  if (dish) {
+    try {
+      // ✅ CHỈ gọi 1 lần với quantity chính xác
+      await addDish(
+        {
           id: dish.id,
           name: dish.name,
           price: parseFloat(dish.price),
-          image:
-            dish.image ||
-            "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1780&auto=format&fit=crop",
+          image: dish.image || "https://...",
           cookTime: dish.cookTime,
           servings: dish.servings,
-          time: dish.cookTime,
-          people: dish.servings,
-        });
-      }
-      // Optionally navigate to cart
-      navigate("/home/mycart");
+        },
+        quantity // Truyền quantity vào, không lặp vòng for
+      );
+      
+      // Hiển thị thông báo thành công
+      // alert(`Đã thêm ${quantity} ${dish.name} vào giỏ hàng!`);
+      
+      // Có thể cho người dùng chọn có đi đến giỏ hàng không
+      // if (window.confirm("Xem giỏ hàng ngay?")) {
+        navigate("/home/mycart");
+      // }
+    } catch (error) {
+      console.error("Lỗi khi thêm vào giỏ:", error);
+      alert("Không thể thêm món vào giỏ hàng");
     }
-  };
+  }
+};
 
   // Loading state
   if (loading) {

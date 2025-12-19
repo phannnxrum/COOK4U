@@ -95,52 +95,54 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const addDish = async (dish, quantity = 1) => {
-    try {
-      const dishId = dish.DISHID || dish.id;
-      
-      await axios.post("http://localhost:3000/api/cart/dish",
-        { dishId, quantity },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
-        }
-      );
+  // Thêm ở đầu file
+let addDishTimeout = null;
 
-      // Kiểm tra xem món đã có trong giỏ chưa
-      setCart(prev => {
-        const existingIndex = prev.dishes.findIndex(d => d.DISHID === dishId);
-        
-        if (existingIndex >= 0) {
-          // Cập nhật số lượng nếu đã có
-          const updatedDishes = [...prev.dishes];
-          updatedDishes[existingIndex] = {
-            ...updatedDishes[existingIndex],
-            QUANTITY: (updatedDishes[existingIndex].QUANTITY || 1) + quantity
-          };
-          return { ...prev, dishes: updatedDishes };
-        } else {
-          // Thêm mới
-          return {
-            ...prev,
-            dishes: [...prev.dishes, {
-              DISHID: dishId,
-              DISHNAME: dish.DISHNAME || dish.name,
-              PICTUREURL: dish.PICTUREURL || dish.image,
-              COOKTIME: dish.COOKTIME,
-              PRICE: dish.PRICE || dish.price,
-              NUMPEOPLE: dish.NUMPEOPLE,
-              QUANTITY: quantity
-            }]
-          };
+const addDish = async (dish, quantity = 1) => {
+  try {
+    const dishId = dish.DISHID || dish.id;
+    
+    // ✅ Chỉ gọi 1 lần với quantity chính xác
+    await axios.post("http://localhost:3000/api/cart/dish",
+      { dishId, quantity }, // Gửi quantity trong body
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
         }
-      });
-    } catch (error) {
-      console.error("Error adding dish:", error);
-      throw error;
-    }
-  };
+      }
+    );
+
+    // Cập nhật state
+    setCart(prev => {
+      const existingIndex = prev.dishes.findIndex(d => d.DISHID === dishId);
+      
+      if (existingIndex >= 0) {
+        const updatedDishes = [...prev.dishes];
+        updatedDishes[existingIndex] = {
+          ...updatedDishes[existingIndex],
+          QUANTITY: (updatedDishes[existingIndex].QUANTITY || 1) + quantity // Cộng quantity
+        };
+        return { ...prev, dishes: updatedDishes };
+      } else {
+        return {
+          ...prev,
+          dishes: [...prev.dishes, {
+            DISHID: dishId,
+            DISHNAME: dish.DISHNAME || dish.name,
+            PICTUREURL: dish.PICTUREURL || dish.image,
+            COOKTIME: dish.COOKTIME || dish.cookTime,
+            PRICE: dish.PRICE || dish.price,
+            NUMPEOPLE: dish.NUMPEOPLE || dish.servings,
+            QUANTITY: quantity // Lưu quantity
+          }]
+        };
+      }
+    });
+  } catch (error) {
+    console.error("Error adding dish:", error);
+    throw error;
+  }
+};
 
   const removeDish = async (dishId) => {
     try {
