@@ -16,18 +16,18 @@ const ChefHeader = ({ chef }) => {
   const { addChef } = useCart();
   const navigate = useNavigate();
 
-  const handleAddChefToCart = () => {
+  const handleAddChefToCart = async () => {
     if (chef) {
-      addChef({
-        id: chef.id,
-        name: chef.name,
-        price: typeof chef.price === 'number' ? chef.price : parseInt(chef.price.replace(/,/g, '')),
-        avatar: chef.avatar,
+      await addChef({
+        CHEFID: chef.id,
+        CHEFNAME: chef.name,
+        AVTURL: chef.avatar,
+        PRICEPERHOUR: chef.price,
         rating: chef.rating,
-        reviews: chef.reviews
+        reviews: chef.reviews || 0
       });
       // Optionally navigate to cart
-      navigate('/home/mycart');
+      navigate("/home/mycart");
     }
   };
   return (
@@ -75,14 +75,15 @@ const ChefHeader = ({ chef }) => {
         </div>
 
         <div className="flex flex-wrap gap-3">
-          {chef.cuisine.map((item, index) => (
+          {/* Thêm dấu ? sau cuisine */}
+          {chef?.cuisine?.map((item, index) => (
             <span key={index} className="bg-gray-200 px-4 rounded-full ">
               {item}
             </span>
           ))}
         </div>
 
-        <p className="text-gray-500">{chef.experience}</p>
+        <p className="text-gray-500">{chef.description}</p>
 
         <div className="hidden md:flex flex-col md:flex-row justify-between text-md ">
           <div className="flex flex-row gap-2">

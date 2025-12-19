@@ -12,15 +12,18 @@ import {
   Star,
   Trash2,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  UtensilsCrossed,
+  CalculatorIcon,
+  CalendarDays
 } from "lucide-react";
 
 // Dữ liệu giả lập
 const mockChef = {
-  name: "Đầu bếp Jack Vĩnh Long",
+  name: "Đầu bếp Tony",
   rating: 4.9,
   specialty: "Món Việt & Âu",
-  avatar: "https://images2.thanhnien.vn/528068263637045248/2023/3/21/jack-1679396385964143355875.jpeg",
+  avatar: "https://i.pravatar.cc/150?img=1",
   price: 85,
 };
 
@@ -172,9 +175,9 @@ export default function BookingPage() {
 
 function StepIndicator({ currentStep }) {
   const steps = [
-    { number: 1, title: "Chọn Món", icon: "🍽️" },
-    { number: 2, title: "Lên Lịch", icon: "📅" },
-    { number: 3, title: "Thanh Toán", icon: "💳" },
+    { number: 1, title: "Chọn Món", icon: <UtensilsCrossed></UtensilsCrossed> },
+    { number: 2, title: "Lên Lịch", icon: <CalendarDays></CalendarDays> },
+    { number: 3, title: "Thanh Toán", icon: <CreditCard></CreditCard> },
   ];
 
   return (
@@ -225,10 +228,8 @@ function Step1ChooseDishes({ cart, chef, onToggle, onRemove }) {
           <h3 className="font-bold text-gray-900 text-lg">{chef.name}</h3>
           <div className="flex items-center gap-2 mt-1">
             <div className="flex items-center">
-              <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-              <span className="ml-1 font-medium">{chef.rating}</span>
+              <span className="ml-1 font-bold">100.000 VNĐ</span>
             </div>
-            <span className="text-gray-600 text-sm">• {chef.specialty}</span>
           </div>
         </div>
       </div>
@@ -269,30 +270,11 @@ function DishItem({ dish, onToggle, onRemove }) {
               </span>
             </div>
           </div>
-          <span className="text-lg font-bold text-orange-500">${itemPrice}</span>
         </div>
-
-        {/* Ingredient Toggle */}
-        <div className="flex items-center justify-between mt-4">
-          <div>
-            <p className="font-medium text-gray-900">Bao gồm nguyên liệu</p>
-            <p className="text-sm text-gray-500">+${dish.ingredientFee} phí nguyên liệu</p>
-          </div>
-          <button
-            onClick={() => onToggle(dish.id)}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${dish.includeIngredients ? 'bg-orange-500' : 'bg-gray-300'}`}
-          >
-            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${dish.includeIngredients ? 'translate-x-6' : 'translate-x-1'}`} />
-          </button>
+        <div className="font-bold">
+          150.000 VNĐ
         </div>
       </div>
-
-      <button
-        onClick={() => onRemove(dish.id)}
-        className="self-start sm:self-center text-gray-500 hover:text-red-500 transition-colors"
-      >
-        <Trash2 className="w-5 h-5" />
-      </button>
     </div>
   );
 }

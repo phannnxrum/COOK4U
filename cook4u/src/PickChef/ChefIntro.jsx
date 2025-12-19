@@ -8,8 +8,11 @@ const ChefIntro = ({ chef }) => {
         <div>
           <h2>Sở trường</h2>
           <div className="flex flex-wrap gap-3 py-1 ">
-            {chef.tags.map((item, index) => (
-              <span key={index} className="border border-gray-300 px-4 rounded-full">
+            {chef?.tags?.map((item, index) => (
+              <span
+                key={index}
+                className="border border-gray-300 px-4 rounded-full"
+              >
                 {item}
               </span>
             ))}
@@ -18,18 +21,29 @@ const ChefIntro = ({ chef }) => {
         <div>
           <h2>Ngôn ngữ</h2>
           <div className="flex flex-wrap gap-3 py-1">
-            {chef.languages.map((item, index) => (
-              <span key={index} className="border border-gray-300 px-4 rounded-full">
-                {item}
+            {chef?.languages && chef.languages.length > 0 ? (
+              chef.languages.map((item, index) => (
+                <span
+                  key={index}
+                  className="border border-gray-300 px-4 rounded-full"
+                >
+                  {item}
+                </span>
+              ))
+            ) : (
+              <span className="text-gray-500 italic text-sm">
+                Chưa có thông tin ngôn ngữ
               </span>
-            ))}
+            )}
           </div>
         </div>
         <div>
           <h2>Chứng nhận</h2>
           <div className="flex flex-col gap-1 py-1">
             {chef.certifications.map((item, index) => (
-              <span className="text-sm text-gray-500" key={index}>• {item}</span>
+              <span className="text-sm text-gray-500" key={index}>
+                • {item}
+              </span>
             ))}
           </div>
         </div>
@@ -51,7 +65,9 @@ const ChefIntro = ({ chef }) => {
           <h2>Bao gồm</h2>
           <div className="flex flex-col gap-1 py-1">
             {chef.serviceDetails.includes.map((item, index) => (
-              <span className="text-sm text-gray-500" key={index}>• {item}</span>
+              <span className="text-sm text-gray-500" key={index}>
+                • {item}
+              </span>
             ))}
           </div>
         </div>

@@ -10,25 +10,78 @@ import { useCart } from "../contexts/CartContext";
 import { useNavigate } from "react-router";
 
 const MyCart = () => {
-  const { cart, removeChef, removeDish, clearCart } = useCart();
+  const { cart, removeChef, removeDish, clearCart, loading } = useCart();
   const navigate = useNavigate();
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+          <p className="mt-4 text-gray-600">Đang tải giỏ hàng...</p>
+        </div>
+      </div>
+    );
+  }
+
   const chef = cart.chef;
-  const dishes = cart.dishes;
+  const dishes = cart.dishes || [];
 
   const hasChef = !!chef;
   const hasDish = dishes.length > 0;
   const canCheckout = hasChef && hasDish;
 
-  const chefTotal = hasChef ? (typeof chef.price === 'number' ? chef.price : parseInt(chef.price.replace(/,/g, ''))) : 0;
-  const dishesTotal = dishes.reduce((sum, d) => {
-    const price = typeof d.price === 'number' ? d.price : parseInt(d.price.replace(/,/g, ''));
-    return sum + price;
-  }, 0);
+  const chefTotal = hasChef
+    ? (() => {
+        if (typeof chef?.price === "number") {
+          return chef.price;
+        }
+        if (typeof chef?.price === "string") {
+          // Sửa: parseFloat thay vì parseInt để giữ phần thập phân
+          return parseFloat(chef.price.replace(/[^0-9.]/g, ""));
+        }
+        return 0;
+      })()
+    : 0;
+
+  // SỬA PHẦN NÀY - Tính tổng tiền món ăn
+  const dishesTotal = Array.isArray(dishes)
+    ? dishes.reduce((sum, dish) => {
+        let price = 0;
+        
+        // Ưu tiên lấy từ dish.PRICE (từ API)
+        if (dish.PRICE !== undefined) {
+          if (typeof dish.PRICE === "number") {
+            price = dish.PRICE;
+          } else if (typeof dish.PRICE === "string") {
+            // Xóa ký tự không phải số và dấu chấm thập phân
+            price = parseFloat(dish.PRICE.replace(/[^0-9.]/g, ""));
+          }
+        }
+        // Fallback: dish.price
+        else if (dish.price !== undefined) {
+          if (typeof dish.price === "number") {
+            price = dish.price;
+          } else if (typeof dish.price === "string") {
+            price = parseFloat(dish.price.replace(/[^0-9.]/g, ""));
+          }
+        }
+        
+        // Lấy quantity, mặc định là 1
+        const quantity = dish.QUANTITY || 1;
+        
+        return sum + (price * quantity);
+      }, 0)
+    : 0;
+
   const total = chefTotal + dishesTotal;
 
   const handleClearAll = () => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa tất cả các mục trong giỏ hàng?")) {
+    if (
+      window.confirm(
+        "Bạn có chắc chắn muốn xóa tất cả các mục trong giỏ hàng?"
+      )
+    ) {
       clearCart();
     }
   };
@@ -39,16 +92,28 @@ const MyCart = () => {
     }
   };
 
-  const handleRemoveDish = (cartId) => {
+  const handleRemoveDish = (dishId) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa món ăn này?")) {
-      removeDish(cartId);
+      removeDish(dishId);
     }
   };
 
   const handleCheckout = () => {
     if (canCheckout) {
-      navigate('/home/book');
+      navigate("/home/book");
     }
+  };
+
+  // SỬA THÊM: Format số tiền có dấu phân cách
+  const formatPrice = (price) => {
+    if (typeof price === "number") {
+      return price.toLocaleString("vi-VN");
+    }
+    if (typeof price === "string") {
+      const num = parseFloat(price.replace(/[^0-9.]/g, ""));
+      return isNaN(num) ? "0" : num.toLocaleString("vi-VN");
+    }
+    return "0";
   };
 
   return (
@@ -60,7 +125,6 @@ const MyCart = () => {
           <h1 className="text-3xl font-semibold text-gray-900">
             Giỏ Hàng Của Bạn
           </h1>
-
 
           <button
             onClick={handleClearAll}
@@ -90,28 +154,22 @@ const MyCart = () => {
                   <div className="flex justify-between items-start">
                     <div className="flex gap-4">
                       <img
-                        src={chef.avatar}
-                        alt={chef.name}
+                        src={chef.AVTURL}
+                        alt={chef.CHEFNAME}
                         className="w-16 h-16 rounded-full object-cover"
                       />
                       <div>
                         <p className="font-semibold text-gray-900">
-                          {chef.name}
+                          {chef.CHEFNAME}
                         </p>
-                        <div className="flex items-center text-sm text-gray-500 gap-1 mt-1">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                          <span>{chef.rating}</span>
-                          <span>·</span>
-                          <span>{chef.reviews} đánh giá</span>
-                        </div>
                         <p className="font-semibold mt-2 text-gray-900">
-                          VNĐ {typeof chef.price === 'number' ? chef.price.toLocaleString() : chef.price}/giờ
+                          VNĐ {formatPrice(chef.price)}/giờ
                         </p>
                       </div>
                     </div>
 
-                    <button 
-                      onClick={handleRemoveChef}
+                    <button
+                      onClick={() => handleRemoveChef(chef.CHEFID)}
                       className="text-gray-400 hover:text-red-500"
                     >
                       <Trash2 className="w-5 h-5" />
@@ -131,33 +189,51 @@ const MyCart = () => {
                 <div className="space-y-4">
                   {dishes.map((dish) => (
                     <div
-                      key={dish.id}
+                      key={dish.DISHID}
                       className="bg-white rounded-2xl border border-gray-200 p-4 flex justify-between items-stretch shadow-sm hover:shadow-md transition-shadow"
                     >
                       <div className="flex gap-4">
-                        <div className="w-20 h-20 bg-gray-100 rounded-lg" />
+                        <img
+                          className="w-20 h-20 bg-gray-100 rounded-lg"
+                          src={
+                            dish.AVTURL ||
+                            `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1780&auto=format&fit=crop`
+                          }
+                        />
                         <div className="flex flex-col justify-center">
                           <p className="font-semibold text-gray-900">
-                            {dish.name}
+                            {dish.DISHNAME}
+                            {/* Hiển thị số lượng nếu > 1 */}
+                            {(dish.QUANTITY && dish.QUANTITY > 1) && (
+                              <span className="ml-2 text-sm text-orange-500">
+                                (x{dish.QUANTITY})
+                              </span>
+                            )}
                           </p>
                           <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
                             <span className="flex items-center gap-1">
                               <Clock className="w-4 h-4" />
-                              {dish.time}
+                              {dish.COOKTIME}
                             </span>
                             <span className="flex items-center gap-1">
                               <Users className="w-4 h-4" />
-                              {dish.people}
+                              {dish.NUMPEOPLE}
                             </span>
                           </div>
                           <p className="font-semibold mt-2 text-gray-900">
-                            VNĐ {typeof dish.price === 'number' ? dish.price.toLocaleString() : dish.price}
+                            {dish.PRICE !== undefined ? formatPrice(dish.PRICE) : formatPrice(dish.price)} VNĐ
+                            {/* Hiển thị tổng tiền nếu quantity > 1 */}
+                            {(dish.QUANTITY && dish.QUANTITY > 1) && (
+                              <span className="block text-sm text-gray-500 mt-1">
+                                {dish.QUANTITY} × {formatPrice(dish.PRICE || dish.price)} VNĐ
+                              </span>
+                            )}
                           </p>
                         </div>
                       </div>
 
-                      <button 
-                        onClick={() => handleRemoveDish(dish.cartId)}
+                      <button
+                        onClick={() => handleRemoveDish(dish.DISHID)}
                         className="self-center text-gray-400 hover:text-red-500"
                       >
                         <Trash2 className="w-5 h-5" />
@@ -179,11 +255,11 @@ const MyCart = () => {
               <div className="space-y-2 text-sm text-gray-700">
                 <div className="flex justify-between">
                   <span>Đầu bếp:</span>
-                  <span>VNĐ {chefTotal.toLocaleString()}</span>
+                  <span>VNĐ {formatPrice(chefTotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Món ăn ({dishes.length}):</span>
-                  <span>VNĐ {dishesTotal.toLocaleString()}</span>
+                  <span>VNĐ {formatPrice(dishesTotal)}</span>
                 </div>
               </div>
 
@@ -191,7 +267,9 @@ const MyCart = () => {
 
               <div className="flex justify-between items-center font-semibold mb-4">
                 <span className="text-gray-900">Tổng cộng:</span>
-                <span className="text-orange-500 text-lg">VNĐ {total.toLocaleString()}</span>
+                <span className="text-orange-500 text-lg">
+                  VNĐ {formatPrice(total)}
+                </span>
               </div>
 
               <button
