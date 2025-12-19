@@ -33,6 +33,14 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('isAdmin', 'false');
     setUser(userData);
     setIsAdmin(false);
+    
+    // Dispatch storage event để CartContext biết token đã thay đổi
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'token',
+      newValue: token,
+      oldValue: null
+    }));
+    
     navigate('/home');
   };
 
@@ -48,9 +56,22 @@ export const AuthProvider = ({ children }) => {
 
   // Đăng xuất
   const logout = () => {
+    // Gọi reset cart nếu có
+    if (window.resetCart) {
+      window.resetCart();
+    }
+    
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('isAdmin');
+    
+    // Dispatch storage event
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'token',
+      newValue: null,
+      oldValue: localStorage.getItem('token')
+    }));
+    
     setUser(null);
     setIsAdmin(false);
     navigate('/sign-in');
