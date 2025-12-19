@@ -16,21 +16,27 @@ export const getAllDishes = async (req, res) => {
                 d.PICTUREURL AS image,
                 d.NUMPEOPLE AS numberOfPeople,
                 d.DISHSTATUS AS status,
-                -- 1. Tính điểm đánh giá trung bình từ bảng REVIEW thông qua ORDER_ITEM
+                -- 1. Tính điểm đánh giá trung bình
                 COALESCE((
                     SELECT ROUND(AVG(r.STAR), 1)
                     FROM ORDER_ITEM oi
                     JOIN REVIEW r ON oi.ORDERID = r.ORDERID
                     WHERE oi.DISHID = d.DISHID
                 ), 0) AS rating,
-                -- 2. Đếm tổng số đánh giá của món ăn này
+                -- 2. CHỈNH SỬA TẠI ĐÂY: Đếm tổng số đơn hàng có chứa món ăn này
+                (
+                    SELECT COUNT(DISTINCT oi.ORDERID)
+                    FROM ORDER_ITEM oi
+                    WHERE oi.DISHID = d.DISHID
+                ) AS totalOrders,
+                -- 3. Đếm tổng số đánh giá (nếu bạn vẫn muốn giữ)
                 (
                     SELECT COUNT(DISTINCT r.REVIEWID)
                     FROM ORDER_ITEM oi
                     JOIN REVIEW r ON oi.ORDERID = r.ORDERID
                     WHERE oi.DISHID = d.DISHID
                 ) AS totalReviews,
-                -- 3. Lấy danh sách loại ẩm thực
+                -- 4. Lấy danh sách loại ẩm thực
                 COALESCE(
                     (SELECT JSON_ARRAYAGG(DISHTYPE) 
                      FROM DISHTYPE 
