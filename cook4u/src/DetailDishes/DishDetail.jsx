@@ -30,6 +30,7 @@ const DishDetail = () => {
           `http://localhost:3000/api/dishes/${dishId}`
         );
         setDish(res.data.data);
+        console.log("Fetch data: ", res.data.data);
       } catch (err) {
         console.error("Error fetching dish details:", err);
         setError("Không thể tải thông tin món ăn");
@@ -51,16 +52,16 @@ const DishDetail = () => {
       // Add dish multiple times based on quantity
       for (let i = 0; i < quantity; i++) {
         addDish({
-          id: dish.DISHID,
+          id: dish.id,
           name: dish.name,
-          price: parseFloat(dish.PRICE),
+          price: parseFloat(dish.price),
           image:
-            dish.PICTUREURL ||
+            dish.image ||
             "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1780&auto=format&fit=crop",
-          cookTime: dish.COOKTIME,
-          servings: "2-3 người", // Mặc định vì API chưa có
-          time: dish.COOKTIME,
-          people: "2-3 người",
+          cookTime: dish.cookTime,
+          servings: dish.servings,
+          time: dish.cookTime,
+          people: dish.servings,
         });
       }
       // Optionally navigate to cart
@@ -104,48 +105,24 @@ const DishDetail = () => {
 
   // Format data từ API
   const formattedDish = {
-    id: dish.DISHID,
+    id: dish.id,
     name: dish.name,
-    price: parseFloat(dish.PRICE),
-    rating: 4.8, // Mặc định
-    reviewsCount: 12, // Mặc định
-    servings: 2, // Mặc định
-    cookTime: dish.COOKTIME,
-    difficulty: "Bao gồm",
-    category: ["Món Việt"], // Mặc định
+    price: parseFloat(dish.price),
+    rating: dish.rating,
+    reviewsCount: dish.reviewsCount,
+    servings: dish.servings,
+    cookTime: dish.cookTime,
+    // difficulty: "Bao gồm",
+    category: dish.category,
     images: [
-      dish.PICTUREURL ||
+      dish.images ||
         "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1780&auto=format&fit=crop",
     ],
-    description: dish.SHORTDESCR || dish.DESCR,
-    about: dish.DESCR,
-    ingredients: [
-      { name: "Nguyên liệu chính", amount: "Đầy đủ" },
-      { name: "Gia vị", amount: "Tự nêm" },
-    ],
-    nutrition: {
-      calories: 485,
-      protein: 22,
-      carbs: 45,
-      fat: 24,
-    },
-    reviews: [
-      {
-        name: "Khách hàng 1",
-        initial: "K",
-        rating: 5,
-        time: "2 ngày trước",
-        comment: "Món ăn rất ngon!",
-      },
-      {
-        name: "Khách hàng 2",
-        avatar:
-          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
-        rating: 5,
-        time: "1 tuần trước",
-        comment: "Chuẩn vị và hài lòng!",
-      },
-    ],
+    description: dish.description,
+    about: dish.about,
+    ingredients: dish.ingredients,
+    nutrition: dish.nutrition,
+    reviews: dish.reviews,
   };
 
   return (
@@ -229,7 +206,7 @@ const DishDetail = () => {
                   <div>
                     <p className="text-xs text-gray-500">Phục vụ</p>
                     <p className="font-semibold text-gray-900">
-                      {formattedDish.servings} người
+                      {formattedDish.servings}
                     </p>
                   </div>
                 </div>
@@ -280,82 +257,101 @@ const DishDetail = () => {
             </div>
 
             {/* Thông tin dinh dưỡng */}
+            {/* Thông tin dinh dưỡng */}
             <div className="bg-white rounded-2xl shadow-sm p-8 mb-6 hover:shadow-md transition-shadow">
               <h2 className="text-2xl font-bold mb-6">Thông tin dinh dưỡng</h2>
               <div className="grid grid-cols-4 gap-6">
-                <div className="text-center p-4 bg-orange-50 rounded-xl">
-                  <p className="text-4xl font-bold text-orange-500 mb-2">
-                    {formattedDish.nutrition.calories}
-                  </p>
-                  <p className="text-gray-600 text-sm font-medium">Calo</p>
-                </div>
-                <div className="text-center p-4 bg-orange-50 rounded-xl">
-                  <p className="text-4xl font-bold text-orange-500 mb-2">
-                    {formattedDish.nutrition.protein}g
-                  </p>
-                  <p className="text-gray-600 text-sm font-medium">Protein</p>
-                </div>
-                <div className="text-center p-4 bg-orange-50 rounded-xl">
-                  <p className="text-4xl font-bold text-orange-500 mb-2">
-                    {formattedDish.nutrition.carbs}g
-                  </p>
-                  <p className="text-gray-600 text-sm font-medium">Carbs</p>
-                </div>
-                <div className="text-center p-4 bg-orange-50 rounded-xl">
-                  <p className="text-4xl font-bold text-orange-500 mb-2">
-                    {formattedDish.nutrition.fat}g
-                  </p>
-                  <p className="text-gray-600 text-sm font-medium">Chất béo</p>
-                </div>
+                {formattedDish.nutrition.map((item, index) => (
+                  <div
+                    key={index}
+                    className="text-center p-4 bg-orange-50 rounded-xl"
+                  >
+                    <p className="text-2xl font-bold text-orange-500 mb-2">
+                      {/* Chuyển amount về số nguyên nếu cần (ví dụ 800.00 -> 800) */}
+                      {Math.round(item.amount)}
+                      <span className="text-xl ml-1">{item.UNIT}</span>
+                    </p>
+                    <p className="text-gray-600 text-sm font-medium">
+                      {/* Dịch tên nếu cần hoặc để item.name */}
+                      {item.name === "Calories"
+                        ? "Calo"
+                        : item.name === "Fat"
+                        ? "Chất béo"
+                        : item.name}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
 
             {/* Đánh giá */}
+            {/* Đánh giá */}
             <div className="bg-white rounded-2xl shadow-sm p-8 hover:shadow-md transition-shadow">
               <h2 className="text-2xl font-bold mb-6">Đánh giá món ăn</h2>
-              <div className="space-y-6">
-                {formattedDish.reviews.map((review, index) => (
-                  <div
-                    key={index}
-                    className="border-b border-gray-100 pb-6 last:border-0 last:pb-0"
-                  >
-                    <div className="flex items-start space-x-4">
-                      {review.avatar ? (
-                        <img
-                          src={review.avatar}
-                          alt={review.name}
-                          className="w-12 h-12 rounded-full"
-                        />
-                      ) : (
-                        <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-lg">
-                          {review.initial}
+
+              {formattedDish.reviews && formattedDish.reviews.length > 0 ? (
+                <div className="space-y-6">
+                  {formattedDish.reviews.map((review, index) => (
+                    <div
+                      key={index}
+                      className="border-b border-gray-100 pb-6 last:border-0 last:pb-0"
+                    >
+                      <div className="flex items-start space-x-4">
+                        {review.avatar ? (
+                          <img
+                            src={review.avatar}
+                            alt={review.name}
+                            className="w-12 h-12 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-lg">
+                            {review.initial}
+                          </div>
+                        )}
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-2">
+                            <h3 className="font-semibold text-gray-900">
+                              {review.name}
+                            </h3>
+                            <span className="text-sm text-gray-500">
+                              {review.time}
+                            </span>
+                          </div>
+                          <div className="flex mb-3">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`w-4 h-4 ${
+                                  i < review.rating
+                                    ? "text-yellow-400 fill-yellow-400"
+                                    : "text-gray-200 fill-gray-200"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <p className="text-gray-600 leading-relaxed">
+                            {review.comment}
+                          </p>
                         </div>
-                      )}
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-semibold text-gray-900">
-                            {review.name}
-                          </h3>
-                          <span className="text-sm text-gray-500">
-                            {review.time}
-                          </span>
-                        </div>
-                        <div className="flex mb-3">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className="w-4 h-4 text-yellow-400 fill-yellow-400"
-                            />
-                          ))}
-                        </div>
-                        <p className="text-gray-600 leading-relaxed">
-                          {review.comment}
-                        </p>
                       </div>
                     </div>
+                  ))}
+                </div>
+              ) : (
+                /* Hiển thị khi không có đánh giá */
+                <div className="text-center py-10 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                  <div className="mb-3 flex justify-center">
+                    <Star className="w-12 h-12 text-gray-300" />
                   </div>
-                ))}
-              </div>
+                  <p className="text-gray-500 text-lg font-medium">
+                    Chưa có đánh giá nào cho món ăn này.
+                  </p>
+                  <p className="text-gray-400">
+                    Hãy là người đầu tiên trải nghiệm và chia sẻ cảm nhận của
+                    bạn!
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -386,16 +382,16 @@ const DishDetail = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600 text-sm">Phục vụ:</span>
                   <span className="font-semibold text-gray-900">
-                    {formattedDish.servings} người
+                    {formattedDish.servings}
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center">
+                {/* <div className="flex justify-between items-center">
                   <span className="text-gray-600 text-sm">Dọn dẹp:</span>
                   <span className="font-semibold text-gray-900">
                     {formattedDish.difficulty}
                   </span>
-                </div>
+                </div> */}
               </div>
 
               <div className="mb-10">
