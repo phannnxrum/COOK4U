@@ -94,7 +94,7 @@ import { handleGetAllChefs } from "../PickChef/chefService";
 
 // Component Sidebar Lọc
 const FiltersSidebar = ({ filters, onFilterChange }) => (
-  <aside className="filters-sidebar bg-white rounded-xl border border-orange-300 p-5 h-fit">
+  <aside className="filters-sidebar bg-white rounded-xl border border-gray-200 p-5 h-fit">
     <div className="flex items-center gap-2 mb-6">
       <Filter className="w-5 h-5 text-gray-600" />
       <h3 className="text-lg font-semibold text-gray-900">Lọc</h3>
@@ -180,7 +180,7 @@ const ChefCard = ({ chef }) => {
   return (
     <div
       onClick={handleClick}
-      className="bg-orange-50 rounded-xl border border-gray-300 p-5 hover:shadow-xl hover:border-orange-300 transition-all duration-300 cursor-pointer"
+      className="bg-white rounded-xl border border-gray-300 p-5 hover:shadow-xl hover:border-orange-500 transition-all duration-300 cursor-pointer"
     >
       <div className="flex items-start gap-4 mb-4">
         <img

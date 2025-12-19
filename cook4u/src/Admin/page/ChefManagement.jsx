@@ -511,7 +511,7 @@ const ChefManagement = () => {
                 <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Liên hệ</th>
                 <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Kinh nghiệm</th>
                 <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Chuyên môn</th>
-                <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Giá (VNP/giờ)</th>
+                <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Giá (VNĐ/giờ)</th>
                 <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Trạng thái</th>
                 <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Thao tác</th>
               </tr>

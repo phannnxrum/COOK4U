@@ -113,7 +113,7 @@ const DishCard = ({ dish, navigate }) => {
 
   return (
     <div
-      className="dish-card bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:border-orange-200 transition-all duration-300 cursor-pointer"
+      className="dish-card bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:border-orange-500 transition-all duration-300 cursor-pointer"
       onClick={() => navigate(`/home/dish/${dish.id}`)}
     >
       <div className="dish-image-container relative h-48">

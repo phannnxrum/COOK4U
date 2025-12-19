@@ -28,7 +28,6 @@ const DashboardLayout = ({ activeTab, onTabChange, children }) => {
     { key: 'overview', label: 'Tổng quan', icon: <BarChart3 size={18} /> },
     { key: 'dishes', label: 'Món ăn', icon: <Utensils size={18} /> },
     { key: 'chefs', label: 'Đầu bếp', icon: <ChefHat size={18} /> },
-    { key: 'violations', label: 'Vi phạm', icon: <AlertTriangle size={18} /> },
   ];
 
   return (
@@ -45,12 +44,6 @@ const DashboardLayout = ({ activeTab, onTabChange, children }) => {
             
             {/* User Section - Tương tự HeaderClient */}
             <div className="flex items-center space-x-4">
-              <button className="p-2 rounded-full hover:bg-gray-100">
-                <Bell size={20} />
-              </button>
-              <button className="p-2 rounded-full hover:bg-gray-100">
-                <Settings size={20} />
-              </button>
               
               {/* Avatar Dropdown */}
               <div className="relative">
