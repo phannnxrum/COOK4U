@@ -10,16 +10,17 @@ import {
   User,
 } from "lucide-react";
 import React, { useState, useRef } from "react";
+import axios from "axios";
 
 const ProfileUser = () => {
   const [tab, setTab] = useState("info");
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
-    name: "Nguyễn Văn A",
-    email: "nguyenvana@email.com",
-    phone: "+84 123 456 789",
-    address: "123 Đường ABC, Quận 1, TP.HCM",
-    bio: "Yêu thích ẩm thực Ý và Nhật Bản. Thích khám phá những món ăn mới và trải nghiệm văn hóa ẩm thực.",
+    fullname: "",
+    email: "",
+    phone: "",
+    address: "",
+    bio: "",
     avatar: "https://i.pravatar.cc/150?img=50",
   });
   const [preferences, setPreferences] = useState({
@@ -28,6 +29,24 @@ const ProfileUser = () => {
     favoriteDishes: "",
     budget: "",
   });
+
+  axios.get("http://localhost:3000/api/users/me", {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    }
+  })
+  .then(res => {
+    const user = res.data.data;
+    setProfileData({
+    fullname: user.FULLNAME,
+    email: user.EMAIL,
+    phone: user.PHONENUMBER,
+    address: user.ADDRESS,
+    bio: user.INTRODUCTION,
+    avatar: user.AVATAR || "https://i.pravatar.cc/150?img=50"}
+  )})
+  .catch(err => console.error(err));
+
   const fileInputRef = useRef(null);
   return (
     <div className="container">
@@ -176,18 +195,18 @@ const ProfileUser = () => {
                     {isEditing ? (
                       <input
                         type="text"
-                        value={profileData.name}
+                        value={profileData.fullname}
                         onChange={(e) =>
                           setProfileData((prev) => ({
                             ...prev,
-                            name: e.target.value,
+                            fullname: e.target.value,
                           }))
                         }
                         className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
                       />
                     ) : (
                       <p className="text-sm text-gray-800">
-                        {profileData.name}
+                        {profileData.fullname}
                       </p>
                     )}
                   </div>
