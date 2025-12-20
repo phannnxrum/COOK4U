@@ -1,5 +1,6 @@
 import express from "express";
 import * as orderController from "../controllers/order.controller.js";
+import authMiddleware from "../middleware/jwt.middleware.js";
 
 const orderRouter = express.Router();
 
@@ -9,16 +10,21 @@ orderRouter.get("/test", (req, res) => {
 });
 
 // POST   /api/orders                       Tạo đơn (từ cart)
-orderRouter.post("/", orderController.createOrderFromCart);
+orderRouter.post("/", authMiddleware, orderController.createOrderFromCart);
 
-// GET    /api/orders/:id                   Chi tiết đơn
-orderRouter.get("/:id", orderController.getOrderDetails);
+// GET    /api/orders/customer  Lịch sử đơn của customer
+orderRouter.get("/customer", authMiddleware, orderController.getOrderHistoryByCustomerId);
 
-// GET    /api/orders/customer/:customerId  Lịch sử đơn của customer
-orderRouter.get("/customer/:customerId", orderController.getOrderHistoryByCustomerId);
+// GET    /api/orders/chef/:chefId          Lịch sử đơn của chef
+orderRouter.get("/chef/:chefId", authMiddleware, orderController.getOrderHistoryByChefId);
 
 // PATCH  /api/orders/:id/status
-orderRouter.patch("/:id/status", orderController.updateOrderStatus);
+orderRouter.patch("/:id/status", authMiddleware, orderController.updateOrderStatus);
 
+// PATCH  /api/orders/:id/payment
+orderRouter.patch("/:id/payment", authMiddleware, orderController.updatePaymentStatus);
+
+// GET    /api/orders/:id                   Chi tiết đơn
+orderRouter.get("/:id", authMiddleware, orderController.getOrderDetails);
 
 export default orderRouter;
