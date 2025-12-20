@@ -58,7 +58,7 @@ const ChefIntro = ({ chef }) => {
           </div>
           <div className="">
             <p className="text-sm text-gray-500 py-1">Thời lượng tối thiểu</p>
-            <p className="font-semibold">{chef.serviceDetails.minDuration}</p>
+            <p className="font-semibold">{chef.serviceDetails.minDuration} tiếng</p>
           </div>
         </div>
         <div>

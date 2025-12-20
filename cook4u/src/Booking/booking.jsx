@@ -1,24 +1,22 @@
 import React, { useState } from "react";
-import { DatePicker} from "antd";
-import TimePicker from 'rc-picker';
-import 'rc-picker/assets/index.css';
+import { DatePicker } from "antd";
+// import TimePicker from 'rc-picker'; // Không dùng thì có thể bỏ
+// import 'rc-picker/assets/index.css';
 import dayjs from "dayjs";
-import { 
-  Calendar, 
-  Clock, 
-  MapPin, 
-  Users, 
-  FileText, 
-  CreditCard, 
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Users,
+  FileText,
+  CreditCard,
   Wallet,
   CheckCircle,
-  Star,
-  Trash2,
-  ChevronLeft,
-  ChevronRight,
   UtensilsCrossed,
-  CalculatorIcon,
-  CalendarDays
+  CalendarDays,
+  ChevronRight,
+  ChevronLeft,
+  Star,
 } from "lucide-react";
 import axios from "axios";
 import { useEffect } from "react";
@@ -26,18 +24,21 @@ import { useEffect } from "react";
 const initialData = {
   cartId: null,
   chef: null,
-  dishes: []
+  dishes: [],
 };
 
 export default function BookingPage() {
   const [step, setStep] = useState(1);
   const [cart, setCart] = useState(initialData);
+
+  // Khởi tạo mặc định 7h sáng
   const [schedule, setSchedule] = useState({
-    date: dayjs().set('hour', 7).set('minute', 0),
-    address: '',
-    guests: '1 người',
-    requests: ''
+    date: dayjs().hour(7).minute(0).second(0),
+    address: "",
+    guests: "1 người",
+    requests: "",
   });
+
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [loading, setLoading] = useState(false);
 
@@ -46,31 +47,32 @@ export default function BookingPage() {
     const fetchCart = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get(
-          "http://localhost:3000/api/cart/me",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
-        // Sau khi gọi API
-        setCart({
-          ...res.data.data,
-          chef: {
-            ...res.data.data.chef,
-            // ép kiểu sang số
-            price: Number(res.data.data.chef.price)
+        const res = await axios.get("http://localhost:3000/api/cart/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-          dishes: res.data.data.dishes.map(dish => ({
-            ...dish,
-            PRICE: Number(dish.PRICE)
-          }))
         });
-
+        // Sau khi gọi API
+        if (res.data && res.data.data) {
+          setCart({
+            ...res.data.data,
+            chef: res.data.data.chef
+              ? {
+                  ...res.data.data.chef,
+                  price: Number(res.data.data.chef.price),
+                }
+              : null,
+            dishes: res.data.data.dishes
+              ? res.data.data.dishes.map((dish) => ({
+                  ...dish,
+                  PRICE: Number(dish.PRICE),
+                }))
+              : [],
+          });
+        }
       } catch (err) {
         console.error(err);
-        alert("Không tìm thấy giỏ hàng");
+        // alert("Không tìm thấy giỏ hàng");
       }
     };
     fetchCart();
@@ -80,71 +82,71 @@ export default function BookingPage() {
   const handleNextStep = () => setStep((prev) => Math.min(prev + 1, 3));
   const handlePrevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
-  // Handle schedule changes
+  // Handle schedule changes (Text inputs)
   const handleScheduleChange = (e) => {
     const { name, value } = e.target;
     setSchedule((prev) => ({ ...prev, [name]: value }));
   };
 
+  // --- SỬA LỖI 1: Logic Date Change ---
   const handleDateChange = (date) => {
-    setSchedule((prev) => ({ ...prev, date }));
-  };
-
-  const handleTimeSelect = (e) => {
-    const timeString = e.target.value;
-    if (timeString) {
-      const [hours, minutes] = timeString.split(':');
-      const newDate = schedule.date.clone();
-      newDate.set('hour', parseInt(hours));
-      newDate.set('minute', parseInt(minutes));
-      newDate.set('second', 0);
-      
+    if (date) {
+      // Khi chọn ngày mới, giữ nguyên giờ phút đã chọn trước đó
+      const newDate = date
+        .hour(schedule.date.hour())
+        .minute(schedule.date.minute())
+        .second(0);
       setSchedule((prev) => ({ ...prev, date: newDate }));
     }
   };
 
-  // Tính toán giá tiền - ĐÃ SỬA
-  const calculatePrices = () => {
-  // Kiểm tra dữ liệu đầu vào
-  if (!cart || !cart.dishes || cart.dishes.length === 0) {
-    return {
-      dishesTotal: 0,
-      chefFee: 0,
-      subtotal: 0,
-      serviceFee: 0,
-      finalTotal: 0
-    };
-  }
+  // --- SỬA LỖI 2: Logic Time Select (Dayjs Immutability) ---
+  const handleTimeSelect = (e) => {
+    const timeString = e.target.value; // Dạng "07:00", "08:00"
+    if (timeString) {
+      const [hours, minutes] = timeString.split(":");
 
-  // Tính tổng giá món ăn với kiểm tra an toàn
-  const dishesTotal = cart.dishes.reduce((total, dish) => {
-    const price = parseFloat(dish?.PRICE) || 0;
-    const quantity = parseInt(dish?.QUANTITY) || 0;
-    return total + (price * quantity);
-  }, 0);
+      // Dayjs là bất biến (immutable), phải dùng chaining hoặc gán lại biến
+      const newDate = schedule.date
+        .hour(parseInt(hours))
+        .minute(parseInt(minutes))
+        .second(0);
 
-  // Tính phí đầu bếp với kiểm tra an toàn
-  const chefFee = cart.chef ? (parseFloat(cart.chef.price) || 0) : 0;
-  
-  // Tổng trước phí dịch vụ
-  const subtotal = dishesTotal + chefFee;
-  
-  // Phí dịch vụ 10%
-  const serviceFee = subtotal * 0.1;
-  
-  // Tổng cuối cùng
-  const finalTotal = subtotal + serviceFee;
+      console.log("Time Selected:", timeString);
+      console.log("New Date Object:", newDate.format("YYYY-MM-DD HH:mm:ss"));
 
-  return {
-    dishesTotal,
-    chefFee,
-    subtotal,
-    serviceFee,
-    finalTotal
+      setSchedule((prev) => ({ ...prev, date: newDate }));
+    }
   };
-};
 
-  const { dishesTotal, chefFee, subtotal, serviceFee, finalTotal } = calculatePrices();
+  // Tính toán giá tiền
+  const calculatePrices = () => {
+    if (!cart || !cart.dishes || cart.dishes.length === 0) {
+      return {
+        dishesTotal: 0,
+        chefFee: 0,
+        subtotal: 0,
+        serviceFee: 0,
+        finalTotal: 0,
+      };
+    }
+
+    const dishesTotal = cart.dishes.reduce((total, dish) => {
+      const price = parseFloat(dish?.PRICE) || 0;
+      const quantity = parseInt(dish?.QUANTITY) || 0;
+      return total + price * quantity;
+    }, 0);
+
+    const chefFee = cart.chef ? parseFloat(cart.chef.price) || 0 : 0;
+    const subtotal = dishesTotal + chefFee;
+    const serviceFee = subtotal * 0.1;
+    const finalTotal = subtotal + serviceFee;
+
+    return { dishesTotal, chefFee, subtotal, serviceFee, finalTotal };
+  };
+
+  const { dishesTotal, chefFee, subtotal, serviceFee, finalTotal } =
+    calculatePrices();
 
   // Hàm tạo order
   const handleCreateOrder = async () => {
@@ -162,18 +164,19 @@ export default function BookingPage() {
         return;
       }
 
-      // Format date từ dayjs
-      const cookingDate = schedule.date.format("YYYY-MM-DD"); // ← Sử dụng format()
-      const cookingTime = schedule.date.format("HH:mm:ss"); // ← Sử dụng format()
+      // Format date gửi lên server
+      const cookingDate = schedule.date.format("YYYY-MM-DD");
+      const cookingTime = schedule.date.format("HH:mm:ss");
 
-      // Chuẩn bị data gửi lên server
+      console.log("Check Time Before Send:", cookingTime); // Debug log
+
       const orderData = {
         cartId: cart.cartId,
         chefId: cart.chef.CHEFID,
         cookingDate,
         cookingTime,
         address: schedule.address,
-        specReq: schedule.requests || null
+        specReq: schedule.requests || null,
       };
 
       console.log("Sending order data:", orderData);
@@ -184,15 +187,13 @@ export default function BookingPage() {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
 
       if (response.data.success) {
         alert("Đặt đơn thành công!");
-        // Có thể chuyển hướng đến trang xác nhận đơn hàng
-        // window.location.href = `/orders/${response.data.data.order.orderId}`;
         window.location.href = `/home`;
       } else {
         alert("Có lỗi xảy ra: " + response.data.message);
@@ -200,7 +201,9 @@ export default function BookingPage() {
     } catch (error) {
       console.error("Error creating order:", error);
       if (error.response) {
-        alert(`Lỗi: ${error.response.data.message || error.response.statusText}`);
+        alert(
+          `Lỗi: ${error.response.data.message || error.response.statusText}`
+        );
       } else {
         alert("Lỗi kết nối đến server");
       }
@@ -212,23 +215,18 @@ export default function BookingPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        {/* Step Indicator */}
         <StepIndicator currentStep={step} />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-          {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {step === 1 && (
-              <Step1ChooseDishes
-                dishes={cart.dishes}
-                chef={cart.chef}
-              />
+              <Step1ChooseDishes dishes={cart.dishes} chef={cart.chef} />
             )}
             {step === 2 && (
               <Step2Schedule
                 schedule={schedule}
                 onDateChange={handleDateChange}
-                onTimeChange={handleTimeSelect}
+                onTimeChange={handleTimeSelect} // Truyền đúng hàm đã sửa
                 onTextChange={handleScheduleChange}
               />
             )}
@@ -240,7 +238,6 @@ export default function BookingPage() {
             )}
           </div>
 
-          {/* Sidebar Order Summary */}
           <div className="lg:col-span-1">
             <OrderSummary
               step={step}
@@ -276,29 +273,37 @@ function StepIndicator({ currentStep }) {
     <div className="flex items-center justify-between max-w-2xl mx-auto mb-12">
       {steps.map((step, index) => (
         <React.Fragment key={step.number}>
-          {/* Step Item */}
           <div className="flex flex-col items-center">
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-semibold border-2 transition-all duration-300
-              ${currentStep === step.number 
-                ? 'bg-orange-500 border-orange-500 text-white shadow-lg' 
-                : currentStep > step.number 
-                ? 'bg-green-500 border-green-500 text-white' 
-                : 'bg-white border-gray-300 text-gray-400'
+            <div
+              className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-semibold border-2 transition-all duration-300
+              ${
+                currentStep === step.number
+                  ? "bg-orange-500 border-orange-500 text-white shadow-lg"
+                  : currentStep > step.number
+                  ? "bg-green-500 border-green-500 text-white"
+                  : "bg-white border-gray-300 text-gray-400"
               }`}
             >
-              {currentStep > step.number ? <CheckCircle className="w-6 h-6" /> : step.icon}
+              {currentStep > step.number ? (
+                <CheckCircle className="w-6 h-6" />
+              ) : (
+                step.icon
+              )}
             </div>
-            <span className={`mt-2 text-sm font-medium transition-colors
-              ${currentStep >= step.number ? 'text-gray-900' : 'text-gray-500'}`}
+            <span
+              className={`mt-2 text-sm font-medium transition-colors
+              ${
+                currentStep >= step.number ? "text-gray-900" : "text-gray-500"
+              }`}
             >
               {step.title}
             </span>
           </div>
-          
-          {/* Connector Line */}
+
           {index < steps.length - 1 && (
-            <div className={`flex-1 h-1 mx-4 transition-colors duration-300
-              ${currentStep > step.number ? 'bg-green-500' : 'bg-gray-300'}`}
+            <div
+              className={`flex-1 h-1 mx-4 transition-colors duration-300
+              ${currentStep > step.number ? "bg-green-500" : "bg-gray-300"}`}
             />
           )}
         </React.Fragment>
@@ -311,36 +316,45 @@ function Step1ChooseDishes({ dishes, chef }) {
   if (!chef || !dishes) {
     return (
       <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Bước 1: Chọn Món Ăn</h2>
-        <p className="text-gray-600 mb-6">Đang tải thông tin...</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          Bước 1: Chọn Món Ăn
+        </h2>
+        <p className="text-gray-600 mb-6">Giỏ hàng trống hoặc đang tải...</p>
       </div>
     );
   }
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Bước 1: Chọn Món Ăn</h2>
-      <p className="text-gray-600 mb-6">Chọn món ăn bạn muốn đầu bếp chuẩn bị</p>
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        Bước 1: Chọn Món Ăn
+      </h2>
+      <p className="text-gray-600 mb-6">
+        Chọn món ăn bạn muốn đầu bếp chuẩn bị
+      </p>
 
-      {/* Chef Info */}
       <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 mb-8 flex items-center gap-4">
-        <img src={chef.AVTURL} alt={chef.CHEFNAME} className="w-16 h-16 rounded-full object-cover border-2 border-orange-200" />
+        <img
+          src={chef.AVTURL}
+          alt={chef.CHEFNAME}
+          className="w-16 h-16 rounded-full object-cover border-2 border-orange-200"
+        />
         <div>
           <h3 className="font-bold text-gray-900 text-lg">{chef.CHEFNAME}</h3>
           <div className="flex items-center gap-2 mt-1">
-            <span className="text-gray-600 text-sm">Phí dịch vụ: ${parseFloat(chef.price).toLocaleString("vi-VN")}</span>
+            <span className="text-gray-600 text-sm">
+              Phí dịch vụ: ${parseFloat(chef.price).toLocaleString("vi-VN")}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Dishes List */}
-      <h3 className="text-xl font-semibold text-gray-900 mb-4">Món Ăn ({dishes.length})</h3>
+      <h3 className="text-xl font-semibold text-gray-900 mb-4">
+        Món Ăn ({dishes.length})
+      </h3>
       <div className="space-y-4">
         {dishes.map((dish) => (
-          <DishItem
-            key={dish.DISHID}
-            dish={dish}
-          />
+          <DishItem key={dish.DISHID} dish={dish} />
         ))}
       </div>
     </div>
@@ -352,8 +366,12 @@ function DishItem({ dish }) {
 
   return (
     <div className="border border-gray-200 rounded-xl p-4 flex flex-col sm:flex-row gap-4 hover:border-orange-200 transition-colors">
-      <img src={dish.PICTUREURL} alt={dish.DISHNAME} className="w-full sm:w-24 h-40 sm:h-24 object-cover rounded-lg" />
-      
+      <img
+        src={dish.PICTUREURL}
+        alt={dish.DISHNAME}
+        className="w-full sm:w-24 h-40 sm:h-24 object-cover rounded-lg"
+      />
+
       <div className="flex-1">
         <div className="flex justify-between items-start">
           <div>
@@ -367,10 +385,13 @@ function DishItem({ dish }) {
               </span>
             </div>
             <div className="mt-2 text-sm text-gray-600">
-              Số lượng: {dish.QUANTITY} × ${parseFloat(dish.PRICE).toLocaleString("vi-VN")}
+              Số lượng: {dish.QUANTITY} × $
+              {parseFloat(dish.PRICE).toLocaleString("vi-VN")}
             </div>
           </div>
-          <span className="text-lg font-bold text-orange-500">${itemPrice.toLocaleString("vi-VN")}</span>
+          <span className="text-lg font-bold text-orange-500">
+            ${itemPrice.toLocaleString("vi-VN")}
+          </span>
         </div>
       </div>
     </div>
@@ -378,12 +399,15 @@ function DishItem({ dish }) {
 }
 
 function Step2Schedule({ schedule, onDateChange, onTimeChange, onTextChange }) {
-  // Lấy giờ hiện tại từ schedule.date và format thành HH:mm
-  const currentTime = schedule.date.format("HH:mm");
+  // --- SỬA LỖI 3: Format value cho select ---
+  // schedule.date là dayjs object -> chuyển thành string "HH:mm" để select hiểu
+  const currentTimeString = schedule.date.format("HH:mm");
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Bước 2: Lên Lịch</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        Bước 2: Lên Lịch
+      </h2>
       <p className="text-gray-600 mb-6">Chọn thời gian và địa điểm nấu ăn</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -397,12 +421,14 @@ function Step2Schedule({ schedule, onDateChange, onTimeChange, onTextChange }) {
             <DatePicker
               selected={schedule.date}
               onChange={onDateChange}
-              inline
+              value={schedule.date} // Antd DatePicker cần prop value
+              inline="true" // Antd không có inline prop theo cách này, nhưng nếu bạn dùng style wrapper thì ok.
+              // Nếu muốn hiển thị lịch luôn: open={true} hoặc dùng Calendar của Antd
               minDate={dayjs()}
               format="DD/MM/YYYY"
               className="w-full"
               disabledDate={(current) => {
-                return current && current < dayjs().startOf('day');
+                return current && current < dayjs().startOf("day");
               }}
             />
           </div>
@@ -416,19 +442,20 @@ function Step2Schedule({ schedule, onDateChange, onTimeChange, onTextChange }) {
               Chọn Giờ
             </label>
             <select
-              value={schedule.date}
+              value={currentTimeString} // Sửa ở đây: truyền string thay vì object
               onChange={onTimeChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
             >
-              <option value="16:00">7:00</option>
-              <option value="16:00">8:00</option>
-              <option value="16:00">9:00</option>
-              <option value="16:00">10:00</option>
-              <option value="16:00">11:00</option>
-              <option value="16:00">12:00</option>
-              <option value="16:00">13:00</option>
-              <option value="16:00">14:00</option>
-              <option value="16:00">15:00</option>
+              {/* --- SỬA LỖI 4: Value của option bị copy paste sai --- */}
+              <option value="07:00">7:00</option>
+              <option value="08:00">8:00</option>
+              <option value="09:00">9:00</option>
+              <option value="10:00">10:00</option>
+              <option value="11:00">11:00</option>
+              <option value="12:00">12:00</option>
+              <option value="13:00">13:00</option>
+              <option value="14:00">14:00</option>
+              <option value="15:00">15:00</option>
               <option value="16:00">16:00</option>
               <option value="17:00">17:00</option>
               <option value="18:00">18:00</option>
@@ -495,14 +522,26 @@ function Step2Schedule({ schedule, onDateChange, onTimeChange, onTextChange }) {
 function Step3Payment({ paymentMethod, setPaymentMethod }) {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Bước 3: Thanh Toán</h2>
-      <p className="text-gray-600 mb-6">Chọn phương thức thanh toán để hoàn tất</p>
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        Bước 3: Thanh Toán
+      </h2>
+      <p className="text-gray-600 mb-6">
+        Chọn phương thức thanh toán để hoàn tất
+      </p>
 
-      <h3 className="text-xl font-semibold text-gray-900 mb-4">Phương Thức Thanh Toán</h3>
-      
+      <h3 className="text-xl font-semibold text-gray-900 mb-4">
+        Phương Thức Thanh Toán
+      </h3>
+
       <div className="space-y-4">
         {/* Cash Option */}
-        <label className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${paymentMethod === "cash" ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-gray-300'}`}>
+        <label
+          className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${
+            paymentMethod === "cash"
+              ? "border-orange-500 bg-orange-50"
+              : "border-gray-200 hover:border-gray-300"
+          }`}
+        >
           <input
             type="radio"
             name="payment"
@@ -512,19 +551,35 @@ function Step3Payment({ paymentMethod, setPaymentMethod }) {
             className="sr-only"
           />
           <div className="flex items-center gap-4 flex-1">
-            <div className={`p-3 rounded-lg ${paymentMethod === "cash" ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-600'}`}>
+            <div
+              className={`p-3 rounded-lg ${
+                paymentMethod === "cash"
+                  ? "bg-orange-100 text-orange-600"
+                  : "bg-gray-100 text-gray-600"
+              }`}
+            >
               <Wallet className="w-6 h-6" />
             </div>
             <div>
               <h4 className="font-semibold text-gray-900">Tiền mặt</h4>
-              <p className="text-sm text-gray-600">Thanh toán cho đầu bếp trực tiếp</p>
+              <p className="text-sm text-gray-600">
+                Thanh toán cho đầu bếp trực tiếp
+              </p>
             </div>
           </div>
-          {paymentMethod === "cash" && <CheckCircle className="w-6 h-6 text-orange-500" />}
+          {paymentMethod === "cash" && (
+            <CheckCircle className="w-6 h-6 text-orange-500" />
+          )}
         </label>
 
         {/* VNPAY Option */}
-        <label className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${paymentMethod === "vnpay" ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-gray-300'}`}>
+        <label
+          className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${
+            paymentMethod === "vnpay"
+              ? "border-orange-500 bg-orange-50"
+              : "border-gray-200 hover:border-gray-300"
+          }`}
+        >
           <input
             type="radio"
             name="payment"
@@ -534,8 +589,12 @@ function Step3Payment({ paymentMethod, setPaymentMethod }) {
             className="sr-only"
           />
           <div className="flex items-center gap-4 flex-1">
-            <div className={`p-3 rounded-lg ${paymentMethod === "vnpay" ? 'bg-orange-100' : 'bg-gray-100'}`}>
-              <img 
+            <div
+              className={`p-3 rounded-lg ${
+                paymentMethod === "vnpay" ? "bg-orange-100" : "bg-gray-100"
+              }`}
+            >
+              <img
                 src="https://yt3.googleusercontent.com/JM1m2wng0JQUgSg9ZSEvz7G4Rwo7pYb4QBYip4PAhvGRyf1D_YTbL2DdDjOy0qOXssJPdz2r7Q=s900-c-k-c0x00ffffff-no-rj"
                 alt="VNPAY"
                 className="w-6 h-6"
@@ -546,24 +605,41 @@ function Step3Payment({ paymentMethod, setPaymentMethod }) {
               <p className="text-sm text-gray-600">Cổng thanh toán VNPAY</p>
             </div>
           </div>
-          {paymentMethod === "vnpay" && <CheckCircle className="w-6 h-6 text-orange-500" />}
+          {paymentMethod === "vnpay" && (
+            <CheckCircle className="w-6 h-6 text-orange-500" />
+          )}
         </label>
       </div>
     </div>
   );
 }
 
-function OrderSummary({ step, cart, schedule, dishesTotal, chefFee, subtotal, serviceFee, finalTotal, onNext, onPrev, onCreateOrder, loading }) {
-    // Format date từ dayjs
-  const formattedDate = schedule.date.format("dddd, DD/MM/YYYY"); // ← Sử dụng format()
-  const formattedTime = schedule.date.format("HH:mm"); // ← Sử dụng format()
+function OrderSummary({
+  step,
+  cart,
+  schedule,
+  dishesTotal,
+  chefFee,
+  subtotal,
+  serviceFee,
+  finalTotal,
+  onNext,
+  onPrev,
+  onCreateOrder,
+  loading,
+}) {
+  // Format date từ dayjs
+  const formattedDate = schedule.date.format("dddd, DD/MM/YYYY");
+  const formattedTime = schedule.date.format("HH:mm");
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-6">
       {step === 1 && (
         <>
-          <h4 className="text-xl font-bold text-gray-900 mb-4">Tóm Tắt Đơn Hàng</h4>
-          
+          <h4 className="text-xl font-bold text-gray-900 mb-4">
+            Tóm Tắt Đơn Hàng
+          </h4>
+
           {/* Hiển thị thông tin chef */}
           {cart.chef && (
             <div className="mb-4 p-3 bg-gray-50 rounded-lg">
@@ -573,42 +649,53 @@ function OrderSummary({ step, cart, schedule, dishesTotal, chefFee, subtotal, se
               </div>
               <div className="flex justify-between text-sm mt-1">
                 <span className="text-gray-600">Phí dịch vụ đầu bếp:</span>
-                <span className="font-medium">${parseFloat(cart.chef.price).toLocaleString("vi-VN")}</span>
+                <span className="font-medium">
+                  ${parseFloat(cart.chef.price).toLocaleString("vi-VN")}
+                </span>
               </div>
             </div>
           )}
-          
+
           <div className="space-y-3 mb-6">
-            {cart.dishes && cart.dishes.map((dish) => (
-              <div key={dish.DISHID} className="flex justify-between text-sm">
-                <div className="flex-1">
-                  <span className="text-gray-600">{dish.DISHNAME}</span>
-                  <div className="text-xs text-gray-400">
-                    {dish.QUANTITY} × ${parseFloat(dish.PRICE).toLocaleString("vi-VN")}
+            {cart.dishes &&
+              cart.dishes.map((dish) => (
+                <div key={dish.DISHID} className="flex justify-between text-sm">
+                  <div className="flex-1">
+                    <span className="text-gray-600">{dish.DISHNAME}</span>
+                    <div className="text-xs text-gray-400">
+                      {dish.QUANTITY} × $
+                      {parseFloat(dish.PRICE).toLocaleString("vi-VN")}
+                    </div>
                   </div>
+                  <span className="font-medium ml-4">
+                    $
+                    {(parseFloat(dish.PRICE) * dish.QUANTITY).toLocaleString(
+                      "vi-VN"
+                    )}
+                  </span>
                 </div>
-                <span className="font-medium ml-4">
-                  ${(parseFloat(dish.PRICE) * dish.QUANTITY).toLocaleString("vi-VN")}
-                </span>
-              </div>
-            ))}
+              ))}
           </div>
-          
+
           <div className="border-t pt-4 mb-6">
             <div className="flex justify-between mb-2">
               <span className="text-gray-600">Tổng món ăn:</span>
-              <span className="font-medium">${dishesTotal.toLocaleString("vi-VN")}</span>
+              <span className="font-medium">
+                ${dishesTotal.toLocaleString("vi-VN")}
+              </span>
             </div>
             <div className="flex justify-between mb-2">
               <span className="text-gray-600">Phí đầu bếp:</span>
-              <span className="font-medium">${chefFee.toLocaleString("vi-VN")}</span>
+              <span className="font-medium">
+                ${chefFee.toLocaleString("vi-VN")}
+              </span>
             </div>
             <div className="flex justify-between font-bold text-lg">
               <span>Tổng cộng:</span>
               <span>${subtotal.toLocaleString("vi-VN")}</span>
             </div>
           </div>
-          
+
           <button
             onClick={onNext}
             className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center gap-2"
@@ -621,7 +708,9 @@ function OrderSummary({ step, cart, schedule, dishesTotal, chefFee, subtotal, se
 
       {step === 2 && (
         <>
-          <h4 className="text-xl font-bold text-gray-900 mb-4">Chi Tiết Đặt Chỗ</h4>
+          <h4 className="text-xl font-bold text-gray-900 mb-4">
+            Chi Tiết Đặt Chỗ
+          </h4>
           <div className="space-y-3 mb-6">
             <div className="flex items-center gap-3">
               <Calendar className="w-5 h-5 text-gray-400" />
@@ -634,26 +723,32 @@ function OrderSummary({ step, cart, schedule, dishesTotal, chefFee, subtotal, se
             {schedule.address && (
               <div className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-700 truncate">{schedule.address}</span>
+                <span className="text-gray-700 truncate">
+                  {schedule.address}
+                </span>
               </div>
             )}
           </div>
-          
+
           <div className="border-t pt-4 mb-6">
             <div className="flex justify-between mb-2">
               <span className="text-gray-600">Tổng món ăn:</span>
-              <span className="font-medium">${dishesTotal.toLocaleString("vi-VN")}</span>
+              <span className="font-medium">
+                ${dishesTotal.toLocaleString("vi-VN")}
+              </span>
             </div>
             <div className="flex justify-between mb-2">
               <span className="text-gray-600">Phí đầu bếp:</span>
-              <span className="font-medium">${chefFee.toLocaleString("vi-VN")}</span>
+              <span className="font-medium">
+                ${chefFee.toLocaleString("vi-VN")}
+              </span>
             </div>
             <div className="flex justify-between font-bold text-lg">
               <span>Tổng cộng:</span>
               <span>${subtotal.toLocaleString("vi-VN")}</span>
             </div>
           </div>
-          
+
           <div className="space-y-3">
             <button
               onClick={onNext}
@@ -674,7 +769,9 @@ function OrderSummary({ step, cart, schedule, dishesTotal, chefFee, subtotal, se
 
       {step === 3 && (
         <>
-          <h4 className="text-xl font-bold text-gray-900 mb-4">Tóm Tắt Cuối Cùng</h4>
+          <h4 className="text-xl font-bold text-gray-900 mb-4">
+            Tóm Tắt Cuối Cùng
+          </h4>
           <div className="space-y-3 mb-6">
             <div className="flex items-center gap-3">
               <Calendar className="w-5 h-5 text-gray-400" />
@@ -687,48 +784,66 @@ function OrderSummary({ step, cart, schedule, dishesTotal, chefFee, subtotal, se
             {schedule.address && (
               <div className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-700 truncate">{schedule.address}</span>
+                <span className="text-gray-700 truncate">
+                  {schedule.address}
+                </span>
               </div>
             )}
           </div>
-          
+
           <div className="border-y py-4 mb-6">
             <div className="space-y-2 mb-4">
-              {cart.dishes && cart.dishes.map((dish) => (
-                <div key={dish.DISHID} className="flex justify-between text-sm">
-                  <div className="flex-1">
-                    <span className="text-gray-600">{dish.DISHNAME}</span>
-                    <div className="text-xs text-gray-400">
-                      {dish.QUANTITY} × ${parseFloat(dish.PRICE).toLocaleString("vi-VN")}
+              {cart.dishes &&
+                cart.dishes.map((dish) => (
+                  <div
+                    key={dish.DISHID}
+                    className="flex justify-between text-sm"
+                  >
+                    <div className="flex-1">
+                      <span className="text-gray-600">{dish.DISHNAME}</span>
+                      <div className="text-xs text-gray-400">
+                        {dish.QUANTITY} × $
+                        {parseFloat(dish.PRICE).toLocaleString("vi-VN")}
+                      </div>
                     </div>
+                    <span className="font-medium ml-4">
+                      $
+                      {(parseFloat(dish.PRICE) * dish.QUANTITY).toLocaleString(
+                        "vi-VN"
+                      )}
+                    </span>
                   </div>
-                  <span className="font-medium ml-4">
-                    ${(parseFloat(dish.PRICE) * dish.QUANTITY).toLocaleString("vi-VN")}
-                  </span>
-                </div>
-              ))}
+                ))}
             </div>
-            
+
             <div className="flex justify-between text-sm mb-2">
               <span className="text-gray-600">Tổng món ăn:</span>
-              <span className="font-medium">${dishesTotal.toLocaleString("vi-VN")}</span>
+              <span className="font-medium">
+                ${dishesTotal.toLocaleString("vi-VN")}
+              </span>
             </div>
-            
+
             <div className="flex justify-between text-sm mb-2">
               <span className="text-gray-600">Phí đầu bếp:</span>
-              <span className="font-medium">${chefFee.toLocaleString("vi-VN")}</span>
+              <span className="font-medium">
+                ${chefFee.toLocaleString("vi-VN")}
+              </span>
             </div>
-            
+
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Phí dịch vụ (10%):</span>
-              <span className="font-medium">${serviceFee.toLocaleString("vi-VN")}</span>
+              <span className="font-medium">
+                ${serviceFee.toLocaleString("vi-VN")}
+              </span>
             </div>
           </div>
-          
+
           <div className="mb-6">
             <div className="flex justify-between text-xl font-bold text-gray-900 mb-4">
               <span>Tổng thanh toán:</span>
-              <span className="text-orange-500">${finalTotal.toLocaleString("vi-VN")}</span>
+              <span className="text-orange-500">
+                ${finalTotal.toLocaleString("vi-VN")}
+              </span>
             </div>
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 space-y-2">
               <div className="flex items-center gap-2 text-green-700">
@@ -741,14 +856,16 @@ function OrderSummary({ step, cart, schedule, dishesTotal, chefFee, subtotal, se
               </div>
             </div>
           </div>
-          
+
           <div className="space-y-3">
-            <button 
+            <button
               onClick={onCreateOrder}
               className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
               disabled={loading}
             >
-              {loading ? "Đang xử lý..." : `Xác Nhận Đặt Đơn $${finalTotal.toLocaleString("vi-VN")}`}
+              {loading
+                ? "Đang xử lý..."
+                : `Xác Nhận Đặt Đơn $${finalTotal.toLocaleString("vi-VN")}`}
             </button>
             <button
               onClick={onPrev}

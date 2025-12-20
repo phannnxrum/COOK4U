@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import HeaderClient from "../Client/HeaderClient";
+// import HeaderClient from "../Client/HeaderClient"; // Bỏ comment nếu cần
 import { getOrders } from "./chefService";
 import OrdersCard from "./OrdersCard";
 import { motion } from "framer-motion";
@@ -7,27 +7,28 @@ import { motion } from "framer-motion";
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [activeTabs, setActiveTabs] = useState("all");
+
+  // Cập nhật bộ lọc khớp với Database ENUM
   const filters = [
     { id: "all", label: "Tất cả" },
-    { id: "poll", label: "Chờ" },
-    { id: "onWork", label: "Đang thực hiện" },
-    { id: "complete", label: "Hoàn tất" },
-    { id: "cancel", label: "Hủy" },
+    { id: "pending", label: "Chờ xác nhận" },
+    { id: "confirmed", label: "Đã xác nhận" },
+    { id: "cooking", label: "Đang nấu" },
+    { id: "completed", label: "Hoàn tất" },
+    { id: "cancelled", label: "Đã hủy" },
   ];
-
-  // const activeIndex = filter.findIndex((t) => t.id === activeTabs);
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const data = await getOrders();
-        console.log("Kết quả fetch:", data);
+        // Sắp xếp đơn mới nhất lên đầu (nếu API chưa sort)
+        // const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
         setOrders(data || []);
-        setLoading(false);
       } catch (error) {
         console.error("Lỗi khi lấy thông tin đơn hàng:", error);
+      } finally {
         setLoading(false);
       }
     };
@@ -35,57 +36,88 @@ const Orders = () => {
   }, []);
 
   const getFilterOrders = () => {
-    if (!orders) return [];
+    if (!orders || orders.length === 0) return [];
+
     if (activeTabs === "all") {
       return orders;
     }
-    console.log("Tabs hiện tại:", activeTabs);
-    return orders.filter((order) =>
-      order.dishes.some((dish) => dish.status === activeTabs)
+
+    // Lọc dựa trên Order Status (đảm bảo so sánh chữ thường)
+    return orders.filter(
+      (order) => order.status && order.status.toLowerCase() === activeTabs
     );
   };
 
   const filteredOrders = getFilterOrders();
 
-  if (loading) return <div className="text-black">Đang tải dữ liệu</div>;
-
-  if (!orders) return <div className="text-black">Đơn hàng không tồn tại</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-orange-500"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-8">
-      <div className="flex flex-col gap-2 bg-gray-100 p-5">
-        <h1 className="text-2xl">Đơn hàng của tôi</h1>
-        <p className="text-sm text-gray-400">
-          Quản lý và theo dõi các đơn đặt chỗ
-        </p>
-        <div className="grid grid-cols-5 mt-5 bg-white py-2 rounded-2xl">
-          {filters.map((filter) => (
-            <button
-              key={filter.id}
-              onClick={() => setActiveTabs(filter.id)}
-              className={`relative z-10 inline-block rounded-full py-1 transition-all duration-200 focus:outline-none ${
-                activeTabs === filter.id
-                  ? "bg-white text-orange-500 font-medium"
-                  : "text-gray-700 hover:text-orange-400"
-              }`}
-            >
-              {filter.label}
-              {activeTabs === filter.id && (
-                <motion.div
-                  layoutId="active-pill"
-                  className="absolute inset-0 bg-white rounded-full shadow-md border border-gray-100"
-                  style={{ zIndex: -1 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                />
-              )}
-            </button>
-          ))}
-        </div>
-        {filteredOrders.map((order) => (
-          <div className="mt-10" key={order.id}>
-            <OrdersCard ordersData={order}></OrdersCard>
+    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
+      <div className="max-w-6xl mx-auto flex flex-col gap-4">
+        {/* Header Section */}
+        <div className="bg-white p-5 rounded-2xl shadow-sm">
+          <h1 className="text-2xl font-bold text-gray-800">Đơn hàng của tôi</h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Quản lý và theo dõi tiến độ các bữa tiệc của bạn
+          </p>
+
+          {/* Filter Tabs */}
+          <div className="flex flex-wrap gap-2 mt-6 p-1 bg-gray-100 rounded-xl">
+            {filters.map((filter) => (
+              <button
+                key={filter.id}
+                onClick={() => setActiveTabs(filter.id)}
+                // 👇 ĐÃ SỬA Ở ĐÂY:
+                // 1. Xóa 'md:flex-none' để nó luôn co giãn (flex-1) trên mọi màn hình.
+                // 2. Thêm 'w-full' và 'text-center' để nút chiếm hết không gian được chia và chữ nằm giữa.
+                className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 focus:outline-none flex-1 w-full text-center ${
+                  activeTabs === filter.id
+                    ? "text-orange-600"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                {activeTabs === filter.id && (
+                  <motion.div
+                    layoutId="active-pill"
+                    className="absolute inset-0 bg-white rounded-lg shadow-sm border border-gray-200"
+                    style={{ zIndex: 0 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{filter.label}</span>
+              </button>
+            ))}
           </div>
-        ))}
+        </div>
+
+        {/* Orders List */}
+        <div className="flex flex-col gap-4 mt-2">
+          {filteredOrders.length > 0 ? (
+            filteredOrders.map((order) => (
+              <motion.div
+                key={order.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <OrdersCard ordersData={order} />
+              </motion.div>
+            ))
+          ) : (
+            <div className="text-center py-10 bg-white rounded-2xl shadow-sm">
+              <p className="text-gray-400 text-lg">
+                Không tìm thấy đơn hàng nào.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
