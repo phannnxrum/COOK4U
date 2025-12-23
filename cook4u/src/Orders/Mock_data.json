@@ -4,6 +4,7 @@
     "date": "13/12/2025",
     "name": "Đầu bếp Tony",
     "avatar": "https://i.pravatar.cc/150?img=1",
+    "price": 870000,
     "rating": 4.9,
     "dishes": [
       {
@@ -40,6 +41,7 @@
     "date": "14/12/2025",
     "name": "Bếp trưởng Mai",
     "avatar": "https://i.pravatar.cc/150?img=5",
+    "price": 870000,
     "rating": 4.7,
     "dishes": [
       {
@@ -67,6 +69,7 @@
     "date": "14/12/2025",
     "name": "Chef John",
     "avatar": "https://i.pravatar.cc/150?img=12",
+    "price": 870000,
     "rating": 4.3,
     "dishes": [
       {

@@ -100,7 +100,12 @@ const MyCart = () => {
 
   const handleCheckout = () => {
     if (canCheckout) {
-      navigate("/home/book");
+      navigate("/home/book", {
+        info: {
+          cartId: cart.cartId,
+          chefId: cart.chefId
+        }
+      });
     }
   };
 
