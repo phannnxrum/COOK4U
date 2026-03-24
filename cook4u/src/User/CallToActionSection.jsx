@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router";
 import { Footer } from "./Footer";
 
 const CallToActionSection = () => {
@@ -11,12 +12,12 @@ const CallToActionSection = () => {
             Tham gia COOK4U ngay hôm nay và trải nghiệm dịch vụ nấu ăn tại nhà
             tuyệt vời
           </h2>
-          <a
-            href="/sign-up"
+          <Link
+            to="/sign-up"
             className="text-2xl bg-white text-orange-500 border border-orange-500 rounded-2xl px-20 py-3 transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg"
           >
             Đăng ký miễn phí
-          </a>
+          </Link>
         </div>
       </div>
     </section>

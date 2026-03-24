@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({
     origin: [
         "http://localhost:5173",
-        "https://cook4u.vercel.app/"
+        "https://cook4u.vercel.app"
     ]
 }));
 app.use(express.json());
