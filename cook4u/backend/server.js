@@ -11,7 +11,8 @@ const PORT = process.env.PORT || 3000;
 //middlewares
 app.use(cors({
     origin: [
-        "http://localhost:5173"
+        "http://localhost:5173",
+        "https://cook4u.vercel.app/"
     ]
 }));
 app.use(express.json());
