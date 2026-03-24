@@ -26,7 +26,7 @@ const DishManagement = () => {
   // 1. Lấy danh sách món ăn
   const getAllDishes = async () => {
     try {
-      let res = await axios.get(`http://localhost:3000/api/dishes/admin`);
+      let res = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/dishes/admin`);
       setDishes(res.data.data);
       console.log(res.data.data);
     } catch (err) {
@@ -62,12 +62,12 @@ const DishManagement = () => {
 
       if (editingDishId) {
         await axios.patch(
-          `http://localhost:3000/api/dishes/${editingDishId}`,
+          `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/dishes/${editingDishId}`,
           payload
         );
         message.success("Cập nhật thành công");
       } else {
-        await axios.post(`http://localhost:3000/api/dishes`, payload);
+        await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/dishes`, payload);
         message.success("Thêm mới thành công");
       }
 
@@ -86,7 +86,7 @@ const DishManagement = () => {
     setEditingDishId(dish.id);
     try {
       const res = await axios.get(
-        `http://localhost:3000/api/dishes/${dish.id}`
+        `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/dishes/${dish.id}`
       );
       const fullDishData = res.data.data;
 
@@ -158,7 +158,7 @@ const DishManagement = () => {
 
     try {
       // 2. Gọi API PATCH chỉ để update trường status
-      await axios.patch(`http://localhost:3000/api/dishes/${id}`, {
+      await axios.patch(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/dishes/${id}`, {
         status: false, // Backend sẽ chuyển thành 0
       });
 

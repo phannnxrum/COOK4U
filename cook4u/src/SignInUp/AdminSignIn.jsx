@@ -18,7 +18,7 @@ const AdminSignIn = () => {
 
     try {
       // Gọi API đăng nhập admin
-      const res = await axios.post('http://localhost:3000/api/auth/login-admin', {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/auth/login-admin`, {
         email,
         password
       })

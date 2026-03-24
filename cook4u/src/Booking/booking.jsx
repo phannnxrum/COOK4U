@@ -47,7 +47,7 @@ export default function BookingPage() {
     const fetchCart = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:3000/api/cart/me", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/cart/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -182,7 +182,7 @@ export default function BookingPage() {
       console.log("Sending order data:", orderData);
 
       const response = await axios.post(
-        "http://localhost:3000/api/orders",
+        `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/orders`,
         orderData,
         {
           headers: {

@@ -48,7 +48,7 @@ export const CartProvider = ({ children }) => {
         setLoading(true);
         console.log("Fetching cart for user with token:", token.substring(0, 20) + "...");
         
-        const res = await axios.get("http://localhost:3000/api/cart/me", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/cart/me`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -123,7 +123,7 @@ export const CartProvider = ({ children }) => {
       
       console.log("Adding chef:", chefId, "for user with token:", token.substring(0, 20) + "...");
       
-      await axios.post("http://localhost:3000/api/cart/chef", 
+      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/cart/chef`, 
         { chefId },
         {
           headers: {
@@ -153,7 +153,7 @@ export const CartProvider = ({ children }) => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      await axios.delete("http://localhost:3000/api/cart/chef", {
+      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/cart/chef`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -180,7 +180,7 @@ export const CartProvider = ({ children }) => {
       
       console.log("Adding dish:", dishId, "for user with token:", token.substring(0, 20) + "...");
       
-      await axios.post("http://localhost:3000/api/cart/dish",
+      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/cart/dish`,
         { dishId, quantity },
         {
           headers: {
@@ -226,7 +226,7 @@ export const CartProvider = ({ children }) => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      await axios.delete("http://localhost:3000/api/cart/dish", {
+      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/cart/dish`, {
         headers: {
           Authorization: `Bearer ${token}`
         },
@@ -248,7 +248,7 @@ export const CartProvider = ({ children }) => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      await axios.delete("http://localhost:3000/api/cart/clear", {
+      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/cart/clear`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

@@ -47,7 +47,7 @@ const SignIn = () => {
     setLoading(true)
 
     try {
-      const res = await axios.post('http://localhost:3000/api/auth/login', {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/auth/login`, {
         email,
         password
       })
@@ -99,7 +99,7 @@ const SignIn = () => {
     setForgotLoading(true)
 
     try {
-      const res = await axios.post('http://localhost:3000/api/auth/send-otp', {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/auth/send-otp`, {
         email: forgotEmail
       })
 
@@ -123,7 +123,7 @@ const SignIn = () => {
     setOtp(['', '', '', '', '', ''])
 
     try {
-      await axios.post('http://localhost:3000/api/auth/send-otp', {
+      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/auth/send-otp`, {
         email: forgotEmail
       })
       setCountdown(60)
@@ -191,7 +191,7 @@ const SignIn = () => {
     setForgotLoading(true)
 
     try {
-      await axios.post('http://localhost:3000/api/auth/verify-otp', {
+      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/auth/verify-otp`, {
         email: forgotEmail,
         otp: otpString
       })
@@ -222,7 +222,7 @@ const SignIn = () => {
     setForgotLoading(true)
 
     try {
-      await axios.post('http://localhost:3000/api/auth/reset-password', {
+      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/auth/reset-password`, {
         userId: foundUser.userId,
         newPassword
       })

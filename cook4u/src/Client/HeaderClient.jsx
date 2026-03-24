@@ -46,7 +46,7 @@ const HeaderClient = () => {
   // Hàm lấy thông tin user
   const fetchUserData = () => {
     axios
-      .get("http://localhost:3000/api/users/me", getAuthHeader())
+      .get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/users/me`, getAuthHeader())
       .then((res) => {
         const user = res.data.data;
         const newData = {

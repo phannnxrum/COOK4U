@@ -12,7 +12,7 @@ const DashboardOverview = () => {
   const getCountChefs = async () => {
     try {
       const res = await axios({
-        url: `http://localhost:3000/api/chefs`,
+        url: `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/chefs`,
         method: "GET"
       });
       // console.log("Number of chef:", chefsData.length);

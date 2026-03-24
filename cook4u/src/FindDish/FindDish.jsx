@@ -193,7 +193,7 @@ const FindDishPage = () => {
   const getAllDishes = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:3000/api/dishes");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/dishes`);
       setDishesData(res.data.data);
       console.log("Dữ liệu món ăn fetch về: ", res.data.data);
     } catch (err) {

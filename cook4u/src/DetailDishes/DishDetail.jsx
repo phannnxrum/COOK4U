@@ -28,7 +28,7 @@ const DishDetail = () => {
       try {
         setLoading(true);
         const res = await axios.get(
-          `http://localhost:3000/api/dishes/${dishId}`
+          `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/dishes/${dishId}`
         );
         setDish(res.data.data);
         console.log("Fetch data: ", res.data.data);

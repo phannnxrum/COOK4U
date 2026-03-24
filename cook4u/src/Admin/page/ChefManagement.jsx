@@ -17,7 +17,7 @@ const ChefManagement = () => {
     try {
       setLoading(true);
       const res = await axios({
-        url: `http://localhost:3000/api/chefs`,
+        url: `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/chefs`,
         method: "GET"
       });
       
@@ -64,7 +64,7 @@ const ChefManagement = () => {
 
       console.log('Adding chef data:', chefData);
       
-      const response = await axios.post('http://localhost:3000/api/chefs', chefData);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/chefs`, chefData);
       
       if (response.status === 201) {
         message.success('Thêm đầu bếp thành công');
@@ -83,7 +83,7 @@ const ChefManagement = () => {
   const handleEditChef = async (chefId) => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:3000/api/chefs/${chefId}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/chefs/${chefId}`);
       const chef = response.data.data;
       
       if (!chef) {
@@ -226,7 +226,7 @@ const ChefManagement = () => {
     
     // Gọi API chính để cập nhật thông tin cơ bản
     await axios.patch(
-      `http://localhost:3000/api/chefs/${editingChef.id}`,
+      `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/chefs/${editingChef.id}`,
       updateData
     );
     console.log('✓ Updated basic info');
@@ -235,14 +235,14 @@ const ChefManagement = () => {
     if (values.specialty && values.specialty.length > 0) {
       console.log('2. Updating cuisine:', values.specialty);
       await axios.patch(
-        `http://localhost:3000/api/chefs/${editingChef.id}/cuisine-types`,
+        `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/chefs/${editingChef.id}/cuisine-types`,
         { cuisine: values.specialty } // Gửi array trực tiếp
       );
       console.log('✓ Updated cuisine');
     } else {
       // Nếu xóa hết chuyên môn thì xóa tất cả
       await axios.patch(
-        `http://localhost:3000/api/chefs/${editingChef.id}/cuisine-types`,
+        `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/chefs/${editingChef.id}/cuisine-types`,
         { cuisine: [] }
       );
     }
@@ -252,13 +252,13 @@ const ChefManagement = () => {
       const displayLanguages = values.languages.map(mapLanguageToDisplay);
       console.log('3. Updating languages:', displayLanguages);
       await axios.patch(
-        `http://localhost:3000/api/chefs/${editingChef.id}/languages`,
+        `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/chefs/${editingChef.id}/languages`,
         { languages: displayLanguages }
       );
       console.log('✓ Updated languages');
     } else {
       await axios.patch(
-        `http://localhost:3000/api/chefs/${editingChef.id}/languages`,
+        `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/chefs/${editingChef.id}/languages`,
         { languages: [] }
       );
     }
@@ -268,13 +268,13 @@ const ChefManagement = () => {
       const certsArray = values.certifications.split(',').map(cert => cert.trim()).filter(cert => cert);
       console.log('4. Updating certifications:', certsArray);
       await axios.patch(
-        `http://localhost:3000/api/chefs/${editingChef.id}/certifications`,
+        `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/chefs/${editingChef.id}/certifications`,
         { certifications: certsArray }
       );
       console.log('✓ Updated certifications');
     } else {
       await axios.patch(
-        `http://localhost:3000/api/chefs/${editingChef.id}/certifications`,
+        `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/chefs/${editingChef.id}/certifications`,
         { certifications: [] }
       );
     }
@@ -283,13 +283,13 @@ const ChefManagement = () => {
     if (values.serviceIncludes && values.serviceIncludes.length > 0) {
       console.log('5. Updating service details:', values.serviceIncludes);
       await axios.patch(
-        `http://localhost:3000/api/chefs/${editingChef.id}/services-details`,
+        `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/chefs/${editingChef.id}/services-details`,
         { serviceDetails: values.serviceIncludes }
       );
       console.log('✓ Updated service details');
     } else {
       await axios.patch(
-        `http://localhost:3000/api/chefs/${editingChef.id}/services-details`,
+        `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/chefs/${editingChef.id}/services-details`,
         { serviceDetails: [] }
       );
     }
@@ -329,7 +329,7 @@ const ChefManagement = () => {
     try {
       if (window.confirm('Bạn có chắc chắn muốn xóa đầu bếp này?')) {
         setLoading(true);
-        // await axios.delete(`http://localhost:3000/api/chefs/${chefId}`);
+        // await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/chefs/${chefId}`);
         message.success('Xóa đầu bếp thành công');
         await getAllChefs();
       }

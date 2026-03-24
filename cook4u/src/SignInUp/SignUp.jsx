@@ -62,7 +62,7 @@ export default function SignUp() {
 
     try {
       setLoading(true);
-      const API_URL = "http://localhost:3000/api/auth/register";
+      const API_URL = `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/auth/register`;
 
       // --- Mock khi CHƯA có backend ---
       // await new Promise((r) => setTimeout(r, 600))

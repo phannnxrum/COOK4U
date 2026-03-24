@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Cấu hình Base URL (Bạn đổi port 8080 nếu backend chạy port khác)
-const API_URL = "http://localhost:3000";
+const API_URL = `${import.meta.env.VITE_API_URL || "http://localhost:3000"}`;
 
 /**
  * Lấy lịch sử đơn hàng của Customer

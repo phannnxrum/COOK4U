@@ -41,7 +41,7 @@ const ProfileUser = () => {
   // Hàm lấy thông tin user
   const fetchUserData = () => {
     axios
-      .get("http://localhost:3000/api/users/me", getAuthHeader())
+      .get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/users/me`, getAuthHeader())
       .then((res) => {
         const user = res.data.data;
         const newData = {
@@ -67,7 +67,7 @@ const ProfileUser = () => {
       const userItem = JSON.parse(localStorage.getItem('user'));
       const userId = userItem.id;
       let res = await axios({
-        url: `http://localhost:3000/api/favorites/${userId}`,
+        url: `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/favorites/${userId}`,
         method: "GET"
       })
       setFavorChefCount(res.data.favoriteCount)
@@ -98,7 +98,7 @@ const ProfileUser = () => {
     };
 
     axios
-      .put("http://localhost:3000/api/users/me", updatedData, getAuthHeader())
+      .put(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/users/me`, updatedData, getAuthHeader())
       .then((res) => {
         const user = res.data.data;
         const newData = {
