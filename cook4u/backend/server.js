@@ -19,11 +19,11 @@ const corsOptions = {
     credentials: true
 };
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+app.options('(.*)', cors(corsOptions));
 app.use(express.json());
 
 app.use('/api', router);
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
 });
